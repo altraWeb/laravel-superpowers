@@ -33,3 +33,22 @@ def test_user_overlay_overrides_default(cli, user_config_dir):
     result = cli("get", "pilot_version")
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == "1"
+
+
+def test_project_overlay_overrides_user(cli, user_config_dir, project_cwd):
+    (user_config_dir / "config.yaml").write_text("pilot_version: 1\n")
+    (project_cwd / ".laravel-superpowers.yaml").write_text("pilot_version: 2\n")
+    result = cli("get", "pilot_version")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "2"
+
+
+def test_deep_merge_preserves_uninherited_sibling_keys(cli, project_cwd):
+    """Overriding one hook_enabled key must leave the others intact."""
+    (project_cwd / ".laravel-superpowers.yaml").write_text(
+        "hook_enabled:\n  banned_token_leak_guard: false\n"
+    )
+    a = cli("get", "hook_enabled.banned_token_leak_guard")
+    assert a.stdout.strip() == "false"
+    b = cli("get", "hook_enabled.no_claude_attribution")
+    assert b.stdout.strip() == "true"   # inherited from defaults

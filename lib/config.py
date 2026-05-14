@@ -52,6 +52,10 @@ def _user_config_path() -> Path:
     return Path(os.environ["HOME"]) / ".claude" / "plugins" / "altraweb-laravel" / "laravel-superpowers" / "config.yaml"
 
 
+def _project_config_path() -> Path:
+    return Path.cwd() / ".laravel-superpowers.yaml"
+
+
 def _deep_merge(base: dict, overlay: dict) -> dict:
     """Recursively merge overlay into a copy of base. Overlay wins on conflicts."""
     result = dict(base)
@@ -64,10 +68,11 @@ def _deep_merge(base: dict, overlay: dict) -> dict:
 
 
 def _merged_config() -> dict:
-    """Return defaults merged with user overlay (project overlay added later)."""
+    """Return defaults merged with user overlay, then project overlay."""
     defaults = _load_yaml(_plugin_dir() / "config.defaults.yaml")
     user = _load_yaml(_user_config_path())
-    return _deep_merge(defaults, user)
+    project = _load_yaml(_project_config_path())
+    return _deep_merge(_deep_merge(defaults, user), project)
 
 
 def cmd_get(args: list[str]) -> int:
