@@ -38,9 +38,12 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 - **laravel-debugging** — Debugging with Laravel-specific tools: Telescope, query logging, queue introspection
 - **laravel-code-review** — Code review checklist: N+1, mass assignment, authorization, validation, security
 
-## Agent
+## Agents
 
-- **laravel-best-practices** — Web research agent for current Laravel best practices (Spatie, Laracasts, Laravel News)
+- **laravel-best-practices** — Web research agent for current Laravel best practices (Spatie, Laracasts, Laravel News). Use when asking *"how should I implement X?"* or *"is my current approach still best practice?"*.
+- **laravel-livewire-specialist** — Audits Livewire-touching code/plans for fabricated APIs, `wire:ignore` zones, Form-Object patterns, Echo/broadcasting race conditions, and lifecycle-hook misuse. Verifies via PHP reflection against the actual Livewire vendor source — ground truth, not docs. Use before any Livewire-touching implementation phase.
+
+See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
 ## Designed to complement [superpowers](https://github.com/anthropics/claude-plugins-official)
 
