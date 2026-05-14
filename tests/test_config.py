@@ -94,3 +94,37 @@ def test_show_marks_project_keys(cli, user_config_dir, project_cwd):
     (project_cwd / ".laravel-superpowers.yaml").write_text("tier_preference: all\n")
     result = cli("show")
     assert "tier_preference: all  # [project]" in result.stdout
+
+
+def test_init_creates_user_config_with_commented_defaults(cli, user_config_dir):
+    target = user_config_dir / "config.yaml"
+    # Fixture creates the dir but not the file; init should write it.
+    assert not target.exists()
+    result = cli("init")
+    assert result.returncode == 0, result.stderr
+    assert target.exists()
+    content = target.read_text()
+    # All values commented out except the schema pointer
+    assert "yaml-language-server" in content
+    assert "# pilot_version: 2" in content
+
+
+def test_init_refuses_overwrite_without_force(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("pilot_version: 1\n")
+    result = cli("init")
+    assert result.returncode == 2
+    assert "exists" in result.stderr.lower()
+
+
+def test_init_force_overwrites(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("pilot_version: 1\n")
+    result = cli("init", "--force")
+    assert result.returncode == 0
+    content = (user_config_dir / "config.yaml").read_text()
+    assert "yaml-language-server" in content
+
+
+def test_init_project_creates_local_yaml(cli, project_cwd):
+    result = cli("init", "--project")
+    assert result.returncode == 0
+    assert (project_cwd / ".laravel-superpowers.yaml").exists()

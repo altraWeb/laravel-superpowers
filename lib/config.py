@@ -139,6 +139,40 @@ def _source_of(key: str, defaults: dict, user: dict, project: dict) -> str:
     return "unknown"
 
 
+SCHEMA_POINTER = "# yaml-language-server: $schema=https://raw.githubusercontent.com/altraWeb/laravel-superpowers/main/config.schema.json\n"
+
+
+def _init_template() -> str:
+    """Return the contents to seed a new user/project config file with."""
+    defaults_text = (_plugin_dir() / "config.defaults.yaml").read_text()
+    # Comment out every non-comment, non-blank line so the file is a no-op
+    # by default. User uncomments what they want to override.
+    body_lines = []
+    for line in defaults_text.splitlines():
+        stripped = line.strip()
+        if stripped == "" or stripped.startswith("#"):
+            body_lines.append(line)
+        else:
+            body_lines.append(f"# {line}")
+    return SCHEMA_POINTER + "\n".join(body_lines) + "\n"
+
+
+def cmd_init(args: list[str]) -> int:
+    project_mode = "--project" in args
+    force = "--force" in args
+    if project_mode:
+        target = _project_config_path()
+    else:
+        target = _user_config_path()
+        target.parent.mkdir(parents=True, exist_ok=True)
+    if target.exists() and not force:
+        print(f"config already exists: {target} (use --force to overwrite)", file=sys.stderr)
+        return 2
+    target.write_text(_init_template())
+    print(f"wrote {target}")
+    return 0
+
+
 def cmd_show(_args: list[str]) -> int:
     """Print merged config as YAML, annotating each top-level key's source."""
     defaults = _load_yaml(_plugin_dir() / "config.defaults.yaml")
@@ -164,7 +198,7 @@ def main() -> int:
         print("usage: config.py <get|show|validate|init|doctor> [args]", file=sys.stderr)
         return 2
     verb, *rest = sys.argv[1:]
-    dispatch = {"get": cmd_get, "validate": cmd_validate, "show": cmd_show}
+    dispatch = {"get": cmd_get, "validate": cmd_validate, "show": cmd_show, "init": cmd_init}
     if verb not in dispatch:
         print(f"unknown verb: {verb}", file=sys.stderr)
         return 2
