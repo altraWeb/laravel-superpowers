@@ -13,6 +13,24 @@ claude plugin marketplace add github:altraWeb/laravel-superpowers
 claude plugin install laravel-superpowers@altraweb-laravel
 ```
 
+## Configuration
+
+Per-user and per-project settings via YAML. See [`docs/config.md`](docs/config.md) for the full reference.
+
+```bash
+# Scaffold a user-global config you can edit
+python3 <plugin>/lib/config.py init
+
+# See effective merged config with source attribution
+python3 <plugin>/lib/config.py show
+```
+
+Requires Python 3.10+ with `pyyaml` and `jsonschema`. On Homebrew Python:
+
+```bash
+pip3 install --user --break-system-packages pyyaml jsonschema
+```
+
 ## Skills
 
 - **laravel-brainstorming** — Architecture brainstorming for Laravel: layers, Eloquent relationships, Events, Policies, queuing decisions
