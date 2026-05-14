@@ -79,3 +79,18 @@ def test_validate_unknown_hook_enabled_subkey_passes(cli, project_cwd):
     )
     result = cli("validate")
     assert result.returncode == 0, result.stderr
+
+
+def test_show_outputs_yaml_with_source_comments(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("pilot_version: 1\n")
+    result = cli("show")
+    assert result.returncode == 0, result.stderr
+    # Each top-level key gets a [defaults|user|project] tag
+    assert "pilot_version: 1  # [user]" in result.stdout
+    assert "audit_aggressiveness: every-phase  # [defaults]" in result.stdout
+
+
+def test_show_marks_project_keys(cli, user_config_dir, project_cwd):
+    (project_cwd / ".laravel-superpowers.yaml").write_text("tier_preference: all\n")
+    result = cli("show")
+    assert "tier_preference: all  # [project]" in result.stdout

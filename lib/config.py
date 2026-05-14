@@ -128,12 +128,43 @@ def cmd_validate(args: list[str]) -> int:
     return 3 if had_error else 0
 
 
+def _source_of(key: str, defaults: dict, user: dict, project: dict) -> str:
+    """Which layer is the highest source of a top-level key?"""
+    if key in project:
+        return "project"
+    if key in user:
+        return "user"
+    if key in defaults:
+        return "defaults"
+    return "unknown"
+
+
+def cmd_show(_args: list[str]) -> int:
+    """Print merged config as YAML, annotating each top-level key's source."""
+    defaults = _load_yaml(_plugin_dir() / "config.defaults.yaml")
+    user = _load_yaml(_user_config_path())
+    project = _load_yaml(_project_config_path())
+    merged = _deep_merge(_deep_merge(defaults, user), project)
+
+    for key in merged:
+        source = _source_of(key, defaults, user, project)
+        rendered = yaml.safe_dump({key: merged[key]}, default_flow_style=False).rstrip()
+        # If it's a scalar, append the comment on the same line.
+        # If it's a dict/list, prepend the comment on its own line above.
+        if "\n" in rendered:
+            print(f"# [{source}]")
+            print(rendered)
+        else:
+            print(f"{rendered}  # [{source}]")
+    return 0
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print("usage: config.py <get|show|validate|init|doctor> [args]", file=sys.stderr)
         return 2
     verb, *rest = sys.argv[1:]
-    dispatch = {"get": cmd_get, "validate": cmd_validate}
+    dispatch = {"get": cmd_get, "validate": cmd_validate, "show": cmd_show}
     if verb not in dispatch:
         print(f"unknown verb: {verb}", file=sys.stderr)
         return 2
