@@ -128,3 +128,20 @@ def test_init_project_creates_local_yaml(cli, project_cwd):
     result = cli("init", "--project")
     assert result.returncode == 0
     assert (project_cwd / ".laravel-superpowers.yaml").exists()
+
+
+def test_doctor_lists_found_configs(cli, user_config_dir, project_cwd):
+    (user_config_dir / "config.yaml").write_text("pilot_version: 1\n")
+    (project_cwd / ".laravel-superpowers.yaml").write_text("tier_preference: all\n")
+    result = cli("doctor")
+    assert result.returncode == 0, result.stderr
+    assert "defaults" in result.stdout
+    assert str(user_config_dir / "config.yaml") in result.stdout
+    assert str(project_cwd / ".laravel-superpowers.yaml") in result.stdout
+    assert "schema validation: ok" in result.stdout
+
+
+def test_doctor_reports_schema_failure(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("pilot_version: nope\n")
+    result = cli("doctor")
+    assert "schema validation: FAIL" in result.stdout

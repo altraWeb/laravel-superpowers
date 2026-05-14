@@ -193,12 +193,39 @@ def cmd_show(_args: list[str]) -> int:
     return 0
 
 
+def cmd_doctor(_args: list[str]) -> int:
+    """Print diagnostic info: found configs, schema status, recent errors."""
+    paths = [
+        ("defaults", _plugin_dir() / "config.defaults.yaml"),
+        ("user", _user_config_path()),
+        ("project", _project_config_path()),
+    ]
+    print("=== Configs ===")
+    for label, path in paths:
+        exists = "found" if path.exists() else "absent"
+        print(f"  [{label}] {path} — {exists}")
+
+    print("\n=== Schema validation ===")
+    rc = cmd_validate([])
+    print(f"  schema validation: {'ok' if rc == 0 else 'FAIL'}")
+
+    errors_log = _user_config_path().parent / "errors.log"
+    print("\n=== Recent errors (last 20 lines) ===")
+    if errors_log.exists():
+        lines = errors_log.read_text().splitlines()
+        for line in lines[-20:]:
+            print(f"  {line}")
+    else:
+        print(f"  (no errors.log at {errors_log})")
+    return 0
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print("usage: config.py <get|show|validate|init|doctor> [args]", file=sys.stderr)
         return 2
     verb, *rest = sys.argv[1:]
-    dispatch = {"get": cmd_get, "validate": cmd_validate, "show": cmd_show, "init": cmd_init}
+    dispatch = {"get": cmd_get, "validate": cmd_validate, "show": cmd_show, "init": cmd_init, "doctor": cmd_doctor}
     if verb not in dispatch:
         print(f"unknown verb: {verb}", file=sys.stderr)
         return 2
