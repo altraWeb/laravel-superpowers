@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/altraWeb/laravel-superpowers/main/config.schema.json",
+  "title": "laravel-superpowers config",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "pilot_version": {
+      "type": "integer",
+      "enum": [1, 2],
+      "description": "Pilot contract version. 1 = audits optional, 2 = binding hard-gates."
+    },
+    "hook_enabled": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" },
+      "description": "Per-hook enable/disable flags. Unknown sub-keys allowed for forward-compat."
+    },
+    "audit_aggressiveness": {
+      "type": "string",
+      "enum": ["every-phase", "every-commit", "brainstorm-only"]
+    },
+    "banned_tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_extras": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "exception_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "visual_companion_default": {
+      "type": "string",
+      "enum": ["on", "off", "ask"]
+    },
+    "tier_preference": {
+      "type": "string",
+      "enum": ["T1-only", "T1+T2", "all"]
+    },
+    "teamcity_always": { "type": "boolean" }
+  }
+}
