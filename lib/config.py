@@ -20,21 +20,44 @@ def _plugin_dir() -> Path:
     return Path(root)
 
 
-def _load_yaml(path: Path, warn: bool = True) -> dict:
-    """Load a YAML file. Returns empty dict if missing or unparseable.
+def _errors_log_path() -> Path:
+    return _user_config_path().parent / "errors.log"
 
-    When `warn` is True (default), prints a WARN to stderr on parse error
+
+def _warn(message: str) -> None:
+    """Print a WARN to stderr and append it to the user-global errors.log."""
+    print(f"WARN: {message}", file=sys.stderr)
+    log_path = _errors_log_path()
+    try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(log_path, "a") as f:
+            f.write(f"{message}\n")
+    except OSError:
+        pass  # errors.log itself failing must not break hooks
+
+
+def _load_yaml(path: Path, warn: bool = True) -> dict:
+    """Load a YAML file. Returns empty dict if missing, unparseable, or not a mapping.
+
+    When `warn` is True (default), warns via stderr + appends to errors.log
     so the caller can degrade gracefully without surprising the operator.
     """
     if not path.exists():
         return {}
     try:
         with open(path) as f:
-            return yaml.safe_load(f) or {}
+            data = yaml.safe_load(f)
     except yaml.YAMLError as e:
         if warn:
-            print(f"WARN: YAML parse error in {path}: {e}", file=sys.stderr)
+            _warn(f"YAML parse error in {path}: {e}")
         return {}
+    if data is None:
+        return {}
+    if not isinstance(data, dict):
+        if warn:
+            _warn(f"YAML in {path} is {type(data).__name__}, expected mapping — ignored")
+        return {}
+    return data
 
 
 def _get(data: dict, dotted_key: str):

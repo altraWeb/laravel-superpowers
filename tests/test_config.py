@@ -161,3 +161,22 @@ def test_validate_with_broken_yaml_returns_3(cli, user_config_dir):
     result = cli("validate")
     assert result.returncode == 3
     assert "YAML parse error" in result.stderr
+
+
+def test_get_with_yaml_list_overlay_falls_back_safely(cli, user_config_dir):
+    """A user config that is a YAML list (not a mapping) must not crash deep_merge."""
+    (user_config_dir / "config.yaml").write_text("- not\n- a\n- mapping\n")
+    result = cli("get", "pilot_version")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "2"  # falls back to defaults
+    assert "expected mapping" in result.stderr
+
+
+def test_warn_appends_to_errors_log(cli, user_config_dir):
+    """YAML parse warnings are appended to errors.log for `doctor` to surface."""
+    (user_config_dir / "config.yaml").write_text("key: {broken yaml\n")
+    cli("get", "pilot_version")  # triggers parse error + warn
+    errors_log = user_config_dir / "errors.log"
+    assert errors_log.exists()
+    content = errors_log.read_text()
+    assert "YAML parse error" in content
