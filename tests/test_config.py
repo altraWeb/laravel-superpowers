@@ -26,3 +26,10 @@ def test_get_list_returns_json_array(cli):
     import json
     parsed = json.loads(result.stdout)
     assert "CHANGELOG.md" in parsed
+
+
+def test_user_overlay_overrides_default(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("pilot_version: 1\n")
+    result = cli("get", "pilot_version")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "1"

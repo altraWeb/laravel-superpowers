@@ -48,13 +48,34 @@ def _format(value) -> str:
     return str(value)
 
 
+def _user_config_path() -> Path:
+    return Path(os.environ["HOME"]) / ".claude" / "plugins" / "altraweb-laravel" / "laravel-superpowers" / "config.yaml"
+
+
+def _deep_merge(base: dict, overlay: dict) -> dict:
+    """Recursively merge overlay into a copy of base. Overlay wins on conflicts."""
+    result = dict(base)
+    for key, val in overlay.items():
+        if isinstance(val, dict) and isinstance(result.get(key), dict):
+            result[key] = _deep_merge(result[key], val)
+        else:
+            result[key] = val
+    return result
+
+
+def _merged_config() -> dict:
+    """Return defaults merged with user overlay (project overlay added later)."""
+    defaults = _load_yaml(_plugin_dir() / "config.defaults.yaml")
+    user = _load_yaml(_user_config_path())
+    return _deep_merge(defaults, user)
+
+
 def cmd_get(args: list[str]) -> int:
     if not args:
         print("usage: config.py get <dotted.key>", file=sys.stderr)
         return 2
     key = args[0]
-    defaults = _load_yaml(_plugin_dir() / "config.defaults.yaml")
-    value = _get(defaults, key)
+    value = _get(_merged_config(), key)
     if value is None:
         print(f"key not defined: {key}", file=sys.stderr)
         return 1
