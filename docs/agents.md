@@ -36,9 +36,30 @@
 
 ---
 
+### `laravel-pest-specialist`
+
+**Use when:** about to write or edit a Pest 4 test, especially when the test will use multi-arg expectations like `toContain`, browser plugin APIs, view rendering, or `arch()` structural assertions. Catches Pest 4 stolperer that would either RED on first run (variadic misuse) or silently produce wrong-positives (`->wait(1)` before assertions that already have implicit timeout, reserved-name view keys, runtime calls inside `arch()` blocks).
+
+**The 5 audit checks:**
+
+1. **Variadic-API Verification** — reflects on `Pest\Expectation` to flag misuse like `toContain($needle, $message)` where Pest treats both args as needles. Suggests `->because('msg')` modifier.
+2. **Browser-Plugin Smell Scan** — flags `->wait(N)` before assertions (5s implicit timeout already), recommends `data-testid` selectors over text/class.
+3. **View-Context Anti-Patterns** — catches reserved-name keys in `view()->with([...])` (`'this'`, `'loop'`, `'errors'`, etc.).
+4. **Test-Location Convention** — flags content/location mismatches (HTTP in Unit, DB without `LazilyRefreshDatabase`, browser tests outside `tests/Browser/`).
+5. **it()/arch()/dataset Block Patterns** — flags runtime calls inside `arch()` blocks (structural-only), suggests `dataset()` for drift-guards.
+
+**Output:** structured markdown audit report with severity classification (critical / important / minor) and concrete suggestions per finding.
+
+**Tools:** Read, Bash, WebFetch, WebSearch.
+
+**Required:** PHP 8+ in PATH. Falls back to docs-only verification if `vendor/pestphp/` is missing.
+
+**Smoke-test evidence:** See [`superpowers/test-evidence/2026-05-15-pest-specialist-smoke-*.md`](superpowers/test-evidence/) for captured outputs covering the variadic-misuse catch, a clean expectation chain, and a non-Pest fail-clean case.
+
+---
+
 ## Forthcoming (V2-MVP)
 
-- `laravel-pest-specialist` ([#2](https://github.com/altraWeb/laravel-superpowers/issues/2)) — Pest 4 API depth + browser-plugin recipes
 - `laravel-flux-pro-specialist` ([#3](https://github.com/altraWeb/laravel-superpowers/issues/3)) — Flux Pro v2 vendor source + slot composition
 - `laravel-architect` ([#4](https://github.com/altraWeb/laravel-superpowers/issues/4)) — Eloquent + architecture decisions (N+1, eager-loading, Actions vs Services)
 - `laravel-reviewer` ([#5](https://github.com/altraWeb/laravel-superpowers/issues/5)) — wraps `laravel-code-review` skill with grep/find/MCP integration
