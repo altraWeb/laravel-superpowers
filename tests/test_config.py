@@ -52,3 +52,30 @@ def test_deep_merge_preserves_uninherited_sibling_keys(cli, project_cwd):
     assert a.stdout.strip() == "false"
     b = cli("get", "hook_enabled.no_claude_attribution")
     assert b.stdout.strip() == "true"   # inherited from defaults
+
+
+def test_validate_defaults_passes(cli):
+    result = cli("validate")
+    assert result.returncode == 0, result.stderr
+
+
+def test_validate_unknown_top_level_key_fails(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("totally_made_up: yes\n")
+    result = cli("validate")
+    assert result.returncode == 3
+    assert "totally_made_up" in result.stderr
+
+
+def test_validate_wrong_type_fails(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("pilot_version: nope\n")
+    result = cli("validate")
+    assert result.returncode == 3
+
+
+def test_validate_unknown_hook_enabled_subkey_passes(cli, project_cwd):
+    """Sub-keys under hook_enabled are open (additionalProperties: boolean)."""
+    (project_cwd / ".laravel-superpowers.yaml").write_text(
+        "hook_enabled:\n  some_future_hook: true\n"
+    )
+    result = cli("validate")
+    assert result.returncode == 0, result.stderr

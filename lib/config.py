@@ -88,15 +88,56 @@ def cmd_get(args: list[str]) -> int:
     return 0
 
 
+def _load_schema() -> dict:
+    import json
+    return json.load(open(_plugin_dir() / "config.schema.json"))
+
+
+def cmd_validate(args: list[str]) -> int:
+    """Validate one config file (path arg) or all three layers (no args)."""
+    from jsonschema import validate as js_validate, ValidationError
+
+    schema = _load_schema()
+
+    if args:
+        paths = [Path(args[0])]
+    else:
+        paths = [
+            _plugin_dir() / "config.defaults.yaml",
+            _user_config_path(),
+            _project_config_path(),
+        ]
+
+    had_error = False
+    for path in paths:
+        if not path.exists():
+            continue
+        try:
+            data = _load_yaml(path)
+        except yaml.YAMLError as e:
+            print(f"YAML parse error in {path}: {e}", file=sys.stderr)
+            had_error = True
+            continue
+        try:
+            js_validate(data, schema)
+        except ValidationError as e:
+            location = ".".join(str(p) for p in e.absolute_path) or "<root>"
+            print(f"schema violation in {path} at {location}: {e.message}", file=sys.stderr)
+            had_error = True
+
+    return 3 if had_error else 0
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print("usage: config.py <get|show|validate|init|doctor> [args]", file=sys.stderr)
         return 2
     verb, *rest = sys.argv[1:]
-    if verb == "get":
-        return cmd_get(rest)
-    print(f"unknown verb: {verb}", file=sys.stderr)
-    return 2
+    dispatch = {"get": cmd_get, "validate": cmd_validate}
+    if verb not in dispatch:
+        print(f"unknown verb: {verb}", file=sys.stderr)
+        return 2
+    return dispatch[verb](rest)
 
 
 if __name__ == "__main__":
