@@ -20,12 +20,21 @@ def _plugin_dir() -> Path:
     return Path(root)
 
 
-def _load_yaml(path: Path) -> dict:
-    """Load a YAML file. Returns empty dict if missing."""
+def _load_yaml(path: Path, warn: bool = True) -> dict:
+    """Load a YAML file. Returns empty dict if missing or unparseable.
+
+    When `warn` is True (default), prints a WARN to stderr on parse error
+    so the caller can degrade gracefully without surprising the operator.
+    """
     if not path.exists():
         return {}
-    with open(path) as f:
-        return yaml.safe_load(f) or {}
+    try:
+        with open(path) as f:
+            return yaml.safe_load(f) or {}
+    except yaml.YAMLError as e:
+        if warn:
+            print(f"WARN: YAML parse error in {path}: {e}", file=sys.stderr)
+        return {}
 
 
 def _get(data: dict, dotted_key: str):
@@ -113,7 +122,8 @@ def cmd_validate(args: list[str]) -> int:
         if not path.exists():
             continue
         try:
-            data = _load_yaml(path)
+            with open(path) as f:
+                data = yaml.safe_load(f) or {}
         except yaml.YAMLError as e:
             print(f"YAML parse error in {path}: {e}", file=sys.stderr)
             had_error = True

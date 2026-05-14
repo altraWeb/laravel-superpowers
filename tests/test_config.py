@@ -145,3 +145,19 @@ def test_doctor_reports_schema_failure(cli, user_config_dir):
     (user_config_dir / "config.yaml").write_text("pilot_version: nope\n")
     result = cli("doctor")
     assert "schema validation: FAIL" in result.stdout
+
+
+def test_get_with_broken_user_yaml_falls_back_to_defaults(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("key: {broken yaml\n")
+    result = cli("get", "pilot_version")
+    # Falls back to default value, but writes WARN to stderr
+    assert result.returncode == 0
+    assert result.stdout.strip() == "2"
+    assert "YAML parse error" in result.stderr
+
+
+def test_validate_with_broken_yaml_returns_3(cli, user_config_dir):
+    (user_config_dir / "config.yaml").write_text("key: {broken yaml\n")
+    result = cli("validate")
+    assert result.returncode == 3
+    assert "YAML parse error" in result.stderr
