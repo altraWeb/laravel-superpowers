@@ -77,8 +77,9 @@ Each skill pairs with its superpowers counterpart:
 
 Run the superpowers skill first for generic structure; run the laravel-superpowers skill for stack-specific depth.
 
-## V2 in progress
+## Versions
 
-V2 expands the plugin from 1 agent + 4 skills to ~10 agents + 5 skills + 13 hooks + plugin infrastructure (config, slash commands, status). See [ROADMAP.md](docs/ROADMAP.md) for the full breakdown derived from observed real-world Laravel sprint catches.
+- **v2.0.0 (2026-05-15) — V2-MVP** *(current)* — 6 specialist agents + 6 enforcement hooks + 3 stack-enhanced skills + plugin config foundation + status slash command. Derived from Block 1H + 1E test-sprint catches; ships the bug-catchers V1 was missing.
+- **v1.0.0 (2026-05-13) — Initial** — 1 agent (`laravel-best-practices`) + 4 skills (`laravel-brainstorming`, `laravel-tdd`, `laravel-debugging`, `laravel-code-review`).
 
-V2-MVP targets the **highest-ROI tier-1 additions** that would have caught real production bugs in observed test sprints.
+See [CHANGELOG.md](CHANGELOG.md) for the full release history and [ROADMAP.md](docs/ROADMAP.md) for upcoming V2.1 / V2.2 / V3 milestones.
