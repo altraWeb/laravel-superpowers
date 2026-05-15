@@ -52,6 +52,7 @@ See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 ## Hooks
 
 - **banned-token-leak-guard** — PreToolUse hook on `git commit` that blocks commits with banned tokens (Phase/Sprint/Track/MR/dated refs) in staged code/comments. Honors exception paths (`docs/plans/**`, `docs/superpowers/**`, `CHANGELOG.md`) and per-line override marker `banned-token-ok: <reason>`. Configurable via `hook_enabled.banned_token_leak_guard` and `banned_tokens.*` in plugin config.
+- **no-claude-attribution** — PreToolUse hook on `git commit`, `gh pr create`, `glab mr create` that blocks any commit message, PR body, or MR description containing Claude / AI attribution (`Co-Authored-By: Claude`, `🤖 Generated with Claude Code`, `AI-assisted`, etc.). Shows the offending line + sanitized rewrite. Reads from `-m`, `-F`, `--body`, `--body-file`, `--description`, `--description-file`. Configurable via `hook_enabled.no_claude_attribution`.
 
 See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
 
