@@ -329,3 +329,167 @@ Ask before skipping anything else.
 ## Reference
 
 Full Pest cheatsheet → `references/pest-cheatsheet.md`
+
+---
+
+## Pest 4 Specifics Module
+
+Pest 4 adds capabilities — and conventions — that the generic TDD discipline doesn't surface. These are the stack-specific items implementer subagents repeatedly stumble on in real sprints.
+
+### Variadic-Expectation Trap → use `->because()` modifier
+
+Pest's expectation API for "contains" assertions is **variadic** — every argument is treated as a needle, not a failure message.
+
+```php
+// ❌ WRONG — Pest treats 'should include foo' as a second needle to find in the array
+expect($response->json('items'))->toContain('foo', 'should include foo');
+// → tests that the array contains BOTH 'foo' AND 'should include foo'
+// → produces a misleading false-positive when the array does not contain the message string
+
+// ✅ CORRECT — `->because()` attaches the message without changing what's asserted
+expect($response->json('items'))
+    ->toContain('foo')
+    ->because('should include foo');
+```
+
+This convention applies to: `toContain`, `toHaveKeys`, `toMatchArray`, `toHaveProperty`. Whenever you want to attach context to a failure, chain `->because('...')`.
+
+### `wait(N)` is a smell — trust the implicit timeout
+
+Pest 4 has a **5-second implicit timeout** on browser-plugin assertions (`assertVisible`, `assertPresent`, `assertSee`, `assertText`, `assertAttribute`). Manual `->wait(1)` adds flake risk on busy CI runners — assertion already polls until the condition holds or timeout expires.
+
+```php
+// ❌ Smell — wait adds flake risk
+$this->visit('/posts')
+    ->wait(1)
+    ->assertVisible('@post-list');
+
+// ✅ Trust the implicit timeout
+$this->visit('/posts')
+    ->assertVisible('@post-list');
+```
+
+Selector strategy: prefer `data-testid` (`@`-prefix in Pest 4 browser plugin) over text-based or class-based selectors. Text selectors fragility-leak i18n changes; class selectors fragility-leak CSS refactors. `data-testid` is stable.
+
+### `$this` is reserved in views — pick a different key
+
+`view()->with(['this' => $obj])` won't deliver `$obj` to the template. Inside a compiled Blade view, `$this` is **the renderer's render-context** (the component / closure handling rendering) — PHP/Blade reserves it.
+
+```php
+// ❌ WRONG — $this in the view is NOT $obj; it's the renderer
+return view('ai.popover', ['this' => $aiAgent]);
+// In the view: {{ $this->dispatch('foo') }} silently calls something else
+
+// ✅ CORRECT — use a meaningful key
+return view('ai.popover', [
+    'ai' => $aiAgent,
+    'surface' => 'editor',
+]);
+// In the view: {{ $ai->dispatch('foo') }} works as expected
+```
+
+Reserved-name keys to avoid: `this`, `loop`, `errors`, `__env`, `app`, `attributes`, `component`, `slot`.
+
+### `it()` vs `arch()` vs `dataset()` — decision tree
+
+Pick the right block type based on what you're proving:
+
+| You want to prove… | Use… | Why |
+|---|---|---|
+| A piece of code behaves correctly at runtime | `it('does the thing', fn () => ...)` | runtime invocation + assertions |
+| The codebase structure satisfies a rule (no model uses `Storage::disk('local')` etc.) | `arch('only S3 in models')->expect(...)` | structural-only; **never invokes methods** |
+| The same behavior holds across many inputs | `it(...)->with([...])` or `dataset('name', [...])` | each row produces a separate test report entry — clear failure surface |
+| A loop of value comparisons inside ONE test | `it(...) { foreach (...) { expect(...) } }` | acceptable when row-level reporting isn't needed; first failure aborts |
+
+**Critical:** `arch()` blocks are structural-only. Calling `$class->method()` inside an `arch()` body is incorrect — use `it()` for runtime behavior.
+
+```php
+// ❌ WRONG — arch() with method invocation
+arch('models implement Cacheable')
+    ->expect('App\Models')
+    ->classes(fn ($class) => $class->cache());  // invokes a method — wrong block
+
+// ✅ CORRECT — arch() for structure, it() for behavior
+arch('models implement Cacheable')
+    ->expect('App\Models')
+    ->classes()
+    ->toImplement(Cacheable::class);
+
+it('Models cache correctly', function () {
+    $model = Post::factory()->create();
+    expect($model->cache())->toBe($model);
+});
+```
+
+### Datasets vs `foreach` inside one `it()`
+
+When you need to verify the same behavior across multiple inputs:
+
+```php
+// ✅ dataset — one test entry per row, isolates failures
+it('rejects invalid emails', function ($email) {
+    expect(fn () => User::factory()->create(['email' => $email]))
+        ->toThrow(\InvalidArgumentException::class);
+})->with([
+    'no-at-sign.local',
+    '@no-local-part.com',
+    'spaces in@email.com',
+]);
+
+// ⚠️ foreach inside one it() — single test entry; first failure aborts the rest
+it('rejects invalid emails', function () {
+    foreach (['no-at-sign.local', '@no-local-part.com'] as $email) {
+        expect(fn () => User::factory()->create(['email' => $email]))
+            ->toThrow(\InvalidArgumentException::class);
+    }
+});
+```
+
+Use dataset when you want **drift-guard reporting** — every row visible in the test output, each failure attributable. Use foreach only when row-level reporting isn't valuable.
+
+### Test-file location convention
+
+Pest 4 reads `phpunit.xml` test-suite definitions. Per project canon:
+
+| Directory | Purpose | DB? | Boot? |
+|---|---|---|---|
+| `tests/Unit/` | Isolated unit logic | ❌ no DB | ❌ no app boot |
+| `tests/Feature/` | Full HTTP + DB + auth | ✅ `uses(LazilyRefreshDatabase::class)` | ✅ full boot |
+| `tests/Architecture/` | Structural drift guards | N/A | N/A |
+| `tests/Browser/` | Pest 4 browser plugin | ✅ | ✅ |
+
+Mismatch examples:
+- HTTP test in `tests/Unit/` → app not booted → 500-or-crash
+- DB-touching test without `uses(LazilyRefreshDatabase::class)` → data leaks between tests → spurious failures
+- Browser test outside `tests/Browser/` → plugin convention broken
+
+### `actingAs()` placement
+
+Per sibling-canon (`tests/Browser/Forum/EditorFormattingPopoverTest.php` and similar): `actingAs()` before `visit()`.
+
+```php
+$this
+    ->actingAs($user)
+    ->visit("/forum/{$forum->slug}");
+```
+
+Not after — calling `actingAs` after `visit` makes the request unauthenticated.
+
+### `assertAttribute` API availability
+
+`assertAttribute()` was added to the browser plugin in a later Pest 4 patch. Before relying on it, check sibling-canon:
+
+```bash
+grep -rn 'assertAttribute' tests/Browser/
+```
+
+If no matches and you can't find it in `vendor/pestphp/pest-plugin-browser/`, the version doesn't support it. Fall back to `assertVisible` with a more specific selector, or invoke `laravel-pest-specialist` agent for reflection verification.
+
+### Specialist agent invocation
+
+When you hit an unexpected Pest 4 API failure during RED → GREEN:
+
+1. **First-line recipe lookup:** check `laravel-debugging` skill's RED-recipe table for known Pest 4 patterns
+2. **API-existence verification:** invoke `laravel-pest-specialist` agent — it reflects on the actual `vendor/pestphp/pest/` source to verify method existence + signature
+3. **Sibling-canon check:** `grep -rn '<api>' tests/` to see how project code uses the API today
+
