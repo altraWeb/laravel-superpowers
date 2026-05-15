@@ -58,9 +58,30 @@
 
 ---
 
+### `laravel-flux-pro-specialist`
+
+**Use when:** about to write or edit a Blade template that uses Flux Pro v2 components (`<flux:*>`). Particularly valuable when wrapping Flux components in tooltips, building toolbars, or composing dropdowns/menus/popovers. Reads `vendor/livewire/flux-pro/stubs/resources/views/flux/` as ground truth (docs sometimes lag) and cites vendor `file:line` references in every finding.
+
+**The 5 audit checks:**
+
+1. **`<flux:with-tooltip>` Self-Wrap Detection** — flags double-wrap when an outer `<flux:tooltip>` wraps a component that already self-tooltips (`<flux:button>`, `<flux:icon-button>`, `<flux:editor.button>`, etc.). Double-wrap breaks `<ui-toolbar>` roving-tabindex — silent a11y regression.
+2. **Position/Align Convention Scan** — flags compound `position="bottom end"` syntax in favor of project-canon separate props `position="bottom" align="end"`.
+3. **`<flux:editor.spacer/>` Semantics** — verifies spacer placement inside toolbar containers (renders `flex-1`, only meaningful in flex contexts).
+4. **`wire:ignore` Zone Reactive-Descendant Detection** — catches Livewire-reactive attrs (`wire:click`, `wire:model`, etc.) on Flux components inside `wire:ignore` zones. Suggests Alpine `x-on:click="$wire.foo()"` bridge.
+5. **Slot Composition vs String-Prop Trade-off** — flags string `toolbar="..."` prop usage when slot form is needed (3+ items, dynamic content, event handlers, `<flux:editor.spacer/>`).
+
+**Output:** structured markdown audit report with severity classification + concrete Blade-code suggestions per finding. Every finding cites `vendor/livewire/flux-pro/stubs/resources/views/flux/<path>:<line>`.
+
+**Tools:** Read (vendor Blade files), Bash, WebFetch, WebSearch.
+
+**Required:** Flux Pro installed in vendor/. Falls back to docs-only verification via `https://fluxui.dev/docs/` if vendor missing.
+
+**Smoke-test evidence:** See [`superpowers/test-evidence/2026-05-15-flux-pro-specialist-smoke-*.md`](superpowers/test-evidence/) for captured outputs covering the double-wrap catch (Block 1H Phase 1 canonical bug), a clean dropdown with separate position+align, and a non-Flux fail-clean case.
+
+---
+
 ## Forthcoming (V2-MVP)
 
-- `laravel-flux-pro-specialist` ([#3](https://github.com/altraWeb/laravel-superpowers/issues/3)) — Flux Pro v2 vendor source + slot composition
 - `laravel-architect` ([#4](https://github.com/altraWeb/laravel-superpowers/issues/4)) — Eloquent + architecture decisions (N+1, eager-loading, Actions vs Services)
 - `laravel-reviewer` ([#5](https://github.com/altraWeb/laravel-superpowers/issues/5)) — wraps `laravel-code-review` skill with grep/find/MCP integration
 
