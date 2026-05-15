@@ -23,21 +23,19 @@ input="$(cat 2>/dev/null || true)"
 command_str="$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/dev/null || true)"
 [ -z "$command_str" ] && exit 0
 
-# ─── Step 2: Filter to `git commit` only ──────────────────────────────────────
-# Match `git commit` (with optional flags) but NOT `git commit-tree`,
-# `git commit --help`, etc.
-# Heuristic: word `commit` immediately after `git` and either end-of-string or
-# whitespace; reject `commit-tree`.
+# ─── Step 2: Filter to `git commit` at command-position ──────────────────────
+# v2.0.1 (S5): match `git commit` ONLY when it appears at command-position —
+# start of string OR after a separator (`;`, `&&`, `||`, `|`), optionally
+# preceded by env-var assignments. This avoids false-positives when the bash
+# command contains `git commit` as a literal substring inside an `echo`,
+# `grep`, `man`, or heredoc body. Reject `git commit-tree` explicitly.
+# See docs/audits/2026-05-15-v2-mvp-self-audit.md §"Should-fix S5".
+if ! printf '%s' "$command_str" | grep -qE '(^|[;&|][[:space:]]*)([A-Z_][A-Za-z0-9_]*=[^[:space:]]+[[:space:]]+)*git commit([[:space:]]|$)'; then
+    exit 0
+fi
+# Defensive: reject `git commit-tree` (porcelain that looks similar).
 case "$command_str" in
-    *"git commit-tree"*)
-        exit 0
-        ;;
-    *"git commit"|*"git commit "*)
-        # proceed below
-        ;;
-    *)
-        exit 0
-        ;;
+    *"git commit-tree"*) exit 0 ;;
 esac
 
 # Some commit variants we still pass through (interactive --help / --interactive).
@@ -124,7 +122,14 @@ done <<< "$staged_files"
 
 # ─── Step 7: Build banned-token pattern ───────────────────────────────────────
 # Defaults
-default_patterns='Phase [0-9]+|Slice [0-9]+|Track [0-9]+|Sprint [0-9]+|MR !?[0-9]+|Pilot 2\.0|\b20[0-9]{2}-[0-9]{2}-[0-9]{2}\b'
+#
+# Date pattern (v2.0.1): context-anchored so legitimate ISO date literals
+# (Carbon::parse('2026-01-01'), test fixtures, migration constants) do NOT
+# trigger. Matches dates preceded by sprint-state keywords:
+#   On 2026-05-15, Sprint: 2026-05-15, Released 2026-05-15, Phase: 2026-05-15,
+#   Audit 2026-05-15, Review 2026-05-15, Deferred 2026-05-15
+# See docs/audits/2026-05-15-v2-mvp-self-audit.md §"Should-fix S1".
+default_patterns='Phase [0-9]+|Slice [0-9]+|Track [0-9]+|Sprint [0-9]+|MR !?[0-9]+|Pilot 2\.0|(On|Date|Sprint|Phase|Released|Shipped|Audit|Review|Deferred)[[:space:]:]+20[0-9]{2}-[0-9]{2}-[0-9]{2}'
 
 # Project extras (each pattern OR'd into the main pattern).
 extras="$(printf '%s' "$project_extras_json" | jq -r '. | join("|")' 2>/dev/null)"

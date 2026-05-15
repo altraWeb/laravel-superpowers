@@ -269,6 +269,28 @@ else
     failures=$((failures + 1))
 fi
 
+# ─── v2.0.1 S5 — command-position filter ─────────────────────────────────────
+# Pre-v2.0.1 substring-glob filter intercepted `echo "git push"` and similar
+# literal mentions. See docs/audits/2026-05-15-v2-mvp-self-audit.md §"S5".
+
+echo
+echo "▶ Test 12: Passthrough \`echo 'do not git push yet'\` (v2.0.1/S5)"
+no_deferrals() {
+    cat > docs/plans/clean.md <<'EOF'
+# Clean plan
+## Phase 1 — Deferred Items
+**None — all tasks completed as planned.**
+EOF
+}
+result=$(run_scenario no_deferrals "echo info: do not git push yet")
+exit_code=$(printf '%s' "$result" | grep -oE 'exit=[0-9]+' | head -1 | cut -d= -f2)
+if [ "$exit_code" = "0" ]; then
+    echo "  ✅ Substring inside echo should pass through — exit 0 (expected)"
+else
+    echo "  ❌ Expected exit 0, got $exit_code"
+    failures=$((failures + 1))
+fi
+
 # ─── Summary ─────────────────────────────────────────────────────────────────
 echo
 if [ "$failures" -eq 0 ]; then

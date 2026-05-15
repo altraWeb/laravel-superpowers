@@ -2,6 +2,37 @@
 
 All notable changes to `laravel-superpowers` are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] — 2026-05-15 — V2-MVP self-audit hotfix
+
+Patch release driven by the post-V2.0.0 self-audit ([`docs/audits/2026-05-15-v2-mvp-self-audit.md`](docs/audits/2026-05-15-v2-mvp-self-audit.md)). Empirical hook verification surfaced one functional blocker and four should-fix items; this release bundles all five together.
+
+### Fixed
+
+- **Blocker — `no-claude-attribution` silently bypassed `"`-quoted inline messages.** `extract_flag_value()` embedded the command string into an unquoted Python heredoc; any `"` character in the message broke the triple-quoted string, Python raised `SyntaxError`, `2>/dev/null` swallowed it, and the hook exited 0. All `git commit -m "feat: x"`, `gh pr create --body "..."`, `glab mr create --description "..."` patterns were affected. Fix: values now pass via environment variables and `shlex.split(os.environ["CMD"])`. ([B1 in audit](docs/audits/2026-05-15-v2-mvp-self-audit.md))
+- **`banned-token-leak-guard` blocked legitimate ISO date literals.** The default date pattern `\b20[0-9]{2}-[0-9]{2}-[0-9]{2}\b` matched Carbon literals (`Carbon::parse('2026-01-01')`), fixture arrays, migration date constants, and any other in-code date. Narrowed to context-anchored form requiring a preceding sprint-state keyword (`On`, `Audit`, `Sprint`, `Phase`, `Released`, `Shipped`, `Review`, `Deferred`, `Date`). ([S1 in audit](docs/audits/2026-05-15-v2-mvp-self-audit.md))
+- **`teamcity-always` did not catch `composer test` wrapper.** Many Laravel projects expose the test runner via `composer.json` scripts; pre-2.0.1 these bypassed the hook. Filter extended to `composer test` / `composer run test` / `composer run-script test`. Retry suggestion uses composer's `-- --teamcity` arg-pass convention. Word-boundary tightened to avoid false-positive matching `composer test-coverage`. ([S3 in audit](docs/audits/2026-05-15-v2-mvp-self-audit.md))
+- **All 4 PreToolUse-Bash hooks tightened command-position detection.** Substring-glob filters (`*"git commit"*`, `*"gh pr create"*`, etc.) intercepted commands where the target appeared as a literal substring inside `echo`, `grep`, `cat <<EOF`, etc. Replaced with regex anchoring at start-of-line or after a separator (`;`, `&&`, `||`, `|`), with optional env-var prefix support. Affects `banned-token-leak-guard`, `no-claude-attribution`, `teamcity-always`, `anti-silent-deferral`. ([S5 in audit](docs/audits/2026-05-15-v2-mvp-self-audit.md))
+
+### Documentation
+
+- `docs/config.md` and `config.defaults.yaml` clarify that `audit_aggressiveness` is **advisory metadata** for the orchestrator agent — only `brainstorm-only` mode is programmatically enforced (via the existing `brainstorm-t1-audit` hook). `every-phase` and `every-commit` are hints for the agent's self-dispatch decisions; Claude Code emits no phase or commit events for hooks to attach to. ([S2 in audit](docs/audits/2026-05-15-v2-mvp-self-audit.md))
+- `docs/config.md` notes that `teamcity_always` now covers `composer test` wrappers in addition to `php artisan test`.
+- New: `docs/audits/2026-05-15-v2-mvp-self-audit.md` — full audit transcript with empirical evidence, root-cause analysis, and fix plans per finding.
+
+### Tests
+
+- `+5` scenarios in `tests/test_no_claude_attribution_hook.sh` (Tests 11–15: quoted inline `-m`, gh pr `--body` with `"`, glab mr `--description` with `"`, and S5 substring-passthrough cases).
+- `+3` scenarios in `tests/test_banned_token_hook.sh` (Test 6 updated to context-anchored form, +Test 7 Carbon-literal passthrough, +Test 8 S5 substring-passthrough).
+- `+5` scenarios in `tests/test_teamcity_always_hook.sh` (Tests 10–14: composer wrappers, `composer test-coverage` word-boundary, S5 substring-passthrough).
+- `+1` scenario in `tests/test_anti_silent_deferral_hook.sh` (Test 12: S5 substring-passthrough).
+- All 7 hook-test suites + 23 Python config tests green at release time.
+
+### No breaking changes
+
+V2.0.1 is fully additive over V2.0.0. The narrowed `banned-token-leak-guard` date pattern is a behavior change for users who relied on bare ISO date matching, but no operator-facing config or API breaks. Users who want the broader pattern back can add it via `banned_tokens.project_extras` in their config.
+
+---
+
 ## [2.0.0] — 2026-05-15 — V2-MVP
 
 **Major release.** Extends V1's "ship working code" baseline (1 agent + 4 skills) into a comprehensive stack-aware toolkit for Laravel 11/12 + Livewire 4 + Flux Pro v2 + Pest 4 projects. Driven by real-world catches from Block 1H + 1E test sprints (4 P0-class bugs that V1 missed).

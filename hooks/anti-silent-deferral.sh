@@ -27,15 +27,13 @@ input="$(cat 2>/dev/null || true)"
 command_str="$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/dev/null || true)"
 [ -z "$command_str" ] && exit 0
 
-# ─── Step 2: Filter to `git push` ────────────────────────────────────────────
-case "$command_str" in
-    *"git push"|*"git push "*)
-        # proceed
-        ;;
-    *)
-        exit 0
-        ;;
-esac
+# ─── Step 2: Filter to `git push` at command-position ────────────────────────
+# v2.0.1 (S5): anchor at command-position to avoid matching `echo "git push"`
+# or comments in inline scripts. See docs/audits/2026-05-15-v2-mvp-self-audit.md
+# §"Should-fix S5".
+if ! printf '%s' "$command_str" | grep -qE '(^|[;&|][[:space:]]*)([A-Z_][A-Za-z0-9_]*=[^[:space:]]+[[:space:]]+)*git push([[:space:]]|$)'; then
+    exit 0
+fi
 
 # Skip --help and other non-actionable invocations.
 case "$command_str" in
