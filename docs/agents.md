@@ -102,8 +102,29 @@
 
 ---
 
-## Forthcoming (V2-MVP)
+### `laravel-reviewer`
 
-- `laravel-reviewer` ([#5](https://github.com/altraWeb/laravel-superpowers/issues/5)) — wraps `laravel-code-review` skill with grep/find/MCP integration
+**Use when:** completing a feature, reviewing code, or preparing for merge in a Laravel project. Wraps the existing `laravel-code-review` skill (reads it at runtime as checklist scaffold) and adds tool-based evidence verification (grep, find, Read, `php artisan` read-only commands). Every finding cites `file:line`. **Composes specialist agents** — when Livewire/Flux/Pest/architectural code is in scope, recommends calling the corresponding specialist agent rather than re-implementing their checks.
 
-See [ROADMAP.md](ROADMAP.md) for the full V2 plan and the broader V2.1/V2.2/V3 roadmap.
+**The 6-step workflow:**
+
+1. **Pre-flight** — confirms Laravel project, reads the `laravel-code-review` skill content (or falls back to embedded checklist if missing).
+2. **Stack Detection** — scans input for `<flux:*>` / `wire:*` / Pest / Eloquent triggers and records specialist recommendations.
+3. **Core Review with Evidence** — walks the skill's checklist, runs grep/find/`php artisan route:list`/Read for each check; every finding is grounded in actual repo state.
+4. **Banned-Token Sweep** (default) — greps touched files for `Phase N`, `Sprint N`, `MR !N`, dated refs, etc. Exception paths: `docs/plans/**`, `docs/superpowers/**`, `CHANGELOG.md`.
+5. **Sibling-Canon Verification** — before flagging a pattern as wrong, checks if the project consistently uses it (defers to project convention over generic best-practice).
+6. **Output** — grouped by **Blocker / Should-fix / Nice-to-have** (matches skill convention, distinct from critical/important/minor of #1-#4), with Specialist Recommendations + Verdict.
+
+**Output:** structured markdown audit report. Every finding includes Where (`file:line`), Evidence (grep output or file excerpt), Project canon reference, and concrete suggested fix.
+
+**Tools:** Read, Bash (grep/find/`php artisan`), WebFetch, WebSearch.
+
+**Required:** Laravel project. Falls back to embedded checklist if `skills/laravel-code-review/SKILL.md` is missing.
+
+**Composability:** when stack-specific code is detected, the reviewer recommends running the corresponding specialist agent — never re-implements their checks. This keeps the reviewer thin and lets specialists own their depth.
+
+**Smoke-test evidence:** See [`superpowers/test-evidence/2026-05-15-reviewer-smoke-*.md`](superpowers/test-evidence/) for captured outputs covering a multi-issue PR (3 blockers + 4 should-fix + 4 specialist recommendations), a clean PR (0 issues, ready to merge), and a non-Laravel (Node.js Express) fail-clean case.
+
+---
+
+_**All V2-MVP agents shipped.** See [ROADMAP.md](ROADMAP.md) for V2.1 forthcoming agents (`laravel-a11y-specialist`, `laravel-echo-reverb-specialist`, `laravel-mr-body-writer`) and the broader V2.2/V3 roadmap._
