@@ -221,10 +221,68 @@ Run: `bash tests/test_anti_silent_deferral_hook.sh` from repo root.
 
 ---
 
+### `visual-companion-default-on`
+
+**Event:** `PostToolUse` on `Skill` (filters internally to `skill === superpowers:brainstorming`).
+
+**What it does:** when the brainstorming skill is invoked, the hook emits an `additionalContext` reminder into the agent's context that the Visual Companion is default-on per operator memory rule `feedback_visual_companion_default_on`. The reminder lives in the agent's working context for the duration of the brainstorm, nudging it to offer the Companion at Step 2 unless the topic is provably text-only.
+
+**Why:** operator rule (saved 2026-05-14 after Block 1E missed Visual Companion offer): the Companion is default-on for any topic that could benefit from mockups/diagrams/wireframes. Block 1H used it for 4 visual screens; Block 1E rationalized "sounds are auditory" and missed it. This hook prevents the rationalization-skip.
+
+**Default text-only denylist (skip auto-emit when args match, case-insensitive):**
+
+| Pattern | Example match |
+|---|---|
+| `\bname[d]? vote\b` | "name vote for the new flag" |
+| `\bnaming\b` | "naming convention for endpoints" |
+| `\brename\b` | "rename UserService to AuthService" |
+| `\bsemver\b` | "semver bump strategy" |
+| `\bversion bump\b` | "version bump for next release" |
+| `\bconfig flag\b` | "config flag for feature X" |
+| `\bconfig flip\b` | "config flip rollout" |
+| `\bwhich constant\b` | "which constant should we use" |
+| `\bnumeric default\b` | "numeric default for timeout" |
+| `\benum value\b` | "enum value for status" |
+
+**Spec deviation from issue:** issue #21 asked for "auto-emits Visual Companion offer in own message". The skill spec requires the offer to be "its own message" — a PostToolUse `additionalContext` injection can't strictly guarantee that. Implementation injects a **REMINDER** instead. The agent still issues the actual offer as its own message at Step 2 per the skill spec; the hook just nudges. Documented in spec §7.
+
+**Configuration:**
+
+```yaml
+hook_enabled:
+  visual_companion_default_on: true     # set to false to disable just the hook
+
+visual_companion_default: on            # top-level: 'on' / 'off' / 'ask'
+                                        # 'off' = operator never wants this enforced
+
+visual_companion_default:
+  text_only_patterns:                   # extend denylist with project-specific patterns
+    - "\\bcompliance\\b"
+    - "\\baudit log\\b"
+  always_offer_patterns:                # allowlist override — emit even if denylist matches
+    - "\\bUI mockup\\b"
+```
+
+**Failure mode:** fail-open — silent (exits 0) on any input/config issue. PostToolUse hooks signal via stdout JSON, not exit code. When the hook skips, stdout is empty; the agent's context is unchanged.
+
+**Test evidence:** ships with `tests/test_visual_companion_default_on_hook.sh` — 9 scenarios:
+1. `superpowers:brainstorming` activation emits reminder ✅
+2. Different skill (e.g., `writing-plans`) passthrough — no emit ✅
+3. Naming-vote topic skips (denylist match) ✅
+4. Semver-bump topic skips ✅
+5. Config-flag topic skips ✅
+6. UI-design topic emits reminder ✅
+7. Empty args default-emit (cannot detect text-only) ✅
+8. Empty stdin → silent ✅
+9. Malformed JSON → silent ✅
+
+Run: `bash tests/test_visual_companion_default_on_hook.sh` from repo root.
+
+---
+
 ## Forthcoming (V2-MVP)
 
 - `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
-- `visual-companion-default-on` ([#21](https://github.com/altraWeb/laravel-superpowers/issues/21)) — PostToolUse hook setting the brainstorming visual-companion default per config
 - `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
 - `visual-companion-default-on` ([#21](https://github.com/altraWeb/laravel-superpowers/issues/21)) — PostToolUse hook setting the brainstorming visual-companion default per config
 
