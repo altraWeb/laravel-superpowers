@@ -81,14 +81,21 @@ staged_files="$(git diff --cached --name-only 2>/dev/null || true)"
 # Drop any path matching exception paths.
 
 # Build exception-path bash glob list from JSON array.
-mapfile -t exception_paths < <(printf '%s' "$exception_paths_json" | jq -r '.[]' 2>/dev/null)
+# (mapfile is bash 4+, not available on macOS's default bash 3.2 — use while-read.)
+exception_paths=()
+while IFS= read -r glob_line; do
+    [ -n "$glob_line" ] && exception_paths+=("$glob_line")
+done < <(printf '%s' "$exception_paths_json" | jq -r '.[]' 2>/dev/null)
 
 is_excepted() {
     local file="$1"
     local glob
+    # Guard against empty array under `set -u`.
+    if [ "${#exception_paths[@]}" -eq 0 ]; then
+        return 1
+    fi
+    shopt -s globstar 2>/dev/null
     for glob in "${exception_paths[@]}"; do
-        # Convert ** to bash matching: enable extglob
-        shopt -s globstar 2>/dev/null
         # shellcheck disable=SC2053
         if [[ "$file" == $glob ]]; then
             return 0
