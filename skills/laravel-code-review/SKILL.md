@@ -157,3 +157,103 @@ php artisan route:list        # verify routes
 php artisan model:show Model  # check schema/relationships
 php artisan queue:failed      # check for failed jobs
 ```
+
+---
+
+## 9. Livewire 4 Sub-Checklist
+
+When the change touches Livewire components (`app/Livewire/`, `resources/views/livewire/`, `wire:*` attributes, `#[Computed]`/`#[On]`/`#[Locked]` PHP attributes):
+
+**API existence (catches fabricated methods)**
+
+- [ ] Every `$this->methodName()` call in component code refers to a real method
+  - Verify via `php -r 'echo (new ReflectionClass("Livewire\\Component"))->hasMethod("name");'`
+  - Or invoke `laravel-livewire-specialist` agent — reflects on vendor source automatically
+  - Common fabrication: `$this->hasLoading()` — does NOT exist; use `wire:loading.attr="aria-busy"` template-side
+
+**Reactivity binding precision**
+
+- [ ] `wire:model.live` chosen only when every-keystroke reactivity is intended (perf cost)
+- [ ] `wire:model.blur` for forms (de-bounces to blur event)
+- [ ] `wire:model.lazy` for less-critical input that can wait for blur or explicit submit
+- [ ] `wire:model` (no modifier) → deferred until next network roundtrip; check this is intentional
+
+**Computed property semantics**
+
+- [ ] `#[Computed]` on derived getters that should re-run per render (uncached default)
+- [ ] `#[Computed(cache: true)]` for expensive computations within a single request lifecycle
+- [ ] `#[Computed(persist: true)]` for cross-request caching — verify cache key + invalidation
+- [ ] Mutating a `#[Computed]` is meaningless (it's a getter); flag any setter-style usage
+
+**Locked properties**
+
+- [ ] `#[Locked]` on properties that should NOT be re-hydratable from the frontend (e.g., user IDs, role flags, internal-state markers)
+- [ ] Without `#[Locked]`, a malicious frontend can manipulate the property — security review
+
+**wire:ignore zones**
+
+- [ ] Every `wire:ignore` block documented (comment explaining why Livewire shouldn't morph this subtree)
+- [ ] Descendants of `wire:ignore` that need reactivity use Alpine `x-bind` / `x-on:click="$wire.foo()"` bridges — never `wire:click` directly
+
+**Echo / broadcasting integration**
+
+- [ ] `Echo.private(...).notification(...)` callbacks dispatch matching events the rest of the app expects (no orphan listeners)
+- [ ] Callbacks that mutate DOM directly (e.g., `document.getElementById(...).innerHTML = ...`) are flagged — race condition with Livewire morph; use `$wire.handle(data)` instead
+- [ ] `#[On('foo.bar')]` listeners declared for every broadcast event the component should react to
+
+**Form Objects vs property + rules() bloat**
+
+- [ ] Components with 5+ form properties + complex validation → extract to `Livewire\Form` class (separate state from component lifecycle)
+- [ ] One-off simple forms → `protected $rules = [...]` + `$this->validate()` is fine
+- [ ] Multi-step wizards → ALWAYS `Livewire\Form`
+
+**Lifecycle hooks**
+
+- [ ] `mount()` only does initial state binding (runs once); does not contain logic that should run on every request
+- [ ] `hydrate()` handles cross-request state reconstruction (runs every request)
+- [ ] `updating($property, $value)` / `updated($property, $value)` — use named variants (`updatingFoo`/`updatedFoo`) when only one property is tracked, for clarity
+- [ ] `boot()` side-effects are intentional (runs on every request — including hydration)
+
+**Specialist invocation:** for deep Livewire 4 audit including reflection-based API verification, dispatch `laravel-livewire-specialist` agent.
+
+---
+
+## 10. Flux Pro v2 Sub-Checklist
+
+When the change touches Flux Pro v2 Blade components (`<flux:*>` tags in templates, `vendor/livewire/flux-pro/`):
+
+**Tooltip double-wrap detection**
+
+- [ ] No `<flux:tooltip>` wrapping components that already self-tooltip (`<flux:button>`, `<flux:icon-button>`, `<flux:editor.button>`, `<flux:nav.item>`)
+- [ ] Verify via vendor: `grep -l 'flux:with-tooltip' vendor/livewire/flux-pro/stubs/resources/views/flux/<component>.blade.php`
+- [ ] Outer tooltip wrapper breaks `<ui-toolbar>` roving-tabindex — silent a11y regression
+- [ ] Fix: remove outer `<flux:tooltip>`, pass `tooltip="..."` as a prop on the inner component
+
+**Position / Align convention**
+
+- [ ] `<flux:dropdown>`, `<flux:tooltip>`, `<flux:menu>`, `<flux:popover>` use **separate** `position="..." align="..."` props (project canon, 9+ callsites verifiable via `grep -rn 'position=' resources/views/`)
+- [ ] Avoid compound `position="bottom end"` — both work but consistency matters
+
+**Editor.spacer placement**
+
+- [ ] `<flux:editor.spacer/>` placed only inside `<flux:editor.toolbar>` (renders `flex-1`, only meaningful in flex containers)
+- [ ] Spacer pushes following items to right edge — verify visual layout matches intent
+
+**wire:ignore + Flux components**
+
+- [ ] No `wire:click` / `wire:model` on `<flux:button>` / `<flux:input>` inside `<flux:editor wire:ignore>` zones
+- [ ] Use Alpine `x-on:click="$wire.foo()"` bridge instead — silent failure otherwise
+
+**Slot composition vs string-prop**
+
+- [ ] `<flux:editor>` toolbar with 3+ items or dynamic content → slot form `<flux:editor.toolbar>...</flux:editor.toolbar>`
+- [ ] String prop `<flux:editor toolbar="Bold|Italic">` only for static single-text toolbars
+- [ ] Slot form required for buttons with `wire:click` / Alpine handlers / `<flux:editor.spacer/>`
+
+**Floating UI auto-flip**
+
+- [ ] `<flux:dropdown position="bottom">` near viewport-bottom auto-flips to top — verify this is intended (or pin with `flip-options`)
+- [ ] Same for tooltip/menu/popover
+
+**Specialist invocation:** for deep Flux Pro v2 audit including vendor file:line citations, dispatch `laravel-flux-pro-specialist` agent.
+
