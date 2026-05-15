@@ -80,9 +80,30 @@
 
 ---
 
+### `laravel-architect`
+
+**Use when:** about to write code that touches Eloquent models, migrations, queries, or architectural placement (Actions vs Services vs Form Objects vs Controllers). Structurally different from the specialist agents above — instead of reflecting on third-party vendor source, this agent reads the **user's own codebase** (`app/Actions/`, `app/Services/`, `app/Http/Requests/`, `app/Data/`) and recommends consistency with what's already in the project (sibling-canon) over generic best practices.
+
+**The 5 audit checks:**
+
+1. **Eloquent N+1 Detection** — extracts `foreach`/`->each()` blocks, identifies relationship-access without eager-loading, recommends exact `with()`/`withCount()`/`loadMissing()` rewrite + Pest QueryCount test stub. Surfaces `preventLazyLoading` status from `AppServiceProvider`.
+2. **Architecture Pattern Sibling-Canon Check** — recommends Actions vs Services vs FormRequests based on existing dominant pattern in the project, citing 2-3 specific files. Explicitly flags **Repository pattern as anti-pattern** in Laravel apps + flags fat controllers.
+3. **Migration Discipline** — `nullable() + default()` on new columns to existing tables, `constrained() + onDelete()` on FKs, no `migrate:fresh` assumptions in production.
+4. **Performance** — uncached expensive computed values, `count()` vs `exists()`, memory-bound iteration (`chunk`/`lazy`), `Cache::flexible()` SWR pattern (Laravel 11+).
+5. **API Design** — `JsonResource` recommendation, pagination strategy (`paginate`/`simplePaginate`/`cursorPaginate`) based on scale, API versioning sibling-canon match.
+
+**Output:** structured markdown audit report with severity classification + concrete code (action class skeletons, query rewrites, Pest test stubs). Project profile in header lists detected architectural patterns + `preventLazyLoading` status.
+
+**Tools:** Read (scans `app/` directories), Bash (read-only `php artisan` commands like `model:show`, `route:list`), WebFetch, WebSearch.
+
+**Required:** Laravel 11+ project with `app/` directory. Falls back to generic recommendations if `app/` missing.
+
+**Smoke-test evidence:** See [`superpowers/test-evidence/2026-05-15-architect-smoke-*.md`](superpowers/test-evidence/) for captured outputs covering the N+1 catch (controller foreach), Repository anti-pattern flag with concrete alternatives, and non-Laravel (Spring Boot) fail-clean case.
+
+---
+
 ## Forthcoming (V2-MVP)
 
-- `laravel-architect` ([#4](https://github.com/altraWeb/laravel-superpowers/issues/4)) — Eloquent + architecture decisions (N+1, eager-loading, Actions vs Services)
 - `laravel-reviewer` ([#5](https://github.com/altraWeb/laravel-superpowers/issues/5)) — wraps `laravel-code-review` skill with grep/find/MCP integration
 
 See [ROADMAP.md](ROADMAP.md) for the full V2 plan and the broader V2.1/V2.2/V3 roadmap.
