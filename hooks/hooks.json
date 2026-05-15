@@ -30,6 +30,10 @@
                     {
                         "type": "command",
                         "command": "${CLAUDE_PLUGIN_ROOT}/hooks/visual-companion-default-on.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/brainstorm-t1-audit.sh"
                     }
                 ]
             }

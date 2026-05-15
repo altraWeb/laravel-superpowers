@@ -280,9 +280,52 @@ Run: `bash tests/test_visual_companion_default_on_hook.sh` from repo root.
 
 ---
 
-## Forthcoming (V2-MVP)
+### `brainstorm-t1-audit`
 
-- `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
+**Event:** `PostToolUse` on `Skill` (filters internally to `skill === superpowers:brainstorming`).
+
+**What it does:** when the brainstorming skill is invoked, the hook emits an `additionalContext` reminder + canonical dispatch prompt template directing the parent agent to dispatch `laravel-best-practices` Agent as a **parallel background task** via the Task tool. The audit runs alongside interactive brainstorming and surfaces best-practice research + anti-patterns + open questions.
+
+**Why:** Pilot 2.0 Tactic 1 (Phase-Start Agent-Audit) is canonical at brainstorm-time. Block 1H + 1E both ran a parallel `laravel-best-practices` Agent alongside `superpowers:brainstorming`, surfacing 11+ sources of best-practice research per brainstorm. If the orchestrator forgets, the brainstorm proceeds without audit (Block 1A retro: "super aber nicht ULTRA"). This hook automates the reminder.
+
+**Spec deviation from issue:** issue asks for "auto-dispatch Agent in background". Hooks cannot invoke agents (architecture constraint — hooks are shell scripts; agent dispatch is a harness primitive). Implementation injects a **REMINDER + canonical dispatch prompt template** instead. The parent agent does the actual Task-tool dispatch when it sees the reminder. 80% of spec value at 10% of complexity. Documented in spec §2 + §8.
+
+**Reminder content includes:**
+
+- Pilot 2.0 Tactic 1 context
+- Topic interpolation (from `tool_input.args`, or "detect from conversation context" fallback)
+- Canonical dispatch prompt with:
+  - Stack-detection instruction (composer.json + package.json)
+  - Output expectations: executive summary + per-decision findings (with source-tier citations) + anti-patterns + open questions
+  - Search-discipline: at least 3 sources, always include year filter
+- Archival instruction: `docs/superpowers/audits/YYYY-MM-DD-<short-topic>-audit.md`
+- Opt-out guidance: if skipping, say so explicitly with reason
+
+**Configuration:**
+
+```yaml
+hook_enabled:
+  brainstorm_t1_audit: true            # set to false to disable
+
+audit_aggressiveness: every-phase      # every-phase | every-commit | brainstorm-only
+                                       # all current values include brainstorm-time
+                                       # dispatch — forward-compat for future modes
+```
+
+**Failure mode:** fail-open — silent on any internal failure.
+
+**Test evidence:** ships with `tests/test_brainstorm_t1_audit_hook.sh` — 5 scenarios:
+1. Brainstorming activation emits reminder + Pilot 2.0 + agent name + topic interpolation ✅
+2. Different skill (e.g., `writing-plans`) passthrough — no emit ✅
+3. Empty args emits with "detect from conversation context" fallback ✅
+4. Empty stdin → silent ✅
+5. Malformed JSON → silent ✅
+
+Run: `bash tests/test_brainstorm_t1_audit_hook.sh` from repo root.
+
+---
+
+_**All V2-MVP hooks shipped.** See [ROADMAP.md](ROADMAP.md) for V2.1 forthcoming hooks (sprint-state context-injection, master-roadmap drift detector, stale-branch sweep) and the broader V2.2/V3 roadmap._
 - `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
 - `visual-companion-default-on` ([#21](https://github.com/altraWeb/laravel-superpowers/issues/21)) — PostToolUse hook setting the brainstorming visual-companion default per config
 
