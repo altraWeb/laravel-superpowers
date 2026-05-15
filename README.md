@@ -49,6 +49,12 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 
 See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
+## Hooks
+
+- **banned-token-leak-guard** — PreToolUse hook on `git commit` that blocks commits with banned tokens (Phase/Sprint/Track/MR/dated refs) in staged code/comments. Honors exception paths (`docs/plans/**`, `docs/superpowers/**`, `CHANGELOG.md`) and per-line override marker `banned-token-ok: <reason>`. Configurable via `hook_enabled.banned_token_leak_guard` and `banned_tokens.*` in plugin config.
+
+See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
+
 ## Designed to complement [superpowers](https://github.com/anthropics/claude-plugins-official)
 
 Each skill pairs with its superpowers counterpart:
