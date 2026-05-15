@@ -43,6 +43,7 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 - **laravel-best-practices** — Web research agent for current Laravel best practices (Spatie, Laracasts, Laravel News). Use when asking *"how should I implement X?"* or *"is my current approach still best practice?"*.
 - **laravel-livewire-specialist** — Audits Livewire-touching code/plans for fabricated APIs, `wire:ignore` zones, Form-Object patterns, Echo/broadcasting race conditions, and lifecycle-hook misuse. Verifies via PHP reflection against the actual Livewire vendor source — ground truth, not docs. Use before any Livewire-touching implementation phase.
 - **laravel-pest-specialist** — Audits Pest 4 tests for variadic-API misuse (`toContain($needle, $message)` gotcha), browser-plugin smells (`wait(N)` abuse), view-context anti-patterns (reserved-name keys), test-location mismatches, and `it()`/`arch()`/dataset block correctness. Verifies via PHP reflection against the actual Pest vendor source. Use before any test write/edit.
+- **laravel-flux-pro-specialist** — Audits Flux Pro v2 Blade components for double-tooltip wrapping (a11y break on `<ui-toolbar>` roving-tabindex), position/align convention drift, `<flux:editor.spacer/>` misplacement, `wire:ignore`-zone reactive-descendant issues on Flux components, and slot-vs-string-prop trade-offs. Reads `vendor/livewire/flux-pro/stubs/resources/views/flux/` as ground truth, cites file:line in findings. Use before any `<flux:*>` write/edit.
 
 See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
