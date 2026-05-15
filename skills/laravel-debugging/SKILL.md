@@ -270,3 +270,188 @@ Telescope (if installed at `/telescope`):
 ## Reference files
 
 Telescope setup and query debugging → `references/telescope-guide.md`
+
+---
+
+## Top-10 Pest 4 / Livewire 4 / Flux Pro v2 RED Recipes
+
+When you hit a RED in a Pest 4 test for one of these stack-specific symptoms, this table maps **error signature → root cause → concrete fix**. Use it AFTER you've confirmed the symptom (RCA discipline still applies — these are pattern-matching shortcuts, not skip-the-investigation excuses).
+
+### 1. `expected array to contain 'X'` with a long second arg
+
+**Error signature:** `Failed asserting that array contains 'should include foo'.`
+
+**Root cause:** Pest's `toContain(...$needles)` is variadic. The "message" you passed as arg #2 became a second needle — the assertion now requires both `'X'` AND `'should include foo'` to be present in the array.
+
+**Fix:**
+```php
+expect($response->json('items'))
+    ->toContain('foo')
+    ->because('should include foo');
+```
+
+**Sibling-canon:** see `laravel-tdd` skill §"Variadic-Expectation Trap" for the full pattern.
+
+---
+
+### 2. `Using $this when not in object context` in view rendering
+
+**Error signature:** PHP fatal: `Using $this when not in object context` raised from a compiled Blade template.
+
+**Root cause:** `view()->with(['this' => $obj])` — `$this` is reserved by PHP and Blade refers to the renderer's render-context. Your `$obj` is unreachable in the template.
+
+**Fix:** rename the key to something meaningful and access it accordingly in the view:
+```php
+return view('ai.popover', ['ai' => $aiAgent, 'surface' => 'editor']);
+// view: {{ $ai->dispatch('foo') }}
+```
+
+Other reserved keys to avoid: `loop`, `errors`, `__env`, `app`, `attributes`, `component`, `slot`.
+
+---
+
+### 3. `BadMethodCallException: Method [hasLoading] does not exist`
+
+**Error signature:** runtime exception on first interaction, naming a `$this->X()` method that "should exist" per the plan-doc but doesn't.
+
+**Root cause:** fabricated Livewire API. The method name came from a plausible-sounding hallucination, not vendor source. `hasLoading()` does not exist on `Livewire\Component`; loading state is a **frontend concern** in Livewire 4.
+
+**Fix:** use the template-side directive:
+```blade
+<button wire:click="save" wire:loading.attr="aria-busy" wire:target="save">Save</button>
+```
+
+**Verification:**
+```bash
+php -r 'echo (new ReflectionClass("Livewire\\Component"))->hasMethod("hasLoading") ? "yes" : "no";'
+# → no
+```
+
+Invoke `laravel-livewire-specialist` agent for thorough API audit.
+
+---
+
+### 4. `401 Unauthorized` from external API in Pest test
+
+**Error signature:** test failure shows external HTTP 401 (Anthropic, Stripe, etc.) coming from real production endpoints.
+
+**Root cause:** `phpunit.xml` blanks the API key for safety (`<env name="ANTHROPIC_API_KEY" value=""/>`), but your test invoked a code path that calls the real API. `Bus::fake()` doesn't intercept synchronous static calls (e.g., `AiAgentRunner::run(...)` if it's not dispatched as a Job).
+
+**Fix options:**
+- Mock the agent layer directly via Mockery: `Mockery::mock('alias:App\AiAgentRunner')->shouldReceive('run')->andReturn(...)`
+- OR rely on an `arch()` test to pin method existence + signature, run integration manually
+- OR refactor to dispatch as a Job and use `Bus::fake()` + `Bus::assertDispatched(...)`
+
+**Decision:** depends on intent — if the test should verify the code path runs without invoking the API, Mockery is best. If the test should verify Job dispatch, refactor + Bus::fake.
+
+---
+
+### 5. `Route [foo.bar] not defined`
+
+**Error signature:** test fails on `$this->get(route('foo.bar'))` or similar.
+
+**Root cause:** route name mismatch — typo, wrong file, missing `->name('foo.bar')` call, or controller renamed without route update.
+
+**Fix:** verify the route exists and is named correctly:
+```bash
+php artisan route:list --name=foo
+```
+
+If the route exists with a different name, fix the test or the route. If the route doesn't exist, add it.
+
+---
+
+### 6. `Cannot use object of type Model as array` / `array_filter expects parameter 1 to be array, Collection given`
+
+**Error signature:** PHP type juggling error in test or runtime where code treats a model as an array, or treats a collection as a single model.
+
+**Root cause:** relationship mismatch. `hasOne` returns a single model; `hasMany` returns a Collection. Calling `->first()` on a `hasOne` is redundant; iterating a `hasOne` result errors.
+
+**Fix:** check the relationship method in the parent model:
+```bash
+php artisan model:show User --no-relations  # or inspect app/Models/User.php
+```
+
+Adjust caller code: `$user->profile` (singular) vs `$user->posts` (collection). Use `$user->posts()->first()` only if you need a query-builder layer first.
+
+---
+
+### 7. `SQLSTATE[23000]: Foreign key constraint fails`
+
+**Error signature:** integrity constraint violation when creating a model via factory in test.
+
+**Root cause:** factory chain missing required parent. E.g., a `Topic` requires `forum_id` + `user_id` foreign keys; calling `Topic::factory()->create()` without specifying parents auto-creates them, but if your factory has explicit `for(...)` requirements, you need to provide them.
+
+**Fix:**
+```php
+Topic::factory()
+    ->for(Forum::factory()->create())
+    ->for(User::factory()->create(), 'author')
+    ->create();
+```
+
+Or use `->hasParent()` / `->hasChildren()` patterns if the factory defines them.
+
+---
+
+### 8. `Property [xxx] not found on component`
+
+**Error signature:** Livewire 4 component renders, then on interaction throws an exception saying a public property doesn't exist.
+
+**Root cause:** the component template (`*.blade.php` or in-class `render()`) references `$xxx`, but the PHP class has no public `$xxx` property declared.
+
+**Fix:** declare the property:
+```php
+class MyComponent extends Component
+{
+    public string $xxx = '';
+    // ...
+}
+```
+
+Note: Livewire requires properties to be **public** and **primitive-serializable** (string, int, bool, array of those, Eloquent model, etc.). Private/protected properties are component-internal only.
+
+---
+
+### 9. Lang key returns the key string verbatim
+
+**Error signature:** view renders the literal `messages.button.save` instead of `"Save"`.
+
+**Root cause:** missing lang key in the active locale's translation file. Laravel falls back to the key string when no translation exists.
+
+**Fix:**
+```bash
+php -r 'require "vendor/autoload.php"; $app = require "bootstrap/app.php"; $app->setLocale("de"); echo (Lang::hasForLocale("messages.button.save", "de") ? "yes" : "no");'
+```
+
+If `no`, add the key to `lang/de/messages.php` (or wherever your translation files live). Verify the locale is set correctly in the test (`App::setLocale('de')` in test setup).
+
+---
+
+### 10. Browser test sees stale DOM / element-not-found / flaky timing
+
+**Error signature:** `assertVisible('@my-button')` fails intermittently; CI flake; the element IS in the DOM when you check manually.
+
+**Root cause:** the element appears asynchronously (Livewire morph, Alpine init, AJAX response), but the assertion ran before it materialized. Manual `->wait(1)` is a smell — Pest 4 already has a **5-second implicit timeout** on `assertVisible`/`assertPresent`/`assertSee`/`assertText`/`assertAttribute`.
+
+**Fix:**
+- Remove `->wait(N)` calls
+- Verify the selector is specific (prefer `@data-testid` over text or class selectors)
+- If the element legitimately takes >5s, add `setUp(fn () => $this->setTimeoutMultiplier(2))` in the test — but flag this for redesign (5s should be enough)
+
+**Sibling-canon:** see `laravel-tdd` skill §"`wait(N)` is a smell" for the full pattern.
+
+---
+
+## Specialist Agents
+
+For deep stack-specific debugging:
+
+| If RED is in... | Dispatch |
+|---|---|
+| Livewire component | `laravel-livewire-specialist` — reflects on `Livewire\Component` vendor source |
+| Pest test (API misuse) | `laravel-pest-specialist` — reflects on `Pest\Expectation` + browser plugin |
+| Flux Pro v2 Blade | `laravel-flux-pro-specialist` — reads `vendor/livewire/flux-pro/stubs/resources/views/flux/*.blade.php` |
+| Eloquent / architecture | `laravel-architect` — sibling-canon check against `app/Actions/`, `app/Services/` |
+| Multi-component review | `laravel-reviewer` — composes specialist invocations + banned-token sweep |
+
