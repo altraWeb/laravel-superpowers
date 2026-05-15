@@ -165,14 +165,17 @@ result=$(run_hook stage_phase_in_docs "git commit -m 'sprint plan'")
 exit_code=$(printf '%s' "$result" | grep -oE 'exit=[0-9]+' | head -1 | cut -d= -f2)
 assert_exit_code "$exit_code" "0" "Phase ref in docs/plans/ should pass"
 
-# ─── Test 6: Dated audit ref blocks ──────────────────────────────────────────
+# ─── Test 6: Context-anchored dated audit ref blocks (v2.0.1/S1) ─────────────
+# Pre-v2.0.1: bare ISO date pattern matched "2026-05-14 audit fixes" — but
+# also false-positived on Carbon::parse('2026-01-01') and other legitimate
+# date literals. v2.0.1 narrows to require a sprint-state keyword prefix.
 echo
-echo "▶ Test 6: Block dated audit ref in source"
+echo "▶ Test 6: Block context-anchored dated audit ref in Blade (v2.0.1/S1)"
 
 stage_dated_ref() {
     mkdir -p resources/views
     cat > resources/views/dropdown.blade.php <<'EOF'
-{{-- 2026-05-14 audit fixes for the editor toolbar --}}
+{{-- Audit: 2026-05-14 — fixes for the editor toolbar --}}
 <div class="dropdown">...</div>
 EOF
     git add resources/views/dropdown.blade.php
@@ -180,7 +183,41 @@ EOF
 
 result=$(run_hook stage_dated_ref "git commit -m 'add dropdown'")
 exit_code=$(printf '%s' "$result" | grep -oE 'exit=[0-9]+' | head -1 | cut -d= -f2)
-assert_exit_code "$exit_code" "2" "Dated audit ref in Blade should block"
+assert_exit_code "$exit_code" "2" "Context-anchored dated audit ref should block"
+
+# ─── Test 7: Carbon date literal must NOT trigger (v2.0.1/S1) ────────────────
+# Pre-v2.0.1 the bare date pattern false-positived on Carbon literals,
+# fixture arrays, migration constants etc. v2.0.1 narrows to skip them.
+echo
+echo "▶ Test 7: Allow Carbon date literal (v2.0.1/S1)"
+
+stage_carbon_literal() {
+    mkdir -p app/Models
+    cat > app/Models/Event.php <<'EOF'
+<?php
+namespace App\Models;
+
+class Event {
+    public function defaultStart(): \Carbon\Carbon {
+        return \Carbon\Carbon::parse('2026-01-01');
+    }
+
+    public const HOLIDAYS = ['2026-04-03', '2026-12-25'];
+}
+EOF
+    git add app/Models/Event.php
+}
+
+result=$(run_hook stage_carbon_literal "git commit -m 'add Event model'")
+exit_code=$(printf '%s' "$result" | grep -oE 'exit=[0-9]+' | head -1 | cut -d= -f2)
+assert_exit_code "$exit_code" "0" "Carbon date literal should pass through"
+
+# ─── Test 8: Substring 'git commit' inside echo must passthrough (v2.0.1/S5) ──
+echo
+echo "▶ Test 8: Passthrough on echo containing 'git commit' substring (v2.0.1/S5)"
+result=$(run_hook : "echo 'info: do not git commit yet'")
+exit_code=$(printf '%s' "$result" | grep -oE 'exit=[0-9]+' | head -1 | cut -d= -f2)
+assert_exit_code "$exit_code" "0" "Substring inside echo should pass through"
 
 # ─── Summary ─────────────────────────────────────────────────────────────────
 echo

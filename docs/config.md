@@ -59,7 +59,16 @@ Currently shipped hook names:
 
 ### `audit_aggressiveness` — string, one of `every-phase | every-commit | brainstorm-only`, default `every-phase`
 
-When the Tier-1 audit hook auto-dispatches.
+How aggressively the Tier-1 audit (`laravel-best-practices` dispatch) should fire.
+
+**Important — advisory vs. programmatic enforcement** (clarified in v2.0.1):
+
+- `brainstorm-only` is the only mode with **programmatic enforcement** — the `brainstorm-t1-audit` hook automatically fires on every `superpowers:brainstorming` invocation. The hook fires regardless of this setting's value.
+- `every-phase` and `every-commit` are **advisory metadata** that the orchestrator agent reads from `/laravel-superpowers:status` to decide when to self-dispatch the audit. There is no hook that fires at phase boundaries or per commit — Claude Code does not emit those events.
+
+If you want strict "audit at every commit" enforcement, you'll need to manually dispatch `laravel-best-practices` via the Task tool before each commit. The configuration value advertises your preference; it does not enforce it.
+
+See `docs/audits/2026-05-15-v2-mvp-self-audit.md` §"Should-fix S2" for the rationale.
 
 ### `banned_tokens.project_extras` — list of strings, default `[]`
 
@@ -86,7 +95,7 @@ Which roadmap tiers to surface in auto-suggestions.
 
 ### `teamcity_always` — boolean, default `true`
 
-Whether to always pass `--teamcity` to `php artisan test` for parsable output.
+Whether to always pass `--teamcity` to `php artisan test` (and `composer test` wrappers, since v2.0.1) for parsable output. The `teamcity-always` hook blocks invocations missing the flag and emits a retry suggestion.
 
 ## IDE autocomplete
 

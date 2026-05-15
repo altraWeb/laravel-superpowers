@@ -108,6 +108,46 @@ else
     failures=$((failures + 1))
 fi
 
+# ─── v2.0.1 S3 — composer test wrapper support ────────────────────────────────
+# Many Laravel projects expose the test runner via composer.json scripts.
+# Pre-v2.0.1 these wrappers bypassed the hook entirely. See
+# docs/audits/2026-05-15-v2-mvp-self-audit.md §"Should-fix S3".
+
+echo
+echo "▶ Test 10: Block \`composer test\` (v2.0.1/S3)"
+result=$(run_with_command "composer test")
+assert_exit "$(extract_exit "$result")" "2" "composer test without --teamcity should block"
+if printf '%s' "$result" | grep -q "composer test -- --teamcity"; then
+    echo "  ✅ suggested rewrite uses composer's -- arg-pass convention"
+else
+    echo "  ❌ suggested rewrite missing or wrong form"
+    failures=$((failures + 1))
+fi
+
+echo
+echo "▶ Test 11: Allow \`composer test -- --teamcity\` (v2.0.1/S3)"
+result=$(run_with_command "composer test -- --teamcity")
+assert_exit "$(extract_exit "$result")" "0" "composer test with --teamcity passed should pass"
+
+echo
+echo "▶ Test 12: Block \`composer run test\` (v2.0.1/S3)"
+result=$(run_with_command "composer run test")
+assert_exit "$(extract_exit "$result")" "2" "composer run test without --teamcity should block"
+
+echo
+echo "▶ Test 13: Passthrough \`composer test-coverage\` (v2.0.1/S3 — word boundary)"
+result=$(run_with_command "composer test-coverage")
+assert_exit "$(extract_exit "$result")" "0" "composer test-coverage should not match composer test"
+
+# ─── v2.0.1 S5 — command-position filter ─────────────────────────────────────
+# Pre-v2.0.1 substring-glob filters intercepted `echo "php artisan test ..."`
+# and similar literal mentions. See §"Should-fix S5".
+
+echo
+echo "▶ Test 14: Passthrough \`echo 'run php artisan test'\` (v2.0.1/S5)"
+result=$(run_with_command "echo 'run php artisan test someday'")
+assert_exit "$(extract_exit "$result")" "0" "Substring inside echo should pass through"
+
 # ─── Summary ─────────────────────────────────────────────────────────────────
 echo
 if [ "$failures" -eq 0 ]; then

@@ -25,15 +25,28 @@ command_str="$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/de
 [ -z "$command_str" ] && exit 0
 
 # ─── Step 2: Detect command family ────────────────────────────────────────────
-# Returns one of: git-commit, gh-pr, glab-mr, or empty (passthrough)
+# Returns one of: git-commit, gh-pr, glab-mr, or empty (passthrough).
+#
+# v2.0.1 (S5): match at command-position — start of string OR after a
+# separator (`;`, `&&`, `||`, `|`), optionally preceded by env-var assignments.
+# Previous substring matching caused false-positives when the bash command
+# contained the target as literal text inside `echo`, `grep`, `cat <<EOF`, etc.
+# See docs/audits/2026-05-15-v2-mvp-self-audit.md §"Should-fix S5".
 detect_family() {
+    # Reject `git commit-tree` (porcelain that looks similar).
     case "$command_str" in
-        *"git commit-tree"*) printf '' ;;
-        *"git commit"|*"git commit "*) printf 'git-commit' ;;
-        *"gh pr create"*|*"gh pr edit"*) printf 'gh-pr' ;;
-        *"glab mr create"*|*"glab mr update"*) printf 'glab-mr' ;;
-        *) printf '' ;;
+        *"git commit-tree"*) printf ''; return ;;
     esac
+    local prefix='(^|[;&|][[:space:]]*)([A-Z_][A-Za-z0-9_]*=[^[:space:]]+[[:space:]]+)*'
+    if printf '%s' "$command_str" | grep -qE "${prefix}git commit([[:space:]]|$)"; then
+        printf 'git-commit'
+    elif printf '%s' "$command_str" | grep -qE "${prefix}gh pr (create|edit)([[:space:]]|$)"; then
+        printf 'gh-pr'
+    elif printf '%s' "$command_str" | grep -qE "${prefix}glab mr (create|update)([[:space:]]|$)"; then
+        printf 'glab-mr'
+    else
+        printf ''
+    fi
 }
 
 family="$(detect_family)"
@@ -66,14 +79,21 @@ enabled="$(config_get hook_enabled.no_claude_attribution true)"
 # target file. The message is the concatenation of every extracted piece.
 #
 # Helper: extract value of a flag like `-m "foo bar"` or `--body 'baz'` or
-# `--body=baz`. We use python3 -c with shlex for safe parsing.
+# `--body=baz`. We use python3 with shlex for safe parsing.
+#
+# IMPORTANT (v2.0.1 fix): the heredoc must be quoted (<<'PYEOF') so Bash does
+# NOT expand $flag / $cmd into the Python source. Values pass via environment
+# variables; Python reads them from os.environ. Previously the unquoted heredoc
+# embedded $cmd directly into a Python triple-quoted string, which broke on any
+# message containing a `"` character — silently fail-opening the entire hook.
+# See docs/audits/2026-05-15-v2-mvp-self-audit.md §"Blocker B1".
 extract_flag_value() {
-    local flag="$1"
-    local cmd="$2"
-    python3 - <<EOF 2>/dev/null
-import shlex, sys
-flag = "$flag"
-cmd = """$cmd"""
+    FLAG="$1" CMD="$2" python3 - <<'PYEOF' 2>/dev/null
+import os, shlex, sys
+flag = os.environ.get("FLAG", "")
+cmd = os.environ.get("CMD", "")
+if not flag or not cmd:
+    sys.exit(0)
 try:
     tokens = shlex.split(cmd)
 except ValueError:
@@ -91,7 +111,7 @@ while i < len(tokens):
     else:
         i += 1
 print("\n".join(values))
-EOF
+PYEOF
 }
 
 # Read file content for -F / --body-file / --description-file paths.

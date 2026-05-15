@@ -27,26 +27,25 @@ input="$(cat 2>/dev/null || true)"
 command_str="$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/dev/null || true)"
 [ -z "$command_str" ] && exit 0
 
-# ─── Step 2: Filter to `php artisan test` family ──────────────────────────────
-# Match: `php artisan test`, `php artisan test:parallel`, `php artisan test:compact`
+# ─── Step 2: Filter to `php artisan test` and `composer test` families ────────
+# Match: `php artisan test`, `php artisan test:parallel`, `php artisan test:compact`,
+# `composer test`, `composer run test`, `composer run-script test`
 # (with anything after — flags, file paths, etc.)
-# Reject: anything not the test subcommand.
-case "$command_str" in
-    *"php artisan test"*|*"php artisan test:parallel"*|*"php artisan test:compact"*)
-        # Ensure it's actually invoking the test command (not e.g.
-        # `php artisan test:bar` which is some other command). The `test`
-        # subcommand stops at whitespace or `:` followed by parallel/compact.
-        # Simple heuristic: confirm token boundary after "test".
-        if printf '%s' "$command_str" | grep -qE '\bphp artisan test(\b|:parallel\b|:compact\b)'; then
-            : # proceed
-        else
-            exit 0
-        fi
-        ;;
-    *)
-        exit 0
-        ;;
-esac
+#
+# v2.0.1 (S3): extended to cover composer wrappers (`composer test`) since
+# many Laravel projects expose the Pest/PHPUnit runner via composer.json
+# scripts. See docs/audits/2026-05-15-v2-mvp-self-audit.md §"Should-fix S3".
+#
+# v2.0.1 (S5): anchor at command-position to avoid matching `echo "php artisan
+# test ..."` or `grep "composer test" docs/`. Also require whitespace or EOL
+# after `test` to avoid matching `composer test-coverage` etc.
+# See §"Should-fix S5".
+prefix='(^|[;&|][[:space:]]*)([A-Z_][A-Za-z0-9_]*=[^[:space:]]+[[:space:]]+)*'
+if printf '%s' "$command_str" | grep -qE "${prefix}(php artisan test(:parallel|:compact)?([[:space:]]|$)|composer (run-script |run )?test([[:space:]]|$))"; then
+    : # proceed
+else
+    exit 0
+fi
 
 # ─── Step 3: Skip if --teamcity already present ──────────────────────────────
 case "$command_str" in
@@ -82,19 +81,36 @@ teamcity_always="$(config_get teamcity_always true)"
 [ "$teamcity_always" = "true" ] || exit 0
 
 # ─── Step 6: Build retry suggestion ──────────────────────────────────────────
-# Insert --teamcity right after the `test` (or `test:parallel`/`test:compact`)
-# subcommand. Use python3 for robust replacement.
-suggested="$(printf '%s' "$command_str" | python3 -c '
-import re, sys
-cmd = sys.stdin.read().rstrip("\n")
-# Replace first occurrence of "test"/"test:parallel"/"test:compact" with
-# "test --teamcity" / similar, preserving everything after.
-pattern = re.compile(r"\bphp artisan (test(?::parallel|:compact)?)\b")
-def insert(m):
-    return f"php artisan {m.group(1)} --teamcity"
-result = pattern.sub(insert, cmd, count=1)
-print(result)
-' 2>/dev/null)"
+# Insert --teamcity right after the test subcommand. composer wrappers use
+# `-- --teamcity` to pass the flag through. Direct artisan calls take the
+# flag inline.
+#
+# v2.0.1: handles `composer test` / `composer run test` wrappers by inserting
+# `-- --teamcity` (composer passes args after `--` to the wrapped command).
+suggested="$(CMD="$command_str" python3 - <<'PYEOF' 2>/dev/null
+import os, re
+cmd = os.environ.get("CMD", "").rstrip("\n")
+# composer wrappers: insert ` -- --teamcity` after the test token (unless `--`
+# already present).
+if re.search(r"\bcomposer (run-script |run )?test\b", cmd):
+    if "--" in cmd.split("test", 1)[1]:
+        # `--` already present — append --teamcity after it
+        result = re.sub(r"--\s*", "-- --teamcity ", cmd, count=1)
+    else:
+        result = re.sub(
+            r"\b(composer (?:run-script |run )?test)\b",
+            r"\1 -- --teamcity",
+            cmd,
+            count=1,
+        )
+    print(result)
+else:
+    # Direct artisan: inline insertion
+    pattern = re.compile(r"\bphp artisan (test(?::parallel|:compact)?)\b")
+    result = pattern.sub(lambda m: f"php artisan {m.group(1)} --teamcity", cmd, count=1)
+    print(result)
+PYEOF
+)"
 
 [ -z "$suggested" ] && suggested="(rebuild failed — append --teamcity manually after \`test\`)"
 
