@@ -170,9 +170,61 @@ Run: `bash tests/test_teamcity_always_hook.sh` from repo root.
 
 ---
 
+### `anti-silent-deferral`
+
+**Event:** `PreToolUse` on `Bash` (filters internally to `git push`).
+
+**What it does:** scans the current branch's plan-docs (`docs/plans/*.md` files changed vs `main`) for `## Phase N — Deferred Items` sections. Blocks the push if any section has uncaptured deferrals — free-form prose or bullets without filed-issue refs.
+
+**Why:** Pilot 2.0 contract requires anti-silent-deferral as a hard-gate Task at the end of every plan (Block 1H Task 6.4, Block 1E Task 4.4). Currently relies on operator memory. This hook automates the gate.
+
+**Section validation:** a section body is **captured** if at least one holds:
+
+- **Empty body** — header followed by blank line / next `##` header
+- **Explicit None marker** — `**None — all tasks completed as planned.**` or close variants (`**None.**`, `_None._`, anything matching `None.*tasks completed`)
+- **All bullets carry issue refs** — every `-` / `*` bullet contains one of:
+  - `#[0-9]+` (GitHub/GitLab issue reference)
+  - `gh issue #N` / `glab issue #N`
+  - `https://github.com/.../issues/N` / `https://gitlab.com/.../issues/N`
+
+A bullet without an issue ref OR a free-form prose line = uncaptured = block.
+
+**Emergency override:** set `LARAVEL_SUPERPOWERS_ALLOW_UNCAPTURED_DEFERRAL=1` for the single push. The hook logs the override to stderr.
+
+**Per-doc skip marker:** add `<!-- anti-silent-deferral-skip: <reason> -->` anywhere in the plan-doc to bypass validation for that file (useful for WIP plans not ready for push-gate).
+
+**Diagnostic on block:** names the plan-doc, the phase, and the offending lines. Suggests three remediation paths: complete the work + remove section, file each deferral as an issue + use bullets, or mark `None — all tasks completed`.
+
+**Configuration:**
+
+```yaml
+hook_enabled:
+  anti_silent_deferral: true         # set to false to disable
+```
+
+**Failure mode:** fail-open — never blocks a push due to plugin internals. If `main` ref doesn't exist (rare: fresh repo, detached HEAD), hook exits 0 (can't determine branch scope).
+
+**Test evidence:** ships with `tests/test_anti_silent_deferral_hook.sh` — 11 scenarios:
+1. Block on free-form prose in Deferred Items ✅
+2. Block on bullets without issue refs ✅
+3. Allow `**None — all tasks completed**` marker ✅
+4. Allow bullets with `#N` issue refs ✅
+5. Allow empty section body ✅
+6. Passthrough non-push (`git status`) ✅
+7. Passthrough `git push --help` ✅
+8. Passthrough when no plan-docs on branch ✅
+9. Emergency override env var bypass ✅
+10. Per-doc skip marker bypass ✅
+11. Multi-section detection (Phase 4 captured, Phase 5 uncaptured → blocks naming Phase 5) ✅
+
+Run: `bash tests/test_anti_silent_deferral_hook.sh` from repo root.
+
+---
+
 ## Forthcoming (V2-MVP)
 
-- `anti-silent-deferral` ([#19](https://github.com/altraWeb/laravel-superpowers/issues/19)) — PreToolUse hook on `git push` that scans plan-docs for unresolved "Deferred Items"
+- `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
+- `visual-companion-default-on` ([#21](https://github.com/altraWeb/laravel-superpowers/issues/21)) — PostToolUse hook setting the brainstorming visual-companion default per config
 - `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
 - `visual-companion-default-on` ([#21](https://github.com/altraWeb/laravel-superpowers/issues/21)) — PostToolUse hook setting the brainstorming visual-companion default per config
 
