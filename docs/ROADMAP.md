@@ -21,37 +21,39 @@ V2 builds the agents + skills + hooks that catch these classes of bugs **by cons
 
 ---
 
-## V2-MVP — Tier-1 (highest-ROI, observed-sprint catches)
+## V2-MVP — Tier-1 (highest-ROI, observed-sprint catches) — ✅ COMPLETE (v2.0.0)
 
-**Goal**: ship the bug-catchers that the Block 1H + 1E sprints needed but didn't have. 1-week build.
+**Status:** All 16 V2-MVP issues shipped and released as `v2.0.0` on 2026-05-15. The 4 P0-class catches the test sprints surfaced are now caught **by construction** via the specialist-agent quintet + 6 hooks + 3 enhanced skills + plugin config foundation + status slash command.
+
+**Goal (achieved):** ship the bug-catchers that the Block 1H + 1E sprints needed but didn't have. 1-week build, completed on schedule.
 
 ### New agents
 
-- [ ] **[#1](https://github.com/altraWeb/laravel-superpowers/issues/1) `laravel-livewire-specialist`** — deep Livewire 4 API + lifecycle knowledge. API-existence verification via reflection (catches fabricated `$this->hasLoading()` class of bug).
-- [ ] **[#2](https://github.com/altraWeb/laravel-superpowers/issues/2) `laravel-pest-specialist`** — Pest 4 API depth + browser-plugin recipes. Catches `toContain` variadic, `wait(N)` smell, `$this`-mock-in-view anti-pattern.
-- [ ] **[#3](https://github.com/altraWeb/laravel-superpowers/issues/3) `laravel-flux-pro-specialist`** — Flux Pro v2 vendor source traversal + slot composition. Catches redundant tooltip wrappers, position+align convention drift.
-- [ ] **[#4](https://github.com/altraWeb/laravel-superpowers/issues/4) `laravel-architect`** — Eloquent + architecture decisions (N+1, eager-loading, Actions vs Services, migration safety).
-- [ ] **[#5](https://github.com/altraWeb/laravel-superpowers/issues/5) `laravel-reviewer`** — wraps `laravel-code-review` skill with grep/find/MCP tool integration.
+- [x] **[#1](https://github.com/altraWeb/laravel-superpowers/issues/1) `laravel-livewire-specialist`** — deep Livewire 4 API + lifecycle knowledge. API-existence verification via reflection (catches fabricated `$this->hasLoading()` class of bug).
+- [x] **[#2](https://github.com/altraWeb/laravel-superpowers/issues/2) `laravel-pest-specialist`** — Pest 4 API depth + browser-plugin recipes. Catches `toContain` variadic, `wait(N)` smell, `$this`-mock-in-view anti-pattern.
+- [x] **[#3](https://github.com/altraWeb/laravel-superpowers/issues/3) `laravel-flux-pro-specialist`** — Flux Pro v2 vendor source traversal + slot composition. Catches redundant tooltip wrappers, position+align convention drift.
+- [x] **[#4](https://github.com/altraWeb/laravel-superpowers/issues/4) `laravel-architect`** — Eloquent + architecture decisions (N+1, eager-loading, Actions vs Services, migration safety).
+- [x] **[#5](https://github.com/altraWeb/laravel-superpowers/issues/5) `laravel-reviewer`** — wraps `laravel-code-review` skill with grep/find/MCP tool integration.
 
 ### Skill enhancements
 
-- [ ] **[#13](https://github.com/altraWeb/laravel-superpowers/issues/13) Enhance `laravel-tdd`** — Pest 4 specifics (because modifier, datasets, it vs arch, assertAttribute)
-- [ ] **[#14](https://github.com/altraWeb/laravel-superpowers/issues/14) Enhance `laravel-code-review`** — Livewire 4 + Flux Pro v2 sub-checklists
-- [ ] **[#15](https://github.com/altraWeb/laravel-superpowers/issues/15) Enhance `laravel-debugging`** — top-10 Pest 4 RED-debugging recipes
+- [x] **[#13](https://github.com/altraWeb/laravel-superpowers/issues/13) Enhance `laravel-tdd`** — Pest 4 specifics (because modifier, datasets, it vs arch, assertAttribute)
+- [x] **[#14](https://github.com/altraWeb/laravel-superpowers/issues/14) Enhance `laravel-code-review`** — Livewire 4 + Flux Pro v2 sub-checklists
+- [x] **[#15](https://github.com/altraWeb/laravel-superpowers/issues/15) Enhance `laravel-debugging`** — top-10 Pest 4 RED-debugging recipes
 
 ### Hooks
 
-- [ ] **[#16](https://github.com/altraWeb/laravel-superpowers/issues/16) Banned-token-leak guard** — PreToolUse on git commit
-- [ ] **[#17](https://github.com/altraWeb/laravel-superpowers/issues/17) No-Claude-attribution** — PreToolUse on git commit + MR create
-- [ ] **[#18](https://github.com/altraWeb/laravel-superpowers/issues/18) `--teamcity` always** — PreToolUse on `php artisan test`
-- [ ] **[#19](https://github.com/altraWeb/laravel-superpowers/issues/19) Anti-silent-deferral pre-push** — PreToolUse on git push
-- [ ] **[#20](https://github.com/altraWeb/laravel-superpowers/issues/20) Brainstorm-time T1 audit auto-dispatch** — PostToolUse on `superpowers:brainstorming`
-- [ ] **[#21](https://github.com/altraWeb/laravel-superpowers/issues/21) Visual-companion-default-on** — PostToolUse brainstorming Step 2
+- [x] **[#16](https://github.com/altraWeb/laravel-superpowers/issues/16) Banned-token-leak guard** — PreToolUse on git commit
+- [x] **[#17](https://github.com/altraWeb/laravel-superpowers/issues/17) No-Claude-attribution** — PreToolUse on git commit + MR create
+- [x] **[#18](https://github.com/altraWeb/laravel-superpowers/issues/18) `--teamcity` always** — PreToolUse on `php artisan test`
+- [x] **[#19](https://github.com/altraWeb/laravel-superpowers/issues/19) Anti-silent-deferral pre-push** — PreToolUse on git push
+- [x] **[#20](https://github.com/altraWeb/laravel-superpowers/issues/20) Brainstorm-time T1 audit auto-dispatch** — PostToolUse on `superpowers:brainstorming`
+- [x] **[#21](https://github.com/altraWeb/laravel-superpowers/issues/21) Visual-companion-default-on** — PostToolUse brainstorming Step 2
 
 ### Plugin infrastructure
 
-- [ ] **[#22](https://github.com/altraWeb/laravel-superpowers/issues/22) Plugin config foundation** — config.yaml with sane defaults + project-override
-- [ ] **[#23](https://github.com/altraWeb/laravel-superpowers/issues/23) Slash command `/laravel-superpowers:status`** — current sprint + Pilot 2.0 obligations
+- [x] **[#22](https://github.com/altraWeb/laravel-superpowers/issues/22) Plugin config foundation** — config.yaml with sane defaults + project-override
+- [x] **[#23](https://github.com/altraWeb/laravel-superpowers/issues/23) Slash command `/laravel-superpowers:status`** — current sprint + Pilot 2.0 obligations
 
 **V2-MVP total**: 16 issues
 
@@ -138,4 +140,4 @@ Projects on older Laravel + Livewire versions can still benefit from the generic
 
 ---
 
-*Last updated: 2026-05-14 — roadmap initialized with 30 V2 issues across 4 milestones, derived from Block 1H + 1E sprint retros.*
+*Last updated: 2026-05-15 — V2-MVP shipped as v2.0.0 (16/16 issues). V2.1/V2.2/V3 milestones remain.*
