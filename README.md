@@ -59,6 +59,10 @@ See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
 See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
 
+## Slash Commands
+
+- **`/laravel-superpowers:status`** — Read-only status panel. Surfaces current sprint state (active plan-doc + phase progress), Pilot 2.0 contract obligations (T1/T3/T4 status + T5/T6 hook-automated), hook compliance per config, open obligations (deferred items, pending audits). ≤2s response time, no state mutation.
+
 ## Designed to complement [superpowers](https://github.com/anthropics/claude-plugins-official)
 
 Each skill pairs with its superpowers counterpart:
