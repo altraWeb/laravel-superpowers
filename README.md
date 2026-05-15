@@ -53,6 +53,7 @@ See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
 - **banned-token-leak-guard** — PreToolUse hook on `git commit` that blocks commits with banned tokens (Phase/Sprint/Track/MR/dated refs) in staged code/comments. Honors exception paths (`docs/plans/**`, `docs/superpowers/**`, `CHANGELOG.md`) and per-line override marker `banned-token-ok: <reason>`. Configurable via `hook_enabled.banned_token_leak_guard` and `banned_tokens.*` in plugin config.
 - **no-claude-attribution** — PreToolUse hook on `git commit`, `gh pr create`, `glab mr create` that blocks any commit message, PR body, or MR description containing Claude / AI attribution (`Co-Authored-By: Claude`, `🤖 Generated with Claude Code`, `AI-assisted`, etc.). Shows the offending line + sanitized rewrite. Reads from `-m`, `-F`, `--body`, `--body-file`, `--description`, `--description-file`. Configurable via `hook_enabled.no_claude_attribution`.
+- **teamcity-always** — PreToolUse hook on `php artisan test` that blocks invocations missing the `--teamcity` flag (per project canon — IDE integration like PhpStorm/VSCode needs the TeamCity reporter for parsable per-test events). Shows a retry suggestion with `--teamcity` inserted in the right position. Skips when `--teamcity` already present or when an alternate reporter (`--testdox`, `--printer-class`) is explicit. Configurable via `hook_enabled.teamcity_always` and the top-level `teamcity_always` kill switch.
 
 See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
 

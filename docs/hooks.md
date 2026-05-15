@@ -129,9 +129,49 @@ Run: `bash tests/test_no_claude_attribution_hook.sh` from repo root.
 
 ---
 
+### `teamcity-always`
+
+**Event:** `PreToolUse` on `Bash` (filters internally to `php artisan test`, `php artisan test:parallel`, `php artisan test:compact`).
+
+**What it does:** blocks the call if `--teamcity` is missing, shows a retry suggestion with the flag inserted in the right position. Skips silently when `--teamcity` already present or when an alternate reporter (`--testdox`, `--printer-class`, `--printer=`) is explicit.
+
+**Why:** project canon (CLAUDE.md PersonalGuidelines): always use `--teamcity` for IDE-friendly per-test event output. PhpStorm/VSCode test runners need the TeamCity reporter for parsable results. Without it, IDE integration falls back to plain-stdout parsing and loses fidelity.
+
+**Skip conditions:**
+
+- `--teamcity` already in the command
+- Alternative reporter explicit (`--testdox`, `--printer-class=...`, `--printer=...`)
+- `hook_enabled.teamcity_always: false` in config
+- Top-level `teamcity_always: false` in config (semantic difference: "operator never wants this enforced" vs "disable just the hook")
+
+**Spec deviation from issue:** issue #18 asked for "auto-append". Implementation **BLOCKS with retry suggestion** instead — auto-modifying tool_input from a PreToolUse hook is not a portable Claude Code feature. 90% of the value (operator always uses `--teamcity`) at 10% of the complexity. Operator retypes once, then the muscle memory kicks in.
+
+**Configuration:**
+
+```yaml
+hook_enabled:
+  teamcity_always: true              # set to false to disable just the hook
+
+teamcity_always: true                # top-level project-canon flag (false = never enforce)
+```
+
+**Test evidence:** ships with `tests/test_teamcity_always_hook.sh` — 9 scenarios:
+1. Block plain `php artisan test` ✅
+2. Block `php artisan test --filter=X` ✅
+3. Block `php artisan test:parallel` ✅
+4. Allow `php artisan test --teamcity` (already present) ✅
+5. Allow `php artisan test --testdox` (alt reporter) ✅
+6. Passthrough `php artisan migrate` (not test) ✅
+7. Passthrough `./vendor/bin/pest` (not artisan) ✅
+8. Passthrough `git status` (not artisan) ✅
+9. Diagnostic suggests rewrite with `--teamcity` in correct position ✅
+
+Run: `bash tests/test_teamcity_always_hook.sh` from repo root.
+
+---
+
 ## Forthcoming (V2-MVP)
 
-- `teamcity-always` ([#18](https://github.com/altraWeb/laravel-superpowers/issues/18)) — PreToolUse hook injecting `--teamcity` into `php artisan test` for parsable output
 - `anti-silent-deferral` ([#19](https://github.com/altraWeb/laravel-superpowers/issues/19)) — PreToolUse hook on `git push` that scans plan-docs for unresolved "Deferred Items"
 - `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
 - `visual-companion-default-on` ([#21](https://github.com/altraWeb/laravel-superpowers/issues/21)) — PostToolUse hook setting the brainstorming visual-companion default per config
