@@ -80,9 +80,57 @@ Run: `bash tests/test_banned_token_hook.sh` from repo root.
 
 ---
 
+### `no-claude-attribution`
+
+**Event:** `PreToolUse` on `Bash` (filters internally to `git commit`, `gh pr create`, `gh pr edit`, `glab mr create`, `glab mr update`).
+
+**What it does:** intercepts commit-message / PR-body / MR-description input and blocks if Claude / AI attribution is detected. Reads message content from inline flags (`-m`, `--body`, `--description`) and file flags (`-F`, `--body-file`, `--description-file`).
+
+**Why:** operator's project canon — ZERO Claude attribution in commit messages, PR titles, MR bodies. Real-session evidence: 9 of 19 commits on the `spec/22-config-foundation` branch had Claude attribution before manual cleanup via `git filter-branch`. Subagent-dispatched commits inherited the default Bash-tool template behavior. This hook makes the rule **discipline-free** — even a subagent with the default template trying to add `Co-Authored-By: Claude` gets blocked before the commit lands.
+
+**Default attribution patterns:**
+
+| Pattern | Example match |
+|---|---|
+| `Co-Authored-By:.*Claude` | `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>` |
+| `Co-Authored-By:.*[Aa]nthropic` | `Co-Authored-By: claude@anthropic.com` |
+| `🤖.*Claude Code` | `🤖 Generated with [Claude Code]` |
+| `Generated with.*Claude` | `Generated with Claude` |
+| `\bAI-assisted\b` | `AI-assisted refactor` |
+| `\bAI-generated\b` | `AI-generated commit` |
+| `noreply@anthropic\.com` | the literal email |
+
+**Diagnostic on block:** offending line(s) + sanitized rewrite suggestion (the original message with attribution lines removed). Operator can copy-paste the sanitized version.
+
+**Configuration:**
+
+```yaml
+hook_enabled:
+  no_claude_attribution: true        # set to false to disable
+```
+
+**Failure mode:** fail-open — never blocks a legitimate commit due to plugin internals failing.
+
+**Known limitation:** editor-mode `git commit` (no `-m`, no `-F`) cannot be intercepted from a PreToolUse Bash hook (the commit-message edit happens AFTER the Bash invocation returns). Editor-mode commits emit a warning to stderr but pass through; rely on `laravel-reviewer` agent or post-commit hooks to catch the rare editor-mode case.
+
+**Test evidence:** ships with `tests/test_no_claude_attribution_hook.sh` — 10 scenarios:
+1. Block on `Co-Authored-By: Claude` trailer ✅
+2. Block on `🤖 Generated with Claude Code` banner ✅
+3. Block on `AI-assisted` phrase ✅
+4. Block on `git commit -F file` with attribution in file ✅
+5. Block on `gh pr create --body` with attribution ✅
+6. Block on `glab mr create --description-file` with attribution in file ✅
+7. Allow clean commit ✅
+8. Passthrough on `git status` ✅
+9. Editor-mode `git commit` (passthrough with stderr warning) ✅
+10. Allow clean `gh pr create` ✅
+
+Run: `bash tests/test_no_claude_attribution_hook.sh` from repo root.
+
+---
+
 ## Forthcoming (V2-MVP)
 
-- `no-claude-attribution` ([#17](https://github.com/altraWeb/laravel-superpowers/issues/17)) — PreToolUse hook blocking commit messages with `Co-Authored-By: Claude` or similar AI attribution
 - `teamcity-always` ([#18](https://github.com/altraWeb/laravel-superpowers/issues/18)) — PreToolUse hook injecting `--teamcity` into `php artisan test` for parsable output
 - `anti-silent-deferral` ([#19](https://github.com/altraWeb/laravel-superpowers/issues/19)) — PreToolUse hook on `git push` that scans plan-docs for unresolved "Deferred Items"
 - `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
