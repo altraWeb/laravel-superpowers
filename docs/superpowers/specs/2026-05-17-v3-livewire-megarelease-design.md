@@ -257,7 +257,7 @@ claude /plugin install laravel-livewire-superpowers@altraweb-laravel
 - After the rename in Phase A.2, GitHub maintains the URL redirect indefinitely. V2 users who somehow miss the v2.0.2 notice and still query the old URL get redirected to the new repo where the CHANGELOG explains the situation.
 - The old `altraweb-laravel` marketplace (currently lives inside the plugin repo at `.claude-plugin/marketplace.json`) gets replaced by the new neutral `altraWeb/laravel-marketplace` repo when V3 ships in Phase G.
 
-**Config compatibility:** User-config schema (`~/.config/claude/laravel-superpowers.yaml`) is unchanged. After migration the user's config continues to apply to the renamed plugin (the helper reads the same path).
+**Config compatibility:** User-config schema (`~/.claude/plugins/altraweb-laravel/laravel-superpowers/config.yaml`) is unchanged. After migration the user's config continues to apply to the renamed plugin (the helper reads the same path — the V2 plugin name is preserved in the path intentionally for backward compatibility).
 
 ## 9. Success Criteria / Definition of Done
 

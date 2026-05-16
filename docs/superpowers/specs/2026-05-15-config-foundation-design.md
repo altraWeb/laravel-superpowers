@@ -31,7 +31,7 @@ Without a config foundation, hooks would be all-or-nothing and non-overridable �
 **Non-Goals**
 
 - Hot reload / file watching (lazy read per call is fine)
-- Slash-command wrapper (`/laravel-superpowers:config`) — that is #23
+- Slash-command wrapper (`/laravel-livewire-superpowers:config`) — that is #23
 - Per-hook config integration — each hook issue (#16–21) handles its own
 - Migration tooling between config schema versions (handled later if/when schema breaks)
 
@@ -243,7 +243,7 @@ Run: `cd tests && python3 -m pytest -v`. GitHub Action CI is out of scope for #2
 
 ## 9. Out of Scope (Follow-Up Issues)
 
-- Slash command `/laravel-superpowers:config` → #23
+- Slash command `/laravel-livewire-superpowers:config` → #23
 - Per-hook config integration → each of #16–21
 - GitHub Action CI for the test suite → tracked separately when CI infra is set up
 - Project-specific config templates (Laravel + Livewire vs plain Laravel) → no issue yet, captured in roadmap brainstorm

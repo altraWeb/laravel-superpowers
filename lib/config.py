@@ -81,10 +81,24 @@ def _format(value) -> str:
 
 
 def _user_config_path() -> Path:
+    """Return the user-global config path.
+
+    Note: path uses `laravel-superpowers` (the V2 plugin name), not
+    `laravel-livewire-superpowers` (V3 name). This is intentional — preserved
+    across the V3 rename so existing V2 users' configs continue to apply
+    without migration. See V3 design spec Section 8.
+    """
     return Path(os.environ["HOME"]) / ".claude" / "plugins" / "altraweb-laravel" / "laravel-superpowers" / "config.yaml"
 
 
 def _project_config_path() -> Path:
+    """Return the per-project config path.
+
+    Note: filename uses `.laravel-superpowers.yaml` (the V2 plugin name), not
+    `.laravel-livewire-superpowers.yaml` (V3 name). This is intentional — preserved
+    across the V3 rename so existing V2 users' per-project configs continue to apply
+    without migration. See V3 design spec Section 8.
+    """
     return Path.cwd() / ".laravel-superpowers.yaml"
 
 
@@ -172,7 +186,8 @@ def _source_of(key: str, defaults: dict, user: dict, project: dict) -> str:
     return "unknown"
 
 
-SCHEMA_POINTER = "# yaml-language-server: $schema=https://raw.githubusercontent.com/altraWeb/laravel-superpowers/main/config.schema.json\n"
+# SCHEMA_POINTER: URL uses the V3 plugin name (laravel-livewire-superpowers). See V3 design spec Section 8.
+SCHEMA_POINTER = "# yaml-language-server: $schema=https://raw.githubusercontent.com/altraWeb/laravel-livewire-superpowers/main/config.schema.json\n"
 
 
 def _init_template() -> str:

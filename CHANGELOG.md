@@ -1,6 +1,41 @@
 # Changelog
 
-All notable changes to `laravel-superpowers` are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+All notable changes to `laravel-livewire-superpowers` (renamed from `laravel-superpowers` in V3) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.0.0-alpha.1] — 2026-05-17 — V3 Megarelease — Phase A: Foundation, Deprecation, Rename
+
+First alpha of the V3 Megarelease. Phase A establishes the foundation: plugin renamed to `laravel-livewire-superpowers`, marketplace moved to neutral host repo `altraWeb/laravel-marketplace`, internal slash-command paths updated, README + docs rebranded as the Livewire variant, 18 stale branches cleaned up. **No new features yet** — Phases B-G ship the 14 backlog issues.
+
+### Changed
+
+- **Plugin renamed** `laravel-superpowers` → `laravel-livewire-superpowers`. Reflected in `.claude-plugin/plugin.json` `name` field, in README title and install instructions, in all internal slash-command paths, in `docs/agents.md` + `docs/hooks.md` stack-scope banners.
+- **Marketplace moved** to `altraWeb/laravel-marketplace`. The in-repo `.claude-plugin/marketplace.json` is removed; the canonical marketplace.json now lives in the neutral host repo.
+- **Slash commands renamed** `/laravel-superpowers:*` → `/laravel-livewire-superpowers:*`. Only `/laravel-livewire-superpowers:status` exists in this alpha; `/audit-phase` and `/retro` ship in Phase E.
+
+### Added
+
+- `UPGRADING.md` documenting the V2 → V3 migration steps.
+- `tests/test_marketplace_json.py` — schema validation for plugin.json (will extend to marketplace.json in future PRs).
+- Stack-scope banner in `docs/agents.md` and `docs/hooks.md` marking the plugin as Livewire variant with a link to the planned `laravel-vue-superpowers` sibling.
+
+### Removed
+
+- `.claude-plugin/marketplace.json` (moved to `altraWeb/laravel-marketplace`).
+- 17 stale remote branches (already-merged feat/* + spec/* + chore/* from V1/V2).
+- 2 stale local branches (`feat/17-no-claude-attribution-hook`, `spec/3-flux-pro-specialist-agent`).
+
+### Migration
+
+See [`UPGRADING.md`](UPGRADING.md) for V2 → V3 migration steps.
+
+### Phase A Status
+
+Phase A.1 (v2.0.2 deprecation cut on still-named repo) — ✅ shipped 2026-05-17 as v2.0.2.
+Phase A.2 (this alpha) — ✅ shipped 2026-05-17 as v3.0.0-alpha.1.
+
+Phases B-G land in subsequent alpha/beta cuts before the v3.0.0 stable release.
+
+---
 
 ## [2.0.2] — 2026-05-17 — Deprecation notice: V3 Megarelease coming under new name
 
@@ -29,7 +64,7 @@ The full V3 design is at [`docs/superpowers/specs/2026-05-17-v3-livewire-megarel
 
 ### No breaking changes in this release
 
-v2.0.2 is byte-identical to v2.0.1 except for this CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-superpowers:status` slash command continue to behave exactly as in v2.0.1.
+v2.0.2 is byte-identical to v2.0.1 except for this CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-livewire-superpowers:status` slash command continue to behave exactly as in v2.0.1.
 
 ---
 
@@ -96,7 +131,7 @@ Plus existing `laravel-best-practices` (V1) — kept as the web-research general
 ### Added — Plugin Infrastructure (2)
 
 - **Plugin config foundation** ([#22]) — `config.defaults.yaml` + `config.schema.json` + Python helper (`lib/config.py`) with 5 subcommands: `get`, `validate`, `show`, `init`, `doctor`. Three-layer merge: defaults < user-global (`~/.claude/plugins/altraweb-laravel/laravel-superpowers/config.yaml`) < per-project (`<project>/.laravel-superpowers.yaml`). All hooks read config at fire-time. Fail-open architecture — broken config helper never blocks user operations.
-- **`/laravel-superpowers:status` slash command** ([#23]) — read-only status panel surfacing current sprint state (active plan-doc + phase progress), Pilot 2.0 obligations (T1/T3/T4 dispatch evidence; T5/T6 automated via hooks), hook compliance per config, open obligations. Target: ≤2s response time.
+- **`/laravel-livewire-superpowers:status` slash command** ([#23]) — read-only status panel surfacing current sprint state (active plan-doc + phase progress), Pilot 2.0 obligations (T1/T3/T4 dispatch evidence; T5/T6 automated via hooks), hook compliance per config, open obligations. Target: ≤2s response time.
 
 ### Documentation
 

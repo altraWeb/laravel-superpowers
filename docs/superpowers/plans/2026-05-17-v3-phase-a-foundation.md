@@ -147,7 +147,7 @@ The full V3 design is at [`docs/superpowers/specs/2026-05-17-v3-livewire-megarel
 
 ### No breaking changes in this release
 
-v2.0.2 is byte-identical to v2.0.1 except for this CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-superpowers:status` slash command continue to behave exactly as in v2.0.1.
+v2.0.2 is byte-identical to v2.0.1 except for this CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-livewire-superpowers:status` slash command continue to behave exactly as in v2.0.1.
 
 ---
 
@@ -319,7 +319,7 @@ A full `UPGRADING.md` will ship with V3.
 
 ## No breaking changes in this release
 
-v2.0.2 is byte-identical to v2.0.1 except for the CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-superpowers:status` slash command continue to behave exactly as in v2.0.1.
+v2.0.2 is byte-identical to v2.0.1 except for the CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-livewire-superpowers:status` slash command continue to behave exactly as in v2.0.1.
 
 ## Design spec
 
@@ -704,14 +704,14 @@ Use the Write tool to produce a new `README.md` that:
 5. Version table updated: `v3.0.0-alpha.1` current, link to CHANGELOG for full history
 6. Migrating from v2: brief paragraph pointing to `UPGRADING.md`
 7. All existing feature lists (agents / skills / hooks / commands) updated to V3 counts: 10 agents / 7 skills / 13 hooks / 3 commands
-8. All `/laravel-superpowers:` refs already updated by Task 14
+8. All `/laravel-livewire-superpowers:` refs already updated by Task 14
 
 Preserve the existing section anchors and link conventions so external bookmarks from V2-era blog posts continue to resolve to roughly equivalent content.
 
-- [ ] **Step 3: Verify no `/laravel-superpowers:` slipped back in**
+- [ ] **Step 3: Verify no `/laravel-livewire-superpowers:` slipped back in**
 
 ```bash
-grep -c '/laravel-superpowers:' README.md
+grep -c '/laravel-livewire-superpowers:' README.md
 grep -c '/laravel-livewire-superpowers:' README.md
 ```
 
@@ -792,7 +792,7 @@ V3 is a major release that renames the plugin and moves the marketplace to a neu
 - **Plugin name:** `laravel-superpowers` → `laravel-livewire-superpowers`
 - **Marketplace:** moved from inside the plugin repo to a new neutral host repo `altraWeb/laravel-marketplace`
 - **Slash commands:** `/laravel-superpowers:*` → `/laravel-livewire-superpowers:*`
-- **No config schema changes** — your `~/.config/claude/laravel-superpowers.yaml` (if any) continues to apply unchanged after migration
+- **No config schema changes** — your `~/.claude/plugins/altraweb-laravel/laravel-superpowers/config.yaml` (if any) continues to apply unchanged after migration
 
 ### Why
 
@@ -832,7 +832,7 @@ Expected: `/status` panel renders cleanly with current sprint state. If the slas
 
 - **Marketplace `altraweb-laravel` already exists after the remove step.** The marketplace name `altraweb-laravel` is reused intentionally by the new host repo. After `marketplace remove altraweb-laravel + marketplace add altraWeb/laravel-marketplace`, the marketplace re-registers under the same name but pointing at the new repo.
 - **Old `claude /laravel-superpowers:status` still works.** This means the V2 plugin is still installed in parallel. Run `claude /plugin list` to confirm and `claude /plugin uninstall laravel-superpowers` to remove.
-- **Config not applied to V3 plugin.** The config helper reads `~/.config/claude/laravel-superpowers.yaml` — V3 keeps this exact path for backward compatibility. If your config seems ignored, run `python3 lib/config.py doctor` to diagnose.
+- **Config not applied to V3 plugin.** The config helper reads `~/.claude/plugins/altraweb-laravel/laravel-superpowers/config.yaml` — V3 keeps the V2 plugin name in the path for backward compatibility (see design spec section 8). If your config seems ignored, run `python3 lib/config.py doctor` to diagnose.
 ````
 
 ### Task 19: Prepend v3.0.0-alpha.1 entry to CHANGELOG.md

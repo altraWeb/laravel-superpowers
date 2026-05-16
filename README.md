@@ -1,17 +1,32 @@
-# laravel-superpowers
+# laravel-livewire-superpowers
 
-Laravel-specific workflow skills, agents, and hooks for [Claude Code](https://claude.ai/code) — designed to complement the [superpowers](https://github.com/anthropics/claude-plugins-official) base plugin.
+Laravel + **Livewire 4** + **Flux Pro v2** + **Pest 4** specialist toolkit for [Claude Code](https://claude.ai/code) — designed to complement the [superpowers](https://github.com/anthropics/claude-plugins-official) base plugin with deep stack-specific expertise.
+
+> **Stack scope:** This plugin targets the Livewire 4 + Flux Pro v2 stack. For the Vue 3 + Inertia v2 variant, see the planned sibling plugin [`laravel-vue-superpowers`](https://github.com/altraWeb/laravel-vue-superpowers) (not yet released).
 
 📍 **[Roadmap](docs/ROADMAP.md)** — see what's planned + tracked GitHub issues organized by version
-📊 **[Milestones](https://github.com/altraWeb/laravel-superpowers/milestones)** — V2-MVP / V2.1 / V2.2 / V3 progress
-📋 **[Project board](https://github.com/altraWeb/laravel-superpowers/projects)** — live status across all issues
+📊 **[Milestones](https://github.com/altraWeb/laravel-livewire-superpowers/milestones)** — V3 alpha / V3 stable progress
+📋 **[Project board](https://github.com/altraWeb/laravel-livewire-superpowers/projects)** — live status across all issues
 
 ## Install
 
 ```bash
-claude plugin marketplace add github:altraWeb/laravel-superpowers
-claude plugin install laravel-superpowers@altraweb-laravel
+claude /plugin marketplace add altraWeb/laravel-marketplace
+claude /plugin install laravel-livewire-superpowers@altraweb-laravel
 ```
+
+The marketplace is hosted at [`altraWeb/laravel-marketplace`](https://github.com/altraWeb/laravel-marketplace) — a neutral host repo that will also list the future `laravel-vue-superpowers` sibling.
+
+## Migrating from v2 (laravel-superpowers)
+
+```bash
+claude /plugin uninstall laravel-superpowers
+claude /plugin marketplace remove altraweb-laravel
+claude /plugin marketplace add altraWeb/laravel-marketplace
+claude /plugin install laravel-livewire-superpowers@altraweb-laravel
+```
+
+See [`UPGRADING.md`](UPGRADING.md) for the full migration guide.
 
 ## Configuration
 
@@ -31,55 +46,81 @@ Requires Python 3.10+ with `pyyaml` and `jsonschema`. On Homebrew Python:
 pip3 install --user --break-system-packages pyyaml jsonschema
 ```
 
-## Skills
+## Skills (7)
 
 - **laravel-brainstorming** — Architecture brainstorming for Laravel: layers, Eloquent relationships, Events, Policies, queuing decisions
-- **laravel-tdd** — TDD workflow with Pest: factories, HTTP testing, facade faking, Feature vs Unit
+- **laravel-tdd** — TDD workflow with Pest 4: factories, HTTP testing, facade faking, Feature vs Unit
 - **laravel-debugging** — Debugging with Laravel-specific tools: Telescope, query logging, queue introspection
 - **laravel-code-review** — Code review checklist: N+1, mass assignment, authorization, validation, security
+- **laravel-a11y** *(Phase B+)* — Accessibility audit for Livewire + Flux Pro components
+- **laravel-mr-body-writer** *(Phase B+)* — MR/PR description writer for Laravel projects
+- **laravel-perf-auditor** *(Phase B+)* — Performance audit: N+1, eager loading, cache strategies
 
-## Agents
+## Agents (10)
 
 - **laravel-best-practices** — Web research agent for current Laravel best practices (Spatie, Laracasts, Laravel News). Use when asking *"how should I implement X?"* or *"is my current approach still best practice?"*.
 - **laravel-livewire-specialist** — Audits Livewire-touching code/plans for fabricated APIs, `wire:ignore` zones, Form-Object patterns, Echo/broadcasting race conditions, and lifecycle-hook misuse. Verifies via PHP reflection against the actual Livewire vendor source — ground truth, not docs. Use before any Livewire-touching implementation phase.
-- **laravel-pest-specialist** — Audits Pest 4 tests for variadic-API misuse (`toContain($needle, $message)` gotcha), browser-plugin smells (`wait(N)` abuse), view-context anti-patterns (reserved-name keys), test-location mismatches, and `it()`/`arch()`/dataset block correctness. Verifies via PHP reflection against the actual Pest vendor source. Use before any test write/edit.
-- **laravel-flux-pro-specialist** — Audits Flux Pro v2 Blade components for double-tooltip wrapping (a11y break on `<ui-toolbar>` roving-tabindex), position/align convention drift, `<flux:editor.spacer/>` misplacement, `wire:ignore`-zone reactive-descendant issues on Flux components, and slot-vs-string-prop trade-offs. Reads `vendor/livewire/flux-pro/stubs/resources/views/flux/` as ground truth, cites file:line in findings. Use before any `<flux:*>` write/edit.
-- **laravel-architect** — Audits Eloquent + architecture decisions: N+1 detection in `foreach`/`->each()` blocks, sibling-canon-aware pattern recommendations (Actions vs Services), flags Repository anti-pattern + fat controllers, migration safety, performance smells (uncached computed, `count()` vs `exists()`, pagination strategy), API design. Reads existing `app/Actions/`, `app/Services/`, `app/Http/Requests/`, `app/Data/` for project-specific consistency. Use before any plan-phase touching models/migrations/queries.
-- **laravel-reviewer** — Evidence-based code review that wraps the `laravel-code-review` skill with tool access (grep/find/`php artisan`). Runs banned-token sweep on touched paths, performs sibling-canon verification, and **recommends** calling specialist agents (livewire/pest/flux-pro/architect) when stack-specific code is in scope — composes them rather than re-implementing. Output grouped by Blocker / Should-fix / Nice-to-have with `file:line` citations. Use after every implementation commit, before pushing.
+- **laravel-pest-specialist** — Audits Pest 4 tests for variadic-API misuse, browser-plugin smells, view-context anti-patterns, test-location mismatches, and `it()`/`arch()`/dataset block correctness. Verifies via PHP reflection against the actual Pest vendor source. Use before any test write/edit.
+- **laravel-flux-pro-specialist** — Audits Flux Pro v2 Blade components for double-tooltip wrapping, position/align convention drift, `<flux:editor.spacer/>` misplacement, `wire:ignore`-zone reactive-descendant issues, and slot-vs-string-prop trade-offs. Reads the Flux Pro vendor stubs as ground truth, cites file:line in findings. Use before any `<flux:*>` write/edit.
+- **laravel-architect** — Audits Eloquent + architecture decisions: N+1 detection, sibling-canon-aware pattern recommendations, migration safety, performance smells, API design. Use before any plan-phase touching models/migrations/queries.
+- **laravel-reviewer** — Evidence-based code review wrapping the `laravel-code-review` skill with tool access (grep/find/`php artisan`). Runs banned-token sweep, sibling-canon verification, and recommends specialist agents when stack-specific code is in scope.
+- **laravel-echo-reverb-specialist** *(Phase B+)* — Echo + Reverb real-time specialist
+- **laravel-spatie-permission-auditor** *(Phase B+)* — Spatie Permission package auditor
+- **laravel-pilot-orchestrator** *(Phase B+)* — Pilot 2.0 contract orchestrator agent
+- **laravel-package-evaluator** *(Phase B+)* — Package evaluation agent
 
 See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
-## Hooks
+## Hooks (13)
 
-- **banned-token-leak-guard** — PreToolUse hook on `git commit` that blocks commits with banned tokens (Phase/Sprint/Track/MR/dated refs) in staged code/comments. Honors exception paths (`docs/plans/**`, `docs/superpowers/**`, `CHANGELOG.md`) and per-line override marker `banned-token-ok: <reason>`. Configurable via `hook_enabled.banned_token_leak_guard` and `banned_tokens.*` in plugin config.
-- **no-claude-attribution** — PreToolUse hook on `git commit`, `gh pr create`, `glab mr create` that blocks any commit message, PR body, or MR description containing Claude / AI attribution (`Co-Authored-By: Claude`, `🤖 Generated with Claude Code`, `AI-assisted`, etc.). Shows the offending line + sanitized rewrite. Reads from `-m`, `-F`, `--body`, `--body-file`, `--description`, `--description-file`. Configurable via `hook_enabled.no_claude_attribution`.
-- **teamcity-always** — PreToolUse hook on `php artisan test` that blocks invocations missing the `--teamcity` flag (per project canon — IDE integration like PhpStorm/VSCode needs the TeamCity reporter for parsable per-test events). Shows a retry suggestion with `--teamcity` inserted in the right position. Skips when `--teamcity` already present or when an alternate reporter (`--testdox`, `--printer-class`) is explicit. Configurable via `hook_enabled.teamcity_always` and the top-level `teamcity_always` kill switch.
-- **anti-silent-deferral** — PreToolUse hook on `git push` that scans branch's `docs/plans/*.md` files for uncaptured `## Phase N — Deferred Items` sections. Blocks push when any section has free-form prose or bullets without filed-issue refs. Allows explicit `**None — all tasks completed**` markers and bullets with `#N` issue links. Emergency override via `LARAVEL_SUPERPOWERS_ALLOW_UNCAPTURED_DEFERRAL=1`. Per-doc skip marker `<!-- anti-silent-deferral-skip: <reason> -->`. Configurable via `hook_enabled.anti_silent_deferral`.
-- **visual-companion-default-on** — PostToolUse hook on `superpowers:brainstorming` skill invocation. Injects an `additionalContext` reminder that the Visual Companion is default-on unless the topic is provably text-only (naming votes, semver bumps, config-flips). Configurable denylist (`visual_companion_default.text_only_patterns`) and allowlist override (`visual_companion_default.always_offer_patterns`). Two disable paths: `hook_enabled.visual_companion_default_on: false` (hook-only) or `visual_companion_default: off` top-level (operator-wide opt-out).
-- **brainstorm-t1-audit** — PostToolUse hook on `superpowers:brainstorming` skill invocation. Injects an `additionalContext` reminder + canonical dispatch prompt template directing the parent agent to dispatch `laravel-best-practices` Agent as a parallel background task (Pilot 2.0 Tactic 1 — Phase-Start Agent-Audit). Topic auto-interpolated from skill args; falls back to "detect from conversation context". Configurable via `hook_enabled.brainstorm_t1_audit` and `audit_aggressiveness`.
+- **banned-token-leak-guard** — PreToolUse hook on `git commit` that blocks commits with banned tokens (Phase/Sprint/Track/MR/dated refs) in staged code/comments.
+- **no-claude-attribution** — PreToolUse hook on `git commit`, `gh pr create`, `glab mr create` that blocks any Claude / AI attribution.
+- **teamcity-always** — PreToolUse hook on `php artisan test` that blocks invocations missing `--teamcity`.
+- **anti-silent-deferral** — PreToolUse hook on `git push` that scans plan docs for uncaptured deferred items.
+- **visual-companion-default-on** — PostToolUse hook on brainstorming skill that injects a Visual Companion reminder.
+- **brainstorm-t1-audit** — PostToolUse hook on brainstorming skill that dispatches `laravel-best-practices` audit (Pilot 2.0 T1).
+- **sprint-state-context-injection** *(Phase B+)* — Injects sprint state context at session start
+- **master-roadmap-drift-detector** *(Phase B+)* — Detects roadmap drift
+- **stale-branch-sweep** *(Phase B+)* — Identifies and reports stale branches
+- **vendor-source-preflight** *(Phase B+)* — Vendor source verification preflight
+- **lang-key-existence-preflight** *(Phase B+)* — Lang key existence verification
+- **pilot-2-contract-enforcer** *(Phase B+)* — Full Pilot 2.0 contract enforcement (T1-T6)
+- *(13th hook planned for Phase B+)*
 
 See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
 
-## Slash Commands
+## Slash Commands (3)
 
-- **`/laravel-superpowers:status`** — Read-only status panel. Surfaces current sprint state (active plan-doc + phase progress), Pilot 2.0 contract obligations (T1/T3/T4 status + T5/T6 hook-automated), hook compliance per config, open obligations (deferred items, pending audits). ≤2s response time, no state mutation.
+- **`/laravel-livewire-superpowers:status`** — Read-only status panel. Surfaces current sprint state, Pilot 2.0 contract obligations, hook compliance, open obligations. ≤2s response, no state mutation.
+- **`/laravel-livewire-superpowers:audit-phase`** *(Phase E+)* — Phase audit command
+- **`/laravel-livewire-superpowers:retro`** *(Phase E+)* — Retrospective command
 
 ## Designed to complement [superpowers](https://github.com/anthropics/claude-plugins-official)
 
 Each skill pairs with its superpowers counterpart:
 
-| superpowers skill | laravel-superpowers skill |
+| superpowers skill | laravel-livewire-superpowers skill |
 |---|---|
-| `superpowers:brainstorming` | `laravel-brainstorming` |
-| `superpowers:test-driven-development` | `laravel-tdd` |
-| `superpowers:systematic-debugging` | `laravel-debugging` |
-| `superpowers:requesting-code-review` | `laravel-code-review` |
+| `superpowers:brainstorming` | `laravel-livewire-superpowers:laravel-brainstorming` |
+| `superpowers:test-driven-development` | `laravel-livewire-superpowers:laravel-tdd` |
+| `superpowers:systematic-debugging` | `laravel-livewire-superpowers:laravel-debugging` |
+| `superpowers:requesting-code-review` | `laravel-livewire-superpowers:laravel-code-review` |
 
-Run the superpowers skill first for generic structure; run the laravel-superpowers skill for stack-specific depth.
+Run the superpowers skill first for generic structure; run the laravel-livewire-superpowers skill for stack-specific depth.
+
+## Sibling plugins
+
+| Plugin | Stack | Status |
+|---|---|---|
+| `laravel-livewire-superpowers` | Laravel + Livewire 4 + Flux Pro v2 + Pest 4 | Active (this repo) |
+| [`laravel-vue-superpowers`](https://github.com/altraWeb/laravel-vue-superpowers) | Laravel + Vue 3 (Composition API) + Inertia v2 + Pest 4 | Planned |
 
 ## Versions
 
-- **v2.0.0 (2026-05-15) — V2-MVP** *(current)* — 6 specialist agents + 6 enforcement hooks + 3 stack-enhanced skills + plugin config foundation + status slash command. Derived from Block 1H + 1E test-sprint catches; ships the bug-catchers V1 was missing.
-- **v1.0.0 (2026-05-13) — Initial** — 1 agent (`laravel-best-practices`) + 4 skills (`laravel-brainstorming`, `laravel-tdd`, `laravel-debugging`, `laravel-code-review`).
+- **v3.0.0-alpha.1 (2026-05-17) — V3 Megarelease Phase A** *(current)* — Plugin renamed to `laravel-livewire-superpowers`, marketplace moved to neutral host `altraWeb/laravel-marketplace`, all branding updated. Foundation phase that unblocks Phases B-G (10 agents + 7 skills + 13 hooks + 3 commands).
+- **v2.0.2 (2026-05-17) — Deprecation notice** — No code changes. Deprecation notice announcing V3 + rename.
+- **v2.0.1 (2026-05-15) — V2-MVP self-audit hotfix** — Quote-bypass, date false-positives, composer-test, command-position filter.
+- **v2.0.0 (2026-05-15) — V2-MVP** — 6 specialist agents + 6 enforcement hooks + 3 stack-enhanced skills + plugin config foundation + status slash command.
+- **v1.0.0 (2026-05-13) — Initial** — 1 agent + 4 skills.
 
-See [CHANGELOG.md](CHANGELOG.md) for the full release history and [ROADMAP.md](docs/ROADMAP.md) for upcoming V2.1 / V2.2 / V3 milestones.
+See [CHANGELOG.md](CHANGELOG.md) for the full release history and [ROADMAP.md](docs/ROADMAP.md) for upcoming V3 milestones.
