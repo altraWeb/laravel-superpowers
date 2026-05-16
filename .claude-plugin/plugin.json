@@ -1,6 +1,6 @@
 {
     "name": "laravel-superpowers",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Laravel-specific workflow toolkit for Claude Code: 6 specialist agents (Livewire 4 / Pest 4 / Flux Pro v2 / architect / reviewer / best-practices), 6 enforcement hooks (banned-token leak / no-Claude-attribution / teamcity-always / anti-silent-deferral / visual-companion-default / brainstorm-T1-audit), 4 skills enhanced with stack-specific depth (TDD / debugging / code-review / brainstorming), config foundation, and /laravel-superpowers:status slash command.",
     "author": {
         "name": "altraWeb"

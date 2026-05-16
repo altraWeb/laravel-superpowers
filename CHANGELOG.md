@@ -2,6 +2,37 @@
 
 All notable changes to `laravel-superpowers` are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] — 2026-05-17 — Deprecation notice: V3 Megarelease coming under new name
+
+**No code changes.** This release exists solely to give V2 users on the existing `altraweb-laravel` marketplace advance notice of the V3 Megarelease, which ships under a renamed plugin and a new neutral marketplace host repo.
+
+### Coming in V3
+
+- **Plugin renamed** `laravel-superpowers` → `laravel-livewire-superpowers` to make the Livewire 4 + Flux Pro v2 stack scope explicit (a sibling `laravel-vue-superpowers` for Vue 3 + Inertia projects is planned next).
+- **Marketplace moved** to a new neutral host repo `altraWeb/laravel-marketplace`. The existing `altraweb-laravel` marketplace (currently bundled inside this plugin repo) will be deprecated.
+- **Scope:** all 14 open Tier-2 + Tier-3 backlog issues land in V3, plus full Pilot 2.0 contract enforcement via the new `laravel-pilot-orchestrator` agent and `pilot-2-contract-enforcer` hook.
+
+### Migration
+
+A `UPGRADING.md` ships with V3 documenting the steps. The short version:
+
+```bash
+claude /plugin uninstall laravel-superpowers
+claude /plugin marketplace remove altraweb-laravel
+claude /plugin marketplace add altraWeb/laravel-marketplace
+claude /plugin install laravel-livewire-superpowers@altraweb-laravel
+```
+
+### Design spec
+
+The full V3 design is at [`docs/superpowers/specs/2026-05-17-v3-livewire-megarelease-design.md`](docs/superpowers/specs/2026-05-17-v3-livewire-megarelease-design.md) (lands on the renamed repo as part of the V3 cut).
+
+### No breaking changes in this release
+
+v2.0.2 is byte-identical to v2.0.1 except for this CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-superpowers:status` slash command continue to behave exactly as in v2.0.1.
+
+---
+
 ## [2.0.1] — 2026-05-15 — V2-MVP self-audit hotfix
 
 Patch release driven by the post-V2.0.0 self-audit ([`docs/audits/2026-05-15-v2-mvp-self-audit.md`](docs/audits/2026-05-15-v2-mvp-self-audit.md)). Empirical hook verification surfaced one functional blocker and four should-fix items; this release bundles all five together.
