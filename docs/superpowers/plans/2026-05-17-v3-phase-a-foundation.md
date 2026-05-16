@@ -4,7 +4,7 @@
 
 **Goal:** Land Phase A of the V3 Megarelease — cut a v2.0.2 deprecation release on the still-named repo, then rename to `laravel-livewire-superpowers`, restructure the marketplace into a neutral host repo, update all branding, and ship the foundation that unblocks Phases B–G.
 
-**Architecture:** Two-step phase to preserve V2 users' upgrade path. Step A.1 ships a no-code-change v2.0.2 release whose only delta is a CHANGELOG entry pointing to the coming V3 + new name + new marketplace — this notice lands on the existing `altraweb-laravel` marketplace BEFORE the GitHub rename so V2 users see it through their current install. Step A.2 then performs the GitHub repo rename, creates the neutral `altraWeb/laravel-marketplace` host repo, updates all `/laravel-superpowers:*` slash-command paths to `/laravel-livewire-superpowers:*`, rebrands README/agents.md/hooks.md as the Livewire variant, writes UPGRADING.md, and cleans up 18 stale branches. All Phase A.2 changes ship as a single feature-branch PR (`feat/v3-phase-a-foundation`).
+**Architecture:** Two-step phase to preserve V2 users' upgrade path. Step A.1 ships a no-code-change v2.0.2 release whose only delta is a CHANGELOG entry pointing to the coming V3 + new name + new marketplace — this notice lands on the existing `altraweb-laravel` marketplace BEFORE the GitHub rename so V2 users see it through their current install. Step A.2 then performs the GitHub repo rename, creates the neutral `altraWeb/laravel-marketplace` host repo, updates all `/laravel-livewire-superpowers:*` slash-command paths to `/laravel-livewire-superpowers:*`, rebrands README/agents.md/hooks.md as the Livewire variant, writes UPGRADING.md, and cleans up 18 stale branches. All Phase A.2 changes ship as a single feature-branch PR (`feat/v3-phase-a-foundation`).
 
 **Tech Stack:** Bash + git + gh CLI + Python 3 (pytest + jsonschema) for marketplace validation test. No application-runtime code in this phase.
 
@@ -28,7 +28,7 @@
 |---|---|---|
 | `.claude-plugin/plugin.json` | Modify | `name`, `description`, `version` → `3.0.0-alpha.1`; description marks Livewire stack explicitly |
 | `.claude-plugin/marketplace.json` | Delete | Marketplace moves to neutral host repo |
-| `commands/status.md` | Modify | Internal slash-command refs `/laravel-superpowers:` → `/laravel-livewire-superpowers:` |
+| `commands/status.md` | Modify | Internal slash-command refs `/laravel-livewire-superpowers:` → `/laravel-livewire-superpowers:` |
 | `README.md` | Rewrite | Stack-explicit Livewire branding, new install URL, link to new marketplace |
 | `docs/agents.md` | Modify | Mark plugin as Livewire variant in header |
 | `docs/hooks.md` | Modify | Mark plugin as Livewire variant in header |
@@ -147,7 +147,7 @@ The full V3 design is at [`docs/superpowers/specs/2026-05-17-v3-livewire-megarel
 
 ### No breaking changes in this release
 
-v2.0.2 is byte-identical to v2.0.1 except for this CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-superpowers:status` slash command continue to behave exactly as in v2.0.1.
+v2.0.2 is byte-identical to v2.0.1 except for this CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-livewire-superpowers:status` slash command continue to behave exactly as in v2.0.1.
 
 ---
 
@@ -319,7 +319,7 @@ A full `UPGRADING.md` will ship with V3.
 
 ## No breaking changes in this release
 
-v2.0.2 is byte-identical to v2.0.1 except for the CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-superpowers:status` slash command continue to behave exactly as in v2.0.1.
+v2.0.2 is byte-identical to v2.0.1 except for the CHANGELOG entry and the version bump in `plugin.json` + `marketplace.json`. All hooks, agents, skills, and the `/laravel-livewire-superpowers:status` slash command continue to behave exactly as in v2.0.1.
 
 ## Design spec
 
@@ -637,15 +637,15 @@ Common failure modes:
 - `test_in_repo_marketplace_json_removed` fails → re-do Task 12 Step 1
 - `test_plugin_json_version_is_semver` fails → check for typo in version string
 
-### Task 14: Find and replace all `/laravel-superpowers:` slash-command path refs
+### Task 14: Find and replace all `/laravel-livewire-superpowers:` slash-command path refs
 
 **Files:**
-- Modify: All files containing the literal string `/laravel-superpowers:` (slash-prefix, colon-suffix matters — narrow match to avoid hitting plain `laravel-superpowers` in docs prose)
+- Modify: All files containing the literal string `/laravel-livewire-superpowers:` (slash-prefix, colon-suffix matters — narrow match to avoid hitting plain `laravel-superpowers` in docs prose)
 
 - [ ] **Step 1: List all files containing the old slash-command prefix**
 
 ```bash
-grep -rln '/laravel-superpowers:' --include='*.md' --include='*.sh' --include='*.py' --include='*.yaml' --include='*.json' .
+grep -rln '/laravel-livewire-superpowers:' --include='*.md' --include='*.sh' --include='*.py' --include='*.yaml' --include='*.json' .
 ```
 
 Expected output: a handful of files including `commands/status.md`, possibly `docs/agents.md`, `docs/hooks.md`, `README.md`, and any hook scripts that emit slash-command refs.
@@ -653,16 +653,16 @@ Expected output: a handful of files including `commands/status.md`, possibly `do
 - [ ] **Step 2: For each listed file, use the Edit tool with `replace_all: true`**
 
 For each file, run an Edit with:
-- `old_string`: `/laravel-superpowers:`
+- `old_string`: `/laravel-livewire-superpowers:`
 - `new_string`: `/laravel-livewire-superpowers:`
 - `replace_all`: `true`
 
 Do not use a bulk `sed -i` — the Edit tool is preferred per project tool conventions and gives per-file diff visibility.
 
-- [ ] **Step 3: Verify no `/laravel-superpowers:` references remain**
+- [ ] **Step 3: Verify no `/laravel-livewire-superpowers:` references remain**
 
 ```bash
-grep -rln '/laravel-superpowers:' --include='*.md' --include='*.sh' --include='*.py' --include='*.yaml' --include='*.json' .
+grep -rln '/laravel-livewire-superpowers:' --include='*.md' --include='*.sh' --include='*.py' --include='*.yaml' --include='*.json' .
 ```
 
 Expected: empty output (no matches).
@@ -704,14 +704,14 @@ Use the Write tool to produce a new `README.md` that:
 5. Version table updated: `v3.0.0-alpha.1` current, link to CHANGELOG for full history
 6. Migrating from v2: brief paragraph pointing to `UPGRADING.md`
 7. All existing feature lists (agents / skills / hooks / commands) updated to V3 counts: 10 agents / 7 skills / 13 hooks / 3 commands
-8. All `/laravel-superpowers:` refs already updated by Task 14
+8. All `/laravel-livewire-superpowers:` refs already updated by Task 14
 
 Preserve the existing section anchors and link conventions so external bookmarks from V2-era blog posts continue to resolve to roughly equivalent content.
 
-- [ ] **Step 3: Verify no `/laravel-superpowers:` slipped back in**
+- [ ] **Step 3: Verify no `/laravel-livewire-superpowers:` slipped back in**
 
 ```bash
-grep -c '/laravel-superpowers:' README.md
+grep -c '/laravel-livewire-superpowers:' README.md
 grep -c '/laravel-livewire-superpowers:' README.md
 ```
 
@@ -791,7 +791,7 @@ V3 is a major release that renames the plugin and moves the marketplace to a neu
 
 - **Plugin name:** `laravel-superpowers` → `laravel-livewire-superpowers`
 - **Marketplace:** moved from inside the plugin repo to a new neutral host repo `altraWeb/laravel-marketplace`
-- **Slash commands:** `/laravel-superpowers:*` → `/laravel-livewire-superpowers:*`
+- **Slash commands:** `/laravel-livewire-superpowers:*` → `/laravel-livewire-superpowers:*`
 - **No config schema changes** — your `~/.config/claude/laravel-superpowers.yaml` (if any) continues to apply unchanged after migration
 
 ### Why
@@ -816,7 +816,7 @@ claude /plugin install laravel-livewire-superpowers@altraweb-laravel
 
 ### Updating muscle memory
 
-Replace any habitual `/laravel-superpowers:status` invocations with `/laravel-livewire-superpowers:status`. The plugin name in CLAUDE.md files, project notes, or shell history that referenced `laravel-superpowers` should be updated to `laravel-livewire-superpowers` (no functional break — just hygiene).
+Replace any habitual `/laravel-livewire-superpowers:status` invocations with `/laravel-livewire-superpowers:status`. The plugin name in CLAUDE.md files, project notes, or shell history that referenced `laravel-superpowers` should be updated to `laravel-livewire-superpowers` (no functional break — just hygiene).
 
 ### Verifying the migration
 
@@ -831,7 +831,7 @@ Expected: `/status` panel renders cleanly with current sprint state. If the slas
 ### Troubleshooting
 
 - **Marketplace `altraweb-laravel` already exists after the remove step.** The marketplace name `altraweb-laravel` is reused intentionally by the new host repo. After `marketplace remove altraweb-laravel + marketplace add altraWeb/laravel-marketplace`, the marketplace re-registers under the same name but pointing at the new repo.
-- **Old `claude /laravel-superpowers:status` still works.** This means the V2 plugin is still installed in parallel. Run `claude /plugin list` to confirm and `claude /plugin uninstall laravel-superpowers` to remove.
+- **Old `claude /laravel-livewire-superpowers:status` still works.** This means the V2 plugin is still installed in parallel. Run `claude /plugin list` to confirm and `claude /plugin uninstall laravel-superpowers` to remove.
 - **Config not applied to V3 plugin.** The config helper reads `~/.config/claude/laravel-superpowers.yaml` — V3 keeps this exact path for backward compatibility. If your config seems ignored, run `python3 lib/config.py doctor` to diagnose.
 ````
 
@@ -853,7 +853,7 @@ First alpha of the V3 Megarelease. Phase A establishes the foundation: plugin re
 
 - **Plugin renamed** `laravel-superpowers` → `laravel-livewire-superpowers`. Reflected in `.claude-plugin/plugin.json` `name` field, in README title and install instructions, in all internal slash-command paths, in `docs/agents.md` + `docs/hooks.md` stack-scope banners.
 - **Marketplace moved** to `altraWeb/laravel-marketplace`. The in-repo `.claude-plugin/marketplace.json` is removed; the canonical marketplace.json now lives in the neutral host repo.
-- **Slash commands renamed** `/laravel-superpowers:*` → `/laravel-livewire-superpowers:*`. Only `/laravel-livewire-superpowers:status` exists in this alpha; `/audit-phase` and `/retro` ship in Phase E.
+- **Slash commands renamed** `/laravel-livewire-superpowers:*` → `/laravel-livewire-superpowers:*`. Only `/laravel-livewire-superpowers:status` exists in this alpha; `/audit-phase` and `/retro` ship in Phase E.
 
 ### Added
 
@@ -978,7 +978,7 @@ Changed:
   (.claude-plugin/plugin.json name + version 3.0.0-alpha.1).
 - Marketplace.json deleted from .claude-plugin/ — canonical marketplace
   now lives in altraWeb/laravel-marketplace neutral host repo.
-- All internal /laravel-superpowers: slash-command paths updated to
+- All internal /laravel-livewire-superpowers: slash-command paths updated to
   /laravel-livewire-superpowers:.
 - README, docs/agents.md, docs/hooks.md rebranded with Livewire stack
   scope banner + link to planned laravel-vue-superpowers sibling.
@@ -1034,7 +1034,7 @@ This PR is the foundation phase that unblocks Phases B-G. No new features yet �
 
 - Plugin renamed: `laravel-superpowers` → `laravel-livewire-superpowers`
 - Marketplace moved out of the plugin repo to neutral host `altraWeb/laravel-marketplace`
-- All `/laravel-superpowers:*` internal slash-command paths → `/laravel-livewire-superpowers:*`
+- All `/laravel-livewire-superpowers:*` internal slash-command paths → `/laravel-livewire-superpowers:*`
 - README, `docs/agents.md`, `docs/hooks.md` rebranded with Livewire stack scope banner
 
 ### Added

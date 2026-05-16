@@ -53,7 +53,7 @@ V2 builds the agents + skills + hooks that catch these classes of bugs **by cons
 ### Plugin infrastructure
 
 - [x] **[#22](https://github.com/altraWeb/laravel-superpowers/issues/22) Plugin config foundation** — config.yaml with sane defaults + project-override
-- [x] **[#23](https://github.com/altraWeb/laravel-superpowers/issues/23) Slash command `/laravel-superpowers:status`** — current sprint + Pilot 2.0 obligations
+- [x] **[#23](https://github.com/altraWeb/laravel-superpowers/issues/23) Slash command `/laravel-livewire-superpowers:status`** — current sprint + Pilot 2.0 obligations
 
 **V2-MVP total**: 16 issues
 

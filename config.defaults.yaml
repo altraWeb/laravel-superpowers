@@ -31,7 +31,7 @@ hook_enabled:
 # programmatically enforced — the `brainstorm-t1-audit` hook fires on every
 # `superpowers:brainstorming` invocation regardless of this value. For
 # `every-phase` and `every-commit` modes, the agent is expected to read this
-# setting via `/laravel-superpowers:status` and self-dispatch at the
+# setting via `/laravel-livewire-superpowers:status` and self-dispatch at the
 # corresponding boundary. There is no hook that auto-fires at phase or commit
 # boundaries (Claude Code does not emit those events). See
 # docs/audits/2026-05-15-v2-mvp-self-audit.md §"Should-fix S2".

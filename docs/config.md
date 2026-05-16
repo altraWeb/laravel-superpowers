@@ -64,7 +64,7 @@ How aggressively the Tier-1 audit (`laravel-best-practices` dispatch) should fir
 **Important — advisory vs. programmatic enforcement** (clarified in v2.0.1):
 
 - `brainstorm-only` is the only mode with **programmatic enforcement** — the `brainstorm-t1-audit` hook automatically fires on every `superpowers:brainstorming` invocation. The hook fires regardless of this setting's value.
-- `every-phase` and `every-commit` are **advisory metadata** that the orchestrator agent reads from `/laravel-superpowers:status` to decide when to self-dispatch the audit. There is no hook that fires at phase boundaries or per commit — Claude Code does not emit those events.
+- `every-phase` and `every-commit` are **advisory metadata** that the orchestrator agent reads from `/laravel-livewire-superpowers:status` to decide when to self-dispatch the audit. There is no hook that fires at phase boundaries or per commit — Claude Code does not emit those events.
 
 If you want strict "audit at every commit" enforcement, you'll need to manually dispatch `laravel-best-practices` via the Task tool before each commit. The configuration value advertises your preference; it does not enforce it.
 

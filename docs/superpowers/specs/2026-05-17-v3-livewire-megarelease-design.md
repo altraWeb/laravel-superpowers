@@ -95,7 +95,7 @@ altraWeb/
 
 ### Renamed (Rename Impact)
 
-- `/laravel-superpowers:status` → `/laravel-livewire-superpowers:status`
+- `/laravel-livewire-superpowers:status` → `/laravel-livewire-superpowers:status`
 
 ## 5. Release Phases & Sequencing
 
@@ -112,7 +112,7 @@ altraWeb/
 - Local directory rename `~/dev/laravel-superpowers/` → `~/dev/laravel-livewire-superpowers/` + `git remote set-url origin`
 - `plugin.json`: name + description + version → `3.0.0-alpha.1`
 - New `altraWeb/laravel-marketplace` repo with `marketplace.json` (lists Livewire plugin via github source; Vue slot prepared but commented out)
-- All `/laravel-superpowers:*` slash command paths → `/laravel-livewire-superpowers:*`
+- All `/laravel-livewire-superpowers:*` slash command paths → `/laravel-livewire-superpowers:*`
 - README + `docs/agents.md` + `docs/hooks.md` stack-explicit branding ("Livewire 4 + Flux Pro v2 stack")
 - Cleanup 13 stale remote branches + 2 stale local branches (all already merged via PRs)
 - `UPGRADING.md` (V2 → V3 migration: uninstall old, add new marketplace, install new plugin)

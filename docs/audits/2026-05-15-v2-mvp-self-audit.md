@@ -199,9 +199,9 @@ The case statement validates the value but does **not branch behavior** on it. T
 
 Two parts:
 
-1. **Documentation clarification** — update `docs/config.md` and `config.defaults.yaml` comments to explicitly state that `audit_aggressiveness` is **advisory metadata** that the orchestrator agent reads from `/laravel-superpowers:status` output to decide whether to dispatch the audit at phase boundaries / per commit. The brainstorm-time enforcement is automatic and constant.
+1. **Documentation clarification** — update `docs/config.md` and `config.defaults.yaml` comments to explicitly state that `audit_aggressiveness` is **advisory metadata** that the orchestrator agent reads from `/laravel-livewire-superpowers:status` output to decide whether to dispatch the audit at phase boundaries / per commit. The brainstorm-time enforcement is automatic and constant.
 
-2. **Status command surfaces the active level** — `/laravel-superpowers:status` already reads merged config; add one line to its output: `**Audit aggressiveness:** <value> (advisory; brainstorm-time enforced via hook)`.
+2. **Status command surfaces the active level** — `/laravel-livewire-superpowers:status` already reads merged config; add one line to its output: `**Audit aggressiveness:** <value> (advisory; brainstorm-time enforced via hook)`.
 
 No hook code change. The enum stays — it's not broken, it's underdocumented.
 
@@ -320,7 +320,7 @@ Add to each hook's test suite one scenario along the lines of:
 
 **Status:** investigated separately. All V2 defaults are operator-aligned (`pilot_version: 2`, `visual_companion_default: on`, `teamcity_always: true`, all hooks enabled). A per-project config becomes useful only if S1 is rejected and the operator wants to locally override `banned_tokens.project_extras` to exclude the date pattern. Once S1 lands upstream, no per-project config is needed.
 
-## 💡 Nice-to-have — N3: `/laravel-superpowers:status` does not understand `## Tier N` headings
+## 💡 Nice-to-have — N3: `/laravel-livewire-superpowers:status` does not understand `## Tier N` headings
 
 `commands/status.md` Step 2 says to extract phase progress via `## Phase \d+` headings. The operator's `master-roadmap-2026-q2.md` uses `## Tier 0 — HOTFIX SPRINT`, `## Tier 1 — STABILIZATION`, etc. Status command emits "n/a" for phase progress on these docs.
 
