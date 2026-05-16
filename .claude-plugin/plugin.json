@@ -1,7 +1,7 @@
 {
     "name": "laravel-livewire-superpowers",
     "version": "3.0.0-alpha.1",
-    "description": "Laravel + Livewire 4 + Flux Pro v2 + Pest 4 specialist toolkit for Claude Code. 10 agents (livewire / pest / flux-pro / architect / reviewer / best-practices / echo-reverb / spatie-permission-auditor / pilot-orchestrator / package-evaluator), 7 skills (TDD / debugging / code-review / brainstorming / a11y / mr-body-writer / perf-auditor), 13 hooks (banned-token / no-Claude-attribution / teamcity-always / anti-silent-deferral / visual-companion-default-on / brainstorm-T1-audit / sprint-state-context-injection / master-roadmap-drift-detector / stale-branch-sweep / vendor-source-preflight / lang-key-existence-preflight / pilot-2-contract-enforcer), 3 slash commands (status / audit-phase / retro). Full Pilot 2.0 contract enforcement (T1-T6).",
+    "description": "Laravel + Livewire 4 + Flux Pro v2 + Pest 4 specialist toolkit for Claude Code. Phase A (foundation) shipped; full counts (10 agents, 7 skills, 13 hooks, 3 slash commands, Pilot 2.0 T1-T6 enforcement) target v3.0.0 stable. Current v3.0.0-alpha.1 ships 6 agents + 4 skills + 7 hooks + 1 slash command (renamed paths from v2).",
     "author": {
         "name": "altraWeb"
     },

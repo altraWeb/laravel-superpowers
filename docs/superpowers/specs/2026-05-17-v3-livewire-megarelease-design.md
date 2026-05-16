@@ -95,7 +95,7 @@ altraWeb/
 
 ### Renamed (Rename Impact)
 
-- `/laravel-livewire-superpowers:status` → `/laravel-livewire-superpowers:status`
+- `/laravel-superpowers:status` → `/laravel-livewire-superpowers:status`
 
 ## 5. Release Phases & Sequencing
 
@@ -112,7 +112,7 @@ altraWeb/
 - Local directory rename `~/dev/laravel-superpowers/` → `~/dev/laravel-livewire-superpowers/` + `git remote set-url origin`
 - `plugin.json`: name + description + version → `3.0.0-alpha.1`
 - New `altraWeb/laravel-marketplace` repo with `marketplace.json` (lists Livewire plugin via github source; Vue slot prepared but commented out)
-- All `/laravel-livewire-superpowers:*` slash command paths → `/laravel-livewire-superpowers:*`
+- All `/laravel-superpowers:*` slash command paths → `/laravel-livewire-superpowers:*`
 - README + `docs/agents.md` + `docs/hooks.md` stack-explicit branding ("Livewire 4 + Flux Pro v2 stack")
 - Cleanup 13 stale remote branches + 2 stale local branches (all already merged via PRs)
 - `UPGRADING.md` (V2 → V3 migration: uninstall old, add new marketplace, install new plugin)
@@ -257,7 +257,7 @@ claude /plugin install laravel-livewire-superpowers@altraweb-laravel
 - After the rename in Phase A.2, GitHub maintains the URL redirect indefinitely. V2 users who somehow miss the v2.0.2 notice and still query the old URL get redirected to the new repo where the CHANGELOG explains the situation.
 - The old `altraweb-laravel` marketplace (currently lives inside the plugin repo at `.claude-plugin/marketplace.json`) gets replaced by the new neutral `altraWeb/laravel-marketplace` repo when V3 ships in Phase G.
 
-**Config compatibility:** User-config schema (`~/.config/claude/laravel-superpowers.yaml`) is unchanged. After migration the user's config continues to apply to the renamed plugin (the helper reads the same path).
+**Config compatibility:** User-config schema (`~/.claude/plugins/altraweb-laravel/laravel-superpowers/config.yaml`) is unchanged. After migration the user's config continues to apply to the renamed plugin (the helper reads the same path — the V2 plugin name is preserved in the path intentionally for backward compatibility).
 
 ## 9. Success Criteria / Definition of Done
 
