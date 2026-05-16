@@ -51,7 +51,7 @@ The marker is required to include a reason after the colon (operator convention 
 
 **Configuration:**
 
-In `~/.claude/plugins/altraweb-laravel/laravel-superpowers/config.yaml` (user) or `./.laravel-superpowers.yaml` (per-project):
+In `~/.claude/plugins/altraweb-laravel/laravel-superpowers/config.yaml` (user) or `./.laravel-superpowers.yaml` (per-project) — both filenames preserved from V2 for config compatibility:
 
 ```yaml
 hook_enabled:

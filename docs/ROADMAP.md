@@ -1,8 +1,8 @@
-# laravel-superpowers Roadmap
+# laravel-livewire-superpowers Roadmap
 
 > **Plugin extends [superpowers](https://github.com/anthropics/claude-plugins-official) with Laravel/Livewire/Flux/Pest expertise.**
 >
-> Status snapshots derived from labeled GitHub issues — see [Project board](https://github.com/altraWeb/laravel-superpowers/projects) for live status, [Milestones](https://github.com/altraWeb/laravel-superpowers/milestones) for version grouping.
+> Status snapshots derived from labeled GitHub issues — see [Project board](https://github.com/altraWeb/laravel-livewire-superpowers/projects) for live status, [Milestones](https://github.com/altraWeb/laravel-livewire-superpowers/milestones) for version grouping.
 
 This roadmap captures planned additions evidence-based from observed real-world sprint catches. Every entry links to a tracked GitHub issue with motivation, scope, and acceptance criteria.
 
@@ -29,31 +29,31 @@ V2 builds the agents + skills + hooks that catch these classes of bugs **by cons
 
 ### New agents
 
-- [x] **[#1](https://github.com/altraWeb/laravel-superpowers/issues/1) `laravel-livewire-specialist`** — deep Livewire 4 API + lifecycle knowledge. API-existence verification via reflection (catches fabricated `$this->hasLoading()` class of bug).
-- [x] **[#2](https://github.com/altraWeb/laravel-superpowers/issues/2) `laravel-pest-specialist`** — Pest 4 API depth + browser-plugin recipes. Catches `toContain` variadic, `wait(N)` smell, `$this`-mock-in-view anti-pattern.
-- [x] **[#3](https://github.com/altraWeb/laravel-superpowers/issues/3) `laravel-flux-pro-specialist`** — Flux Pro v2 vendor source traversal + slot composition. Catches redundant tooltip wrappers, position+align convention drift.
-- [x] **[#4](https://github.com/altraWeb/laravel-superpowers/issues/4) `laravel-architect`** — Eloquent + architecture decisions (N+1, eager-loading, Actions vs Services, migration safety).
-- [x] **[#5](https://github.com/altraWeb/laravel-superpowers/issues/5) `laravel-reviewer`** — wraps `laravel-code-review` skill with grep/find/MCP tool integration.
+- [x] **[#1](https://github.com/altraWeb/laravel-livewire-superpowers/issues/1) `laravel-livewire-specialist`** — deep Livewire 4 API + lifecycle knowledge. API-existence verification via reflection (catches fabricated `$this->hasLoading()` class of bug).
+- [x] **[#2](https://github.com/altraWeb/laravel-livewire-superpowers/issues/2) `laravel-pest-specialist`** — Pest 4 API depth + browser-plugin recipes. Catches `toContain` variadic, `wait(N)` smell, `$this`-mock-in-view anti-pattern.
+- [x] **[#3](https://github.com/altraWeb/laravel-livewire-superpowers/issues/3) `laravel-flux-pro-specialist`** — Flux Pro v2 vendor source traversal + slot composition. Catches redundant tooltip wrappers, position+align convention drift.
+- [x] **[#4](https://github.com/altraWeb/laravel-livewire-superpowers/issues/4) `laravel-architect`** — Eloquent + architecture decisions (N+1, eager-loading, Actions vs Services, migration safety).
+- [x] **[#5](https://github.com/altraWeb/laravel-livewire-superpowers/issues/5) `laravel-reviewer`** — wraps `laravel-code-review` skill with grep/find/MCP tool integration.
 
 ### Skill enhancements
 
-- [x] **[#13](https://github.com/altraWeb/laravel-superpowers/issues/13) Enhance `laravel-tdd`** — Pest 4 specifics (because modifier, datasets, it vs arch, assertAttribute)
-- [x] **[#14](https://github.com/altraWeb/laravel-superpowers/issues/14) Enhance `laravel-code-review`** — Livewire 4 + Flux Pro v2 sub-checklists
-- [x] **[#15](https://github.com/altraWeb/laravel-superpowers/issues/15) Enhance `laravel-debugging`** — top-10 Pest 4 RED-debugging recipes
+- [x] **[#13](https://github.com/altraWeb/laravel-livewire-superpowers/issues/13) Enhance `laravel-tdd`** — Pest 4 specifics (because modifier, datasets, it vs arch, assertAttribute)
+- [x] **[#14](https://github.com/altraWeb/laravel-livewire-superpowers/issues/14) Enhance `laravel-code-review`** — Livewire 4 + Flux Pro v2 sub-checklists
+- [x] **[#15](https://github.com/altraWeb/laravel-livewire-superpowers/issues/15) Enhance `laravel-debugging`** — top-10 Pest 4 RED-debugging recipes
 
 ### Hooks
 
-- [x] **[#16](https://github.com/altraWeb/laravel-superpowers/issues/16) Banned-token-leak guard** — PreToolUse on git commit
-- [x] **[#17](https://github.com/altraWeb/laravel-superpowers/issues/17) No-Claude-attribution** — PreToolUse on git commit + MR create
-- [x] **[#18](https://github.com/altraWeb/laravel-superpowers/issues/18) `--teamcity` always** — PreToolUse on `php artisan test`
-- [x] **[#19](https://github.com/altraWeb/laravel-superpowers/issues/19) Anti-silent-deferral pre-push** — PreToolUse on git push
-- [x] **[#20](https://github.com/altraWeb/laravel-superpowers/issues/20) Brainstorm-time T1 audit auto-dispatch** — PostToolUse on `superpowers:brainstorming`
-- [x] **[#21](https://github.com/altraWeb/laravel-superpowers/issues/21) Visual-companion-default-on** — PostToolUse brainstorming Step 2
+- [x] **[#16](https://github.com/altraWeb/laravel-livewire-superpowers/issues/16) Banned-token-leak guard** — PreToolUse on git commit
+- [x] **[#17](https://github.com/altraWeb/laravel-livewire-superpowers/issues/17) No-Claude-attribution** — PreToolUse on git commit + MR create
+- [x] **[#18](https://github.com/altraWeb/laravel-livewire-superpowers/issues/18) `--teamcity` always** — PreToolUse on `php artisan test`
+- [x] **[#19](https://github.com/altraWeb/laravel-livewire-superpowers/issues/19) Anti-silent-deferral pre-push** — PreToolUse on git push
+- [x] **[#20](https://github.com/altraWeb/laravel-livewire-superpowers/issues/20) Brainstorm-time T1 audit auto-dispatch** — PostToolUse on `superpowers:brainstorming`
+- [x] **[#21](https://github.com/altraWeb/laravel-livewire-superpowers/issues/21) Visual-companion-default-on** — PostToolUse brainstorming Step 2
 
 ### Plugin infrastructure
 
-- [x] **[#22](https://github.com/altraWeb/laravel-superpowers/issues/22) Plugin config foundation** — config.yaml with sane defaults + project-override
-- [x] **[#23](https://github.com/altraWeb/laravel-superpowers/issues/23) Slash command `/laravel-livewire-superpowers:status`** — current sprint + Pilot 2.0 obligations
+- [x] **[#22](https://github.com/altraWeb/laravel-livewire-superpowers/issues/22) Plugin config foundation** — config.yaml with sane defaults + project-override
+- [x] **[#23](https://github.com/altraWeb/laravel-livewire-superpowers/issues/23) Slash command `/laravel-livewire-superpowers:status`** — current sprint + Pilot 2.0 obligations
 
 **V2-MVP total**: 16 issues
 
@@ -65,16 +65,16 @@ V2 builds the agents + skills + hooks that catch these classes of bugs **by cons
 
 ### Agents + skills
 
-- [ ] **[#6](https://github.com/altraWeb/laravel-superpowers/issues/6) `laravel-a11y-specialist` skill** — WCAG 2.2 + ARIA + reduced-motion patterns
-- [ ] **[#7](https://github.com/altraWeb/laravel-superpowers/issues/7) `laravel-echo-reverb-specialist` agent** — broadcasting + realtime decision support
-- [ ] **[#8](https://github.com/altraWeb/laravel-superpowers/issues/8) `laravel-mr-body-writer` skill** — canonical MR body from sprint state
+- [ ] **[#6](https://github.com/altraWeb/laravel-livewire-superpowers/issues/6) `laravel-a11y-specialist` skill** — WCAG 2.2 + ARIA + reduced-motion patterns
+- [ ] **[#7](https://github.com/altraWeb/laravel-livewire-superpowers/issues/7) `laravel-echo-reverb-specialist` agent** — broadcasting + realtime decision support
+- [ ] **[#8](https://github.com/altraWeb/laravel-livewire-superpowers/issues/8) `laravel-mr-body-writer` skill** — canonical MR body from sprint state
 
 ### Hooks + slash commands
 
-- [ ] **[#24](https://github.com/altraWeb/laravel-superpowers/issues/24) Sprint-state context-injection** — SessionStart auto-resume
-- [ ] **[#25](https://github.com/altraWeb/laravel-superpowers/issues/25) Master-roadmap drift detector** — PostToolUse on docs/plans commits
-- [ ] **[#26](https://github.com/altraWeb/laravel-superpowers/issues/26) Stale-branch sweep** — SessionStart cleanup
-- [ ] **[#27](https://github.com/altraWeb/laravel-superpowers/issues/27) Slash commands `/audit-phase N` + `/retro`** — expand command suite
+- [ ] **[#24](https://github.com/altraWeb/laravel-livewire-superpowers/issues/24) Sprint-state context-injection** — SessionStart auto-resume
+- [ ] **[#25](https://github.com/altraWeb/laravel-livewire-superpowers/issues/25) Master-roadmap drift detector** — PostToolUse on docs/plans commits
+- [ ] **[#26](https://github.com/altraWeb/laravel-livewire-superpowers/issues/26) Stale-branch sweep** — SessionStart cleanup
+- [ ] **[#27](https://github.com/altraWeb/laravel-livewire-superpowers/issues/27) Slash commands `/audit-phase N` + `/retro`** — expand command suite
 
 **V2.1 total**: 7 issues
 
@@ -86,14 +86,14 @@ V2 builds the agents + skills + hooks that catch these classes of bugs **by cons
 
 ### Agents + skills
 
-- [ ] **[#9](https://github.com/altraWeb/laravel-superpowers/issues/9) `spatie-permission-auditor` agent** — gate coverage + dead-permission detection
-- [ ] **[#11](https://github.com/altraWeb/laravel-superpowers/issues/11) `laravel-perf-auditor` skill** — preventLazyLoading + query-count + cache patterns
-- [ ] **[#12](https://github.com/altraWeb/laravel-superpowers/issues/12) `laravel-package-evaluator` agent** — build-vs-buy decision support
+- [ ] **[#9](https://github.com/altraWeb/laravel-livewire-superpowers/issues/9) `spatie-permission-auditor` agent** — gate coverage + dead-permission detection
+- [ ] **[#11](https://github.com/altraWeb/laravel-livewire-superpowers/issues/11) `laravel-perf-auditor` skill** — preventLazyLoading + query-count + cache patterns
+- [ ] **[#12](https://github.com/altraWeb/laravel-livewire-superpowers/issues/12) `laravel-package-evaluator` agent** — build-vs-buy decision support
 
 ### Hooks
 
-- [ ] **[#28](https://github.com/altraWeb/laravel-superpowers/issues/28) Vendor-source pre-flight** — PreToolUse on Flux/Livewire blade edits
-- [ ] **[#29](https://github.com/altraWeb/laravel-superpowers/issues/29) Lang-key existence pre-flight** — PreToolUse on blade edits with `__()` calls
+- [ ] **[#28](https://github.com/altraWeb/laravel-livewire-superpowers/issues/28) Vendor-source pre-flight** — PreToolUse on Flux/Livewire blade edits
+- [ ] **[#29](https://github.com/altraWeb/laravel-livewire-superpowers/issues/29) Lang-key existence pre-flight** — PreToolUse on blade edits with `__()` calls
 
 **V2.2 total**: 5 issues
 
@@ -105,8 +105,8 @@ V2 builds the agents + skills + hooks that catch these classes of bugs **by cons
 
 ### Meta agents + hooks
 
-- [ ] **[#10](https://github.com/altraWeb/laravel-superpowers/issues/10) `laravel-pilot-orchestrator` agent** — Pilot 2.0 contract enforcer (on-demand)
-- [ ] **[#30](https://github.com/altraWeb/laravel-superpowers/issues/30) Pilot 2.0 contract enforcer hook** — meta hook reading orchestrator transcript (continuous)
+- [ ] **[#10](https://github.com/altraWeb/laravel-livewire-superpowers/issues/10) `laravel-pilot-orchestrator` agent** — Pilot 2.0 contract enforcer (on-demand)
+- [ ] **[#30](https://github.com/altraWeb/laravel-livewire-superpowers/issues/30) Pilot 2.0 contract enforcer hook** — meta hook reading orchestrator transcript (continuous)
 
 **V3 total**: 2 issues
 

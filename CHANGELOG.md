@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `laravel-superpowers` are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+All notable changes to `laravel-livewire-superpowers` (renamed from `laravel-superpowers` in V3) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [3.0.0-alpha.1] — 2026-05-17 — V3 Megarelease — Phase A: Foundation, Deprecation, Rename
 
@@ -30,8 +30,8 @@ See [`UPGRADING.md`](UPGRADING.md) for V2 → V3 migration steps.
 
 ### Phase A Status
 
-Phase A.1 (v2.0.2 deprecation cut on still-named repo) — shipped 2026-05-17 as v2.0.2.
-Phase A.2 (this alpha) — shipped 2026-05-17 as v3.0.0-alpha.1.
+Phase A.1 (v2.0.2 deprecation cut on still-named repo) — ✅ shipped 2026-05-17 as v2.0.2.
+Phase A.2 (this alpha) — ✅ shipped 2026-05-17 as v3.0.0-alpha.1.
 
 Phases B-G land in subsequent alpha/beta cuts before the v3.0.0 stable release.
 

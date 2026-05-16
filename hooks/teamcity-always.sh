@@ -134,7 +134,7 @@ Retry with --teamcity:
   ${suggested}
   ─────────────────────────────────────────────────────────────────
 
-To disable globally, set in .laravel-superpowers.yaml:
+To disable globally, set in .laravel-superpowers.yaml (filename preserved from V2 for config compatibility):
     hook_enabled:
       teamcity_always: false
     # OR

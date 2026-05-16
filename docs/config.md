@@ -1,12 +1,14 @@
 # Plugin Configuration Reference
 
-`laravel-superpowers` reads YAML config from three layers (lowest to highest precedence):
+`laravel-livewire-superpowers` reads YAML config from three layers (lowest to highest precedence):
 
 | Layer | Path | When to use |
 |---|---|---|
 | Defaults | `<plugin>/config.defaults.yaml` | Baked in — do not edit |
 | User-global | `~/.claude/plugins/altraweb-laravel/laravel-superpowers/config.yaml` | Per-machine preferences |
 | Per-project | `<project>/.laravel-superpowers.yaml` | Per-repo overrides |
+
+> **Note on path names:** both `laravel-superpowers/config.yaml` and `.laravel-superpowers.yaml` use the V2 plugin name — this is intentional. These paths are preserved across the V3 rename so existing V2 users' configs continue to apply without migration. See V3 design spec Section 8.
 
 Override hierarchy is **deep recursive**: nested keys (e.g. `hook_enabled.banned_token_leak_guard`) can be overridden individually without repeating the surrounding block.
 
@@ -102,7 +104,7 @@ Whether to always pass `--teamcity` to `php artisan test` (and `composer test` w
 User and project configs can add a schema pointer as their first line:
 
 ```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/altraWeb/laravel-superpowers/main/config.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/altraWeb/laravel-livewire-superpowers/main/config.schema.json
 ```
 
 VSCode with the YAML extension and Zed pick this up automatically and provide completion + inline validation.

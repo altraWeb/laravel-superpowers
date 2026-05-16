@@ -278,7 +278,7 @@ To unblock:
 Emergency override (logged):
   LARAVEL_SUPERPOWERS_ALLOW_UNCAPTURED_DEFERRAL=1 git push
 
-To disable globally, set in .laravel-superpowers.yaml:
+To disable globally, set in .laravel-superpowers.yaml (filename preserved from V2 for config compatibility):
     hook_enabled:
       anti_silent_deferral: false
 EOF
