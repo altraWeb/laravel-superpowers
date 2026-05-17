@@ -129,4 +129,49 @@
 
 ---
 
-_**All V2-MVP agents shipped.** See [ROADMAP.md](ROADMAP.md) for V2.1 forthcoming agents (`laravel-a11y-specialist`, `laravel-echo-reverb-specialist`, `laravel-mr-body-writer`) and the broader V2.2/V3 roadmap._
+### `laravel-echo-reverb-specialist`
+
+Broadcasting / realtime decision support. Scans `routes/channels.php`, `app/Notifications/`, `app/Events/`, and existing Echo callbacks in `resources/js/` to identify reuse-vs-new-channel opportunities BEFORE the brainstorm proposes a redundant broadcast.
+
+**Use when:**
+- Designing any realtime feature, broadcast event, presence/private channel
+- About to add a new Notification with broadcast routing
+- Reviewing whether a new `Event::dispatch()` is needed or an existing channel covers it
+
+**Stack:** Laravel + Echo + (Reverb / Pusher / Soketi). Read-only.
+
+**Issue:** [#7](https://github.com/altraWeb/laravel-livewire-superpowers/issues/7)
+
+---
+
+### `spatie-permission-auditor`
+
+Gate-coverage and dead-permission audit. Cross-references seeded permissions in `RolePermissionSeeder.php` against actual `@can()` / `$user->can()` / `middleware('can:...')` / Policy usage. Catches dead permissions, gate gaps, typo'd Blade refs, per-role drift.
+
+**Use when:**
+- Reviewing a feature with role/permission gates before shipping
+- Quarterly authorization-coverage sweep
+- Adding new roles or permissions to validate the seeder against actual usage
+
+**Stack:** Laravel + spatie/laravel-permission v6+ / v7+. Read-only. Runs `php artisan permission:show` if available.
+
+**Issue:** [#9](https://github.com/altraWeb/laravel-livewire-superpowers/issues/9)
+
+---
+
+### `laravel-package-evaluator`
+
+Build-vs-buy decision support. Given a feature description, searches Packagist + GitHub for 2-5 candidate packages and builds a structured trade-off matrix (license, stars, last-commit, Laravel-version compat, maintenance status, docs, test coverage, vs build-yourself LOC estimate). Recommends best-fit OR justifies build.
+
+**Use when:**
+- About to add a non-trivial feature where a package might exist (file versioning, audit logging, multi-tenancy, search, billing, ...)
+- "Should I use X package?" or "Is there a package for Y?"
+- Want a sanity-check before committing to a long-lived dependency
+
+**Stack:** Generic Laravel — applies to any version 10+. Heavy web research (WebFetch + WebSearch).
+
+**Issue:** [#12](https://github.com/altraWeb/laravel-livewire-superpowers/issues/12)
+
+---
+
+_**All V2-MVP + Phase-C agents shipped.** See [ROADMAP.md](ROADMAP.md) for forthcoming agents (`laravel-a11y-specialist`, `laravel-mr-body-writer`) and the broader V3 roadmap._
