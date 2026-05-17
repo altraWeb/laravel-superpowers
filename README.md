@@ -56,7 +56,7 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 - **laravel-mr-body-writer** — Canonical MR/PR body generator from sprint state (plan-doc + /status + git history → Summary / Pilot 2.0 / Test plan / Scope changes)
 - **laravel-perf-auditor** — Mechanical query-path safety sweep: preventLazyLoading status, N+1 patterns, cache strategy, query-count pinning, unbounded-query pagination
 
-## Agents (9)
+## Agents (10)
 
 - **laravel-best-practices** — Web research agent for current Laravel best practices (Spatie, Laracasts, Laravel News). Use when asking *"how should I implement X?"* or *"is my current approach still best practice?"*.
 - **laravel-livewire-specialist** — Audits Livewire-touching code/plans for fabricated APIs, `wire:ignore` zones, Form-Object patterns, Echo/broadcasting race conditions, and lifecycle-hook misuse. Verifies via PHP reflection against the actual Livewire vendor source — ground truth, not docs. Use before any Livewire-touching implementation phase.
@@ -67,11 +67,11 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 - **laravel-echo-reverb-specialist** — Broadcasting / realtime decision support. Scans channels, notifications, Echo callbacks to surface reuse-vs-new-channel decisions. Closes [#7](https://github.com/altraWeb/laravel-livewire-superpowers/issues/7).
 - **spatie-permission-auditor** — Gate-coverage + dead-permission audit. Cross-references seeded permissions vs actual `@can()` / `can()` / Policy usage. Closes [#9](https://github.com/altraWeb/laravel-livewire-superpowers/issues/9).
 - **laravel-package-evaluator** — Build-vs-buy decision support. Searches Packagist + GitHub for 2-5 candidates, builds trade-off matrix. Closes [#12](https://github.com/altraWeb/laravel-livewire-superpowers/issues/12).
-- **laravel-pilot-orchestrator** *(Phase D+)* — Pilot 2.0 contract orchestrator agent
+- **laravel-pilot-orchestrator** — On-demand Pilot 2.0 contract orchestrator. Reads active plan-doc Tactic Tracking sections + git log + audit history, emits per-phase T1-T4 compliance matrix, optionally dispatches missing specialists. Closes [#10](https://github.com/altraWeb/laravel-livewire-superpowers/issues/10).
 
 See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
-## Hooks (9 shipped — 13 planned for full V3)
+## Hooks (10 shipped — 13 planned for full V3)
 
 - **banned-token-leak-guard** — PreToolUse hook on `git commit` that blocks commits with banned tokens (Phase/Sprint/Track/MR/dated refs) in staged code/comments.
 - **no-claude-attribution** — PreToolUse hook on `git commit`, `gh pr create`, `glab mr create` that blocks any Claude / AI attribution.
@@ -82,9 +82,9 @@ See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 - **sprint-state-context-injection** — SessionStart hook that injects active sprint state (branch, plan-doc, phase, last commit) into session context.
 - **stale-branch-sweep** — SessionStart hook that lists local branches whose upstream is gone (post-merge cleanup suggestion).
 - **master-roadmap-drift-detector** — PostToolUse hook on `git commit` touching plan-docs that warns when master-roadmap entry is out of sync.
+- **pilot-2-contract-enforcer** — PostToolUse hook on `git commit`/`git push` that warns on open T3/T4 Pilot 2.0 Tactic Tracking markers in the active plan-doc. Closes [#30](https://github.com/altraWeb/laravel-livewire-superpowers/issues/30).
 - **vendor-source-preflight** *(Phase C+)* — Vendor source verification preflight
 - **lang-key-existence-preflight** *(Phase C+)* — Lang key existence verification
-- **pilot-2-contract-enforcer** *(Phase C+)* — Full Pilot 2.0 contract enforcement (T1-T6)
 - *(13th hook planned for Phase C+)*
 
 See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
@@ -92,8 +92,8 @@ See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
 ## Slash Commands (3)
 
 - **`/laravel-livewire-superpowers:status`** — Read-only status panel. Surfaces current sprint state, Pilot 2.0 contract obligations, hook compliance, open obligations. ≤2s response, no state mutation.
-- **`/laravel-livewire-superpowers:audit-phase`** *(Phase E+)* — Phase audit command
-- **`/laravel-livewire-superpowers:retro`** *(Phase E+)* — Retrospective command
+- **`/laravel-livewire-superpowers:audit-phase N`** — Dispatch a Pilot 2.0 T1 audit scoped to Phase N of the active plan-doc. Extracts phase scope, dispatches `laravel-best-practices` in parallel, archives audit report. Closes [#27](https://github.com/altraWeb/laravel-livewire-superpowers/issues/27).
+- **`/laravel-livewire-superpowers:retro`** — Generate an end-of-sprint retrospective report from plan-doc + git history + audit reports. Outputs per-phase Pilot 2.0 compliance matrix, drift instances, test-suite delta, screenshot artifacts list. Read-only.
 
 ## Designed to complement [superpowers](https://github.com/anthropics/claude-plugins-official)
 

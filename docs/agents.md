@@ -174,4 +174,30 @@ Build-vs-buy decision support. Given a feature description, searches Packagist +
 
 ---
 
-_**All V2-MVP + Phase-C agents shipped.** See [ROADMAP.md](ROADMAP.md) for forthcoming agents (`laravel-a11y-specialist`, `laravel-mr-body-writer`) and the broader V3 roadmap._
+---
+
+## `laravel-pilot-orchestrator`
+
+**Use when:** starting a new phase, before requesting code review, or when you suspect Pilot 2.0 contract drift. Produces a structured per-phase Tactic status report (T1-T4) and recommends next steps.
+
+**Trigger on:** `pilot status`, `pilot orchestrator`, `check pilot`, `contract status`, or anytime you need a Pilot 2.0 compliance snapshot.
+
+**Contract reference:** `docs/pilot-2-0-contract.md` — reads this file first for the canonical T1-T6 definition.
+
+**Workflow:**
+1. Pre-flight — confirms git repo + contract doc presence
+2. Detects active plan-doc from branch name (`docs/superpowers/plans/<topic>.md`)
+3. Parses all `## Phase N` Tactic Tracking sections → per-phase T1/T2/T3/T4 matrix
+4. Detects uncommitted obligations (open commits without T3 evidence, test files without T4 evidence)
+5. Emits structured markdown report with open obligations + concrete next steps
+6. Optionally dispatches `laravel-reviewer` (T3) or `laravel-pest-specialist` (T4) — always asks before dispatching
+
+**T5 + T6 (automated hooks):** not surfaced unless they failed — enforced continuously by `banned-token-leak-guard` and `anti-silent-deferral`.
+
+**Tools:** Read, Bash.
+
+**UNBOUND behavior:** if the plan-doc has no Tactic Tracking sections, emits `## Pilot 2.0 Status: UNBOUND` with instructions to bind via `docs/pilot-2-0-contract.md`.
+
+---
+
+_**V3 Phase E agents shipped.** See [ROADMAP.md](ROADMAP.md) for the broader V3 roadmap._

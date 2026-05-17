@@ -25,6 +25,7 @@ hook_enabled:
   sprint_state_context_injection: true
   stale_branch_sweep: true
   master_roadmap_drift_detector: true
+  pilot_2_contract_enforcer: true
 
 # When does Tier-1 audit auto-dispatch fire?
 #   every-phase     — agent dispatches at every Pilot phase boundary (advisory)
@@ -40,6 +41,13 @@ hook_enabled:
 # corresponding boundary. There is no hook that auto-fires at phase or commit
 # boundaries (Claude Code does not emit those events). See
 # docs/audits/2026-05-15-v2-mvp-self-audit.md §"Should-fix S2".
+#
+# audit_aggressiveness modes are now wired into the pilot-2-contract-enforcer
+# hook (added in v3.0.0-alpha.5):
+#   brainstorm-only — silent (no enforcement)
+#   every-phase     — warns on T3/T4 markers at git commit/push (default)
+#   every-commit    — currently warns too (block requires PostToolUse-block
+#                     support in Claude Code, not universally available)
 audit_aggressiveness: every-phase
 
 # Banned-token leak guard configuration.
@@ -55,6 +63,10 @@ banned_tokens:
     - "docs/superpowers/**"
     - "skills/**"
     - "CHANGELOG.md"
+    - "docs/*.md"
+    - "agents/**"
+    - "commands/**"
+    - "README.md"
 
 # Visual companion default for brainstorming Step 2.
 #   on  — auto-open browser companion
