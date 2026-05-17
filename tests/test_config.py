@@ -194,3 +194,10 @@ def test_get_stale_branch_sweep_auto_prune_default(cli):
     result = cli("get", "stale_branch_sweep.auto_prune")
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == "false"
+
+
+def test_get_pilot_2_contract_enforcer_default(cli):
+    """Phase E enforcer hook flag defaults to true."""
+    result = cli("get", "hook_enabled.pilot_2_contract_enforcer")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "true"

@@ -398,4 +398,59 @@ Run: `bash tests/test_master_roadmap_drift_detector_hook.sh` from repo root.
 
 ---
 
-_**V3 Phase B hooks shipped.** See [ROADMAP.md](ROADMAP.md) for the broader V3 roadmap (Phases C-G)._
+---
+
+### `pilot-2-contract-enforcer`
+
+**Event:** `PostToolUse` on `Bash` (filters internally to `git commit` and `git push` invocations).
+
+**What it does:** after a `git commit` or `git push`, reads the active plan-doc's `**Pilot 2.0 Tactic Tracking:**` section and warns on incomplete T3 (per-commit code review) or T4 (pre-test-write specialist audit) markers. Behavior scales with `audit_aggressiveness` config.
+
+**Why:** Pilot 2.0 T3/T4 obligations are easy to forget mid-sprint. This hook surfaces open obligations exactly when they're most actionable — right after a commit or push.
+
+**Contract reference:** `docs/pilot-2-0-contract.md` — the canonical T1-T6 definition.
+
+**Modes (audit_aggressiveness config):**
+
+| Mode | Behavior |
+|---|---|
+| `brainstorm-only` | Silent — no enforcement |
+| `every-phase` (default) | Warns on open T3/T4 markers at commit/push time |
+| `every-commit` | Currently warns too (block requires PostToolUse-block support in Claude Code, not universally available) |
+
+**T5 and T6 are NOT in scope** — they are already enforced by `banned-token-leak-guard` and `anti-silent-deferral` respectively.
+
+**Plan-doc tactic tracking format:**
+
+```markdown
+**Pilot 2.0 Tactic Tracking:**
+- [x] T3 reviewed all commits
+- [ ] T4 pending for tests: tests/Feature/FeatureXTest.php
+```
+
+The hook uses `awk` to extract the Tactic Tracking block and `grep` to detect unchecked markers (`- [ ] T3` or `- [ ] T4`).
+
+**Configuration:**
+
+```yaml
+hook_enabled:
+  pilot_2_contract_enforcer: true    # set to false to disable
+
+audit_aggressiveness: every-phase   # brainstorm-only | every-phase | every-commit
+```
+
+**Failure mode:** fail-open — always exits 0. Malformed JSON → silent. No plan-doc with Tactic Tracking → silent.
+
+**Test evidence:** ships with `tests/test_pilot_2_contract_enforcer_hook.sh` — 6 scenarios:
+1. Complete Tactic markers → silent ✅
+2. T3 incomplete, every-phase → warns with T3 reference ✅
+3. Non-PostToolUse event → silent ✅
+4. Bash command that isn't git commit/push → silent ✅
+5. No plan-doc with Tactic Tracking → silent ✅
+6. Malformed JSON → silent ✅
+
+Run: `bash tests/test_pilot_2_contract_enforcer_hook.sh` from repo root.
+
+---
+
+_**V3 Phase E hooks shipped.** See [ROADMAP.md](ROADMAP.md) for the broader V3 roadmap._

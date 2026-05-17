@@ -2,6 +2,36 @@
 
 All notable changes to `laravel-livewire-superpowers` (renamed from `laravel-superpowers` in V3) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0-alpha.5] — 2026-05-17 — V3 Megarelease — Phase E: Pilot 2.0 Meta-Layer
+
+Phase E formalizes the Pilot 2.0 contract from convention to automation. Ships the meta-orchestrator agent + continuous enforcer hook + two new slash commands + canonical contract reference doc.
+
+### Added
+
+- **[#10](https://github.com/altraWeb/laravel-livewire-superpowers/issues/10) `laravel-pilot-orchestrator` agent.** On-demand Pilot 2.0 contract orchestrator. Reads the active plan-doc's Tactic Tracking sections + git log + audit history, emits a structured per-phase T1/T2/T3/T4 compliance matrix, and optionally dispatches missing specialists (`laravel-reviewer` for T3, `laravel-pest-specialist` for T4). Always asks before dispatching.
+- **[#30](https://github.com/altraWeb/laravel-livewire-superpowers/issues/30) `pilot-2-contract-enforcer` hook.** PostToolUse:Bash hook that filters to `git commit`/`git push`, reads the active plan-doc Pilot 2.0 Tactic Tracking section, and warns on open T3/T4 markers. Behavior controlled by `audit_aggressiveness` config (`brainstorm-only` silent, `every-phase` warns, `every-commit` warns with intent to block when PostToolUse-block support is universal). T5/T6 remain in their existing dedicated hooks.
+- **[#27](https://github.com/altraWeb/laravel-livewire-superpowers/issues/27) `/laravel-livewire-superpowers:audit-phase N` slash command.** Phase-scoped Pilot 2.0 T1 audit dispatch. Detects active plan-doc from branch name, extracts Phase N scope, dispatches `laravel-best-practices` in parallel, archives output to `docs/superpowers/audits/`, suggests T1 marker update in plan-doc.
+- **`/laravel-livewire-superpowers:retro` slash command.** End-of-sprint retrospective generator. Reads plan-doc + git history + audit reports. Outputs per-phase Pilot 2.0 compliance matrix, drift instances, test-suite delta (files touched + assertion count), screenshot artifacts list. Read-only — never mutates state.
+- **`docs/pilot-2-0-contract.md`** — Canonical Pilot 2.0 contract reference doc. Defines the full T1-T6 Tactic table, plan-doc marker convention, `audit_aggressiveness` mode semantics, component interaction diagram, and operator decision guide (when to bind / skip the contract). Single source of truth cited by the orchestrator agent, enforcer hook, and commands.
+
+### Changed
+
+- `hooks/hooks.json` — `pilot-2-contract-enforcer` registered under `PostToolUse.Bash` alongside `master-roadmap-drift-detector` (2 hooks under that matcher, up from 1).
+- `config.defaults.yaml` — `hook_enabled.pilot_2_contract_enforcer: true` added. `audit_aggressiveness` comment extended to document the new wiring into the enforcer hook.
+- `tests/test_config.py` — 1 new test `test_get_pilot_2_contract_enforcer_default` (31 tests total, up from 30).
+- `docs/hooks.md` — new `pilot-2-contract-enforcer` reference section.
+- `docs/agents.md` — new `laravel-pilot-orchestrator` reference section.
+- `README.md` — hook count `9 → 10`, agent count `9 → 10`, slash command descriptions updated (1 → 3 shipped).
+- `.claude-plugin/plugin.json` version `3.0.0-alpha.4` → `3.0.0-alpha.5`. Counts updated: 10 agents, 7 skills, 10 hooks, 3 commands.
+
+### Phase Status
+
+Phase E (this alpha) — shipped 2026-05-17 as v3.0.0-alpha.5.
+
+Phases F-G remain.
+
+---
+
 ## [3.0.0-alpha.4] — 2026-05-17 — V3 Megarelease — Phase D: Skills
 
 Phase D adds three Laravel-specific skills (process guidance, not code execution). All three are read-only.
