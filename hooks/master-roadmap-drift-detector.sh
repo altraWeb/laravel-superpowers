@@ -78,6 +78,8 @@ while IFS= read -r plan; do
     [ ! -f "$plan" ] && continue
 
     plan_basename="$(basename "$plan" .md)"
+    # Strip leading YYYY-MM-DD- date prefix if present (plan files in docs/plans/ are date-prefixed)
+    plan_basename_clean="$(echo "$plan_basename" | sed 's/^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}-//')"
 
     # Parse plan-doc state (look for archive/shipped/merged markers in first 20 lines)
     plan_state="$(head -20 "$plan" 2>/dev/null | grep -iE 'status:|shipped|archived|merged' | head -1 || true)"
@@ -91,16 +93,17 @@ while IFS= read -r plan; do
 
     # Find matching entry in each master-roadmap
     # Build a flexible pattern: "feature-x" matches "feature-x", "feature x", "Feature X", etc.
-    plan_pattern="$(echo "$plan_basename" | sed 's/-/[-_ ]/g')"
+    # Use plan_basename_clean (date-prefix stripped) so "2026-05-17-v3-phase-b" -> "v3-phase-b"
+    plan_pattern="$(echo "$plan_basename_clean" | sed 's/-/[-_ ]/g')"
 
     found_in_roadmap=""
     roadmap_says_pending="no"
     while IFS= read -r roadmap; do
         [ -z "$roadmap" ] && continue
-        if grep -qiE "$plan_pattern" "$roadmap" 2>/dev/null; then
+        if grep -qiE "(^|[[:blank:][:punct:]])${plan_pattern}([[:blank:][:punct:]]|$)" "$roadmap" 2>/dev/null; then
             found_in_roadmap="yes"
             # Read the matching line
-            roadmap_line="$(grep -iE "$plan_pattern" "$roadmap" | head -1)"
+            roadmap_line="$(grep -iE "(^|[[:blank:][:punct:]])${plan_pattern}([[:blank:][:punct:]]|$)" "$roadmap" | head -1)"
             if printf '%s' "$roadmap_line" | grep -qiE 'ready for review|pending|in.progress|on branch|todo'; then
                 roadmap_says_pending="yes"
             fi

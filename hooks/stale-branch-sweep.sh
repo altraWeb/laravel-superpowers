@@ -37,10 +37,12 @@ fi
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
 
 # ─── Step 5: Fetch with prune (silent) ───────────────────────────────────────
-git fetch --prune --quiet 2>/dev/null || true
+# Time-bounded fetch — 10s connect timeout, no terminal prompts. Won't block session start
+# if remote is slow/unreachable.
+GIT_TERMINAL_PROMPT=0 git -c http.connectTimeout=5 -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=5 fetch --prune --quiet 2>/dev/null || true
 
 # ─── Step 6: List local branches with upstream gone ──────────────────────────
-stale_branches="$(git branch -vv 2>/dev/null | grep ': gone\]' | awk '{print $1}' | sed 's/^\*//' | xargs -n1 echo | sort -u || true)"
+stale_branches="$(git branch -vv 2>/dev/null | grep ': gone\]' | sed 's/^\* //' | awk '{print $1}' | sort -u || true)"
 
 if [ -z "$stale_branches" ]; then
     exit 0

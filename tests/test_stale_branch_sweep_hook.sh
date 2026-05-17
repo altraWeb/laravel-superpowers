@@ -116,12 +116,38 @@ fi
 cd - >/dev/null
 
 echo ""
-echo "▶ Test 6: Malformed JSON — silent passthrough"
-out="$(printf 'not json' | bash "$HOOK" 2>&1 || true)"
-if [ -z "$(echo "$out" | grep -v '^$')" ] 2>/dev/null || [ -z "$out" ]; then
+echo "▶ Test 6: Currently-checked-out branch with gone upstream — detected as stale"
+repo_dir="$(mktemp -d)"
+bare_dir="$repo_dir/remote.git"
+git init -q --bare "$bare_dir"
+cd "$repo_dir"
+git clone -q "$bare_dir" work
+cd work
+git config user.email t@t
+git config user.name T
+git commit -q --allow-empty -m "init"
+git push -q -u origin main 2>/dev/null || git push -q -u origin master 2>/dev/null
+git checkout -q -b feat/current-branch-test
+git commit -q --allow-empty -m "feature work"
+git push -q -u origin feat/current-branch-test
+git push -q origin --delete feat/current-branch-test
+# Now feat/current-branch-test is the current branch AND has gone upstream
+out="$(run_hook '{"hook_event_name":"SessionStart"}')"
+ctx="$(extract_context "$out")"
+if printf '%s' "$ctx" | grep -q "feat/current-branch-test"; then
     assert_pass "Test 6"
 else
-    assert_fail "Test 6" "expected silent on malformed JSON, got: $out"
+    assert_fail "Test 6" "current branch with gone upstream should be detected, got: $ctx"
+fi
+cd - >/dev/null
+
+echo ""
+echo "▶ Test 7: Malformed JSON — silent passthrough"
+out="$(printf 'not json' | bash "$HOOK" 2>&1 || true)"
+if [ -z "$(echo "$out" | grep -v '^$')" ] 2>/dev/null || [ -z "$out" ]; then
+    assert_pass "Test 7"
+else
+    assert_fail "Test 7" "expected silent on malformed JSON, got: $out"
 fi
 
 echo ""

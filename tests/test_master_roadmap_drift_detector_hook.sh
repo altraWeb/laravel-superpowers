@@ -105,12 +105,39 @@ else
 fi
 
 echo ""
-echo "▶ Test 6: Malformed JSON — silent"
-out="$(printf 'not json' | bash "$HOOK" 2>&1 || true)"
-if [ -z "$(echo "$out" | grep -v '^$')" ] 2>/dev/null || [ -z "$out" ]; then
+echo "▶ Test 6: Date-prefixed plan-doc with matching roadmap entry — silent (no false positive)"
+repo="$(mktemp -d)"
+cd "$repo"
+git init -q
+git config user.email t@t; git config user.name T
+mkdir -p docs/plans
+cat > docs/plans/2026-05-17-v3-phase-b-quickwin-hooks.md <<'EOF'
+# V3 Phase B Quickwin Hooks
+**Status:** archived (shipped via MR !54)
+EOF
+cat > docs/plans/master-roadmap-2026-q2.md <<'EOF'
+# Master Roadmap Q2 2026
+- V3 Phase B Quickwin Hooks: shipped via MR !54
+EOF
+git add -A
+git commit -q -m "docs(plans): archive phase-b plan"
+out="$(run_hook '{"hook_event_name":"PostToolUse","tool_name":"Bash","tool_input":{"command":"git commit -m \"docs(plans): archive phase-b plan\""}}')"
+# After strip-date-prefix fix: pattern is "v3[-_ ]phase[-_ ]b[-_ ]quickwin[-_ ]hooks" which matches
+# the roadmap line. Both archived AND found in roadmap -> no drift warning expected.
+if [ -z "$out" ]; then
     assert_pass "Test 6"
 else
-    assert_fail "Test 6" "expected silent on malformed JSON, got: $out"
+    assert_fail "Test 6" "date-prefixed plan with matching roadmap should be silent, got: $out"
+fi
+cd - >/dev/null
+
+echo ""
+echo "▶ Test 7: Malformed JSON — silent"
+out="$(printf 'not json' | bash "$HOOK" 2>&1 || true)"
+if [ -z "$(echo "$out" | grep -v '^$')" ] 2>/dev/null || [ -z "$out" ]; then
+    assert_pass "Test 7"
+else
+    assert_fail "Test 7" "expected silent on malformed JSON, got: $out"
 fi
 
 echo ""

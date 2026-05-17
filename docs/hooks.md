@@ -349,6 +349,10 @@ Run: `bash tests/test_brainstorm_t1_audit_hook.sh` from repo root.
 - `LARAVEL_SUPERPOWERS_SKIP_AUTO_RESUME` env var is set
 - `hook_enabled.sprint_state_context_injection: false` in config
 
+Run: `bash tests/test_sprint_state_context_injection_hook.sh` from repo root.
+
+---
+
 ### `stale-branch-sweep`
 
 **Event:** `SessionStart`.
@@ -366,6 +370,10 @@ Run: `bash tests/test_brainstorm_t1_audit_hook.sh` from repo root.
 
 - `hook_enabled.stale_branch_sweep: false` in config
 - Not inside a git working tree
+
+Run: `bash tests/test_stale_branch_sweep_hook.sh` from repo root.
+
+---
 
 ### `master-roadmap-drift-detector`
 
@@ -385,6 +393,8 @@ Run: `bash tests/test_brainstorm_t1_audit_hook.sh` from repo root.
 - `hook_enabled.master_roadmap_drift_detector: false` in config
 - No master-roadmap files exist (suggests creating one)
 - Commit doesn't touch any `docs/plans/*.md` outside the master-roadmap itself
+
+Run: `bash tests/test_master_roadmap_drift_detector_hook.sh` from repo root.
 
 ---
 
