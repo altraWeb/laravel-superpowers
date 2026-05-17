@@ -217,13 +217,13 @@ Phases B-G land in subsequent alpha/beta cuts before the v3.0.0 stable release.
 
 ### Migration
 
-A `UPGRADING.md` ships with V3 documenting the steps. The short version (run inside Claude Code, not bash):
+A `UPGRADING.md` ships with V3 documenting the steps. The short version (from your shell):
 
-```
-/plugin uninstall laravel-superpowers
-/plugin marketplace remove altraweb-laravel
-/plugin marketplace add altraWeb/laravel-marketplace
-/plugin install laravel-livewire-superpowers@altraweb-laravel
+```bash
+claude plugin uninstall laravel-superpowers
+claude plugin marketplace remove altraweb-laravel
+claude plugin marketplace add altraWeb/laravel-marketplace
+claude plugin install laravel-livewire-superpowers@altraweb-laravel
 ```
 
 ### Design spec
