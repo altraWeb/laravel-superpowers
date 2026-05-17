@@ -56,7 +56,7 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 - **laravel-mr-body-writer** *(Phase B+)* — MR/PR description writer for Laravel projects
 - **laravel-perf-auditor** *(Phase B+)* — Performance audit: N+1, eager loading, cache strategies
 
-## Agents (10)
+## Agents (9)
 
 - **laravel-best-practices** — Web research agent for current Laravel best practices (Spatie, Laracasts, Laravel News). Use when asking *"how should I implement X?"* or *"is my current approach still best practice?"*.
 - **laravel-livewire-specialist** — Audits Livewire-touching code/plans for fabricated APIs, `wire:ignore` zones, Form-Object patterns, Echo/broadcasting race conditions, and lifecycle-hook misuse. Verifies via PHP reflection against the actual Livewire vendor source — ground truth, not docs. Use before any Livewire-touching implementation phase.
