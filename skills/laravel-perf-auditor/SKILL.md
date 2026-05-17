@@ -72,7 +72,7 @@ For any controller action or Livewire method that:
 ```php
 // Acceptable patterns
 Cache::remember('home.featured', now()->addHours(1), fn () => Post::featured()->get());
-Cache::tags(['posts'])->remember(...);
+Cache::tags(['posts'])->remember(...); // (requires Redis or Memcached driver — fails on file/array/database cache)
 ```
 
 **Findings:**

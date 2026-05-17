@@ -86,6 +86,8 @@ document.addEventListener('visibilitychange', () => {
 });
 ```
 
+**Livewire integration:** In Livewire 4 + Alpine, wrap the listener in an Alpine `x-init` / `x-effect` or in `Alpine.data(...)` so it's cleaned up on component re-render. Bare `document.addEventListener` in a Blade can leak listeners across Livewire morphs.
+
 **Why:** Vestibular disorders, motion sickness, ADHD distraction. WCAG 2.3.3 (Animation from Interactions, AAA).
 
 ### 5. Audio Control (WCAG 2.2 §1.4.2)
@@ -144,5 +146,5 @@ If yes to any → consult the specific pattern above before implementing.
 
 - [WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/)
 - [Livewire Loading States docs](https://livewire.laravel.com/docs/wire-loading)
-- [Flux Pro v2 Modal a11y notes](vendor/livewire/flux-pro/stubs/) — check vendor source for canonical patterns
+- Flux Pro v2 Modal a11y — inspect `vendor/livewire/flux-pro/stubs/` for canonical patterns
 - [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)

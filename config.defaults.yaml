@@ -53,6 +53,7 @@ banned_tokens:
   exception_paths:
     - "docs/plans/**"
     - "docs/superpowers/**"
+    - "skills/**"
     - "CHANGELOG.md"
 
 # Visual companion default for brainstorming Step 2.

@@ -23,7 +23,7 @@ You are generating the canonical merge-request body for a finished Laravel sprin
 
 ## Pilot 2.0 contract
 
-- T1 Best-Practices Audit: ✓ dispatched 2026-05-14 (see `docs/superpowers/audits/2026-05-14-<topic>-audit.md`)
+- T1 Best-Practices Audit: ✓ dispatched <YYYY-MM-DD> (see `docs/superpowers/audits/<YYYY-MM-DD>-<topic>-audit.md`)
 - T2 Visual Companion: ✓ offered, used for layout mockups
 - T3 Per-Commit Review: ✓ all commits reviewed by `laravel-reviewer` agent
 - T4 Pre-Test-Write Audit: ✓ `laravel-pest-specialist` invoked before each test file
@@ -115,7 +115,7 @@ For each `## Phase N` section:
 For each test file in the diff:
 
 ```bash
-grep -cE "(it|test)\(|expect\(" tests/path/to/TestFile.php
+grep -cE "(it|test|describe)\(|expect\(" tests/path/to/TestFile.php
 ```
 
 For Pest browser tests, count `->visit()` calls as scenarios.
