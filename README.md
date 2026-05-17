@@ -117,7 +117,10 @@ Run the superpowers skill first for generic structure; run the laravel-livewire-
 
 ## Versions
 
-- **v3.0.0-alpha.2 (2026-05-17) — V3 Megarelease Phase B** *(current)* — Three context-aware hooks that surface daily sprint state without operator action: `sprint-state-context-injection`, `stale-branch-sweep`, `master-roadmap-drift-detector`. Now 9 hooks shipped.
+- **v3.0.0-alpha.5 (2026-05-17) — V3 Megarelease Phase E** *(current)* — Pilot 2.0 Meta-Layer: `laravel-pilot-orchestrator` agent + `pilot-2-contract-enforcer` hook + `/audit-phase` + `/retro` slash commands + canonical `docs/pilot-2-0-contract.md`. Now 10 agents / 7 skills / 10 hooks / 3 slash commands.
+- **v3.0.0-alpha.4 (2026-05-17) — V3 Megarelease Phase D** — Three Laravel-specific skills: `laravel-a11y-specialist`, `laravel-mr-body-writer`, `laravel-perf-auditor`. Now 7 skills shipped.
+- **v3.0.0-alpha.3 (2026-05-17) — V3 Megarelease Phase C** — Three specialist agents: `laravel-echo-reverb-specialist`, `spatie-permission-auditor`, `laravel-package-evaluator`. Now 9 agents shipped.
+- **v3.0.0-alpha.2 (2026-05-17) — V3 Megarelease Phase B** — Three context-aware hooks that surface daily sprint state without operator action: `sprint-state-context-injection`, `stale-branch-sweep`, `master-roadmap-drift-detector`. Now 9 hooks shipped.
 - **v3.0.0-alpha.1 (2026-05-17) — V3 Megarelease Phase A** — Plugin renamed to `laravel-livewire-superpowers`, marketplace moved to neutral host `altraWeb/laravel-marketplace`, all branding updated. Foundation phase that unblocks Phases B-G.
 - **v2.0.2 (2026-05-17) — Deprecation notice** — No code changes. Deprecation notice announcing V3 + rename.
 - **v2.0.1 (2026-05-15) — V2-MVP self-audit hotfix** — Quote-bypass, date false-positives, composer-test, command-position filter.
