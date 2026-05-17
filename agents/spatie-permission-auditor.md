@@ -2,7 +2,7 @@
 name: spatie-permission-auditor
 description: "Use in Laravel projects with Spatie Permission (spatie/laravel-permission v6+/v7+) when reviewing authorization coverage, before shipping a feature with role/permission gates, or as a standalone audit. Cross-references seeded permissions in database/seeders/*RolePermission*Seeder.php vs actual @can()/can()/$user->can()/middleware('can:...')/Policy::class usage. Catches: dead permissions (seeded but never checked), gate gaps (routes without authorize/Policy), typo'd Blade @can() refs, per-role permission matrix drift. Trigger on any 'auth', 'permission', 'role', 'policy', 'gate', 'authorize', 'Spatie' or pre-ship reviews of features with access control."
 model: inherit
-tools: "Read, Bash, WebFetch, WebSearch"
+tools: "Read, Bash"
 maxTurns: 25
 color: yellow
 memory: user
@@ -62,19 +62,19 @@ Search the codebase for every check site:
 
 ```bash
 # Blade gates
-grep -rEn "@can\(['\"]([^'\"]+)['\"]" resources/views/ 2>/dev/null | head -50
+grep -rEn "@can\(['\"][^'\"]+['\"]" resources/views/ 2>/dev/null | head -50
 
-# PHP can() checks (both on the User model and via Gate facade)
-grep -rEn '\$user->can\(['\"]([^'\"]+)['\"]\)|Gate::allows\(['\"]([^'\"]+)['\"]\)|Gate::denies\(['\"]([^'\"]+)['\"]\)|Auth::user\(\)->can\(['\"]([^'\"]+)['\"]\)' app/ resources/ 2>/dev/null | head -50
+# PHP can() checks (covers both quote styles via ["'])
+grep -rEn "(\\\$user->can|Gate::allows|Gate::denies|Auth::user\(\)->can)\([\"'][^\"']+[\"']\)" app/ resources/ 2>/dev/null | head -50
 
 # Middleware can: directive
-grep -rEn "middleware\(['\"]can:([^'\"]+)['\"]\)|->can\(['\"]([^'\"]+)['\"]\)" routes/ app/Http/ 2>/dev/null | head -30
+grep -rEn "middleware\([\"']can:[^\"']+[\"']\)|->can\([\"'][^\"']+[\"']\)" routes/ app/Http/ 2>/dev/null | head -30
 
 # Authorize calls
-grep -rEn '\$this->authorize\(['\"]([^'\"]+)['\"]' app/Http/Controllers/ app/Livewire/ 2>/dev/null | head -30
+grep -rEn "\\\$this->authorize\([\"'][^\"']+[\"']" app/Http/Controllers/ app/Livewire/ 2>/dev/null | head -30
 
 # Policy ability references
-ls app/Policies/*.php 2>/dev/null && grep -rEn 'public function (\w+)\(' app/Policies/ 2>/dev/null | head -30
+ls app/Policies/*.php 2>/dev/null && grep -rEn "public function (\w+)\(" app/Policies/ 2>/dev/null | head -30
 ```
 
 Build a usage inventory:
