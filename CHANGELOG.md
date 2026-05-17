@@ -2,6 +2,44 @@
 
 All notable changes to `laravel-livewire-superpowers` (renamed from `laravel-superpowers` in V3) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] — 2026-05-17 — V3 Megarelease — Stable
+
+The V3 Megarelease consolidates 6 phased alpha releases (alpha.1 through alpha.6) into a single stable cut. The plugin transitions from `laravel-superpowers` (V2) to `laravel-livewire-superpowers` (V3), with a sibling `laravel-vue-superpowers` planned next.
+
+### Summary
+
+V3 ships:
+- **10 specialist agents** — Livewire / Pest / Flux Pro / architect / reviewer / best-practices / echo-reverb / spatie-permission / package-evaluator / pilot-orchestrator
+- **7 stack-enhanced skills** — TDD / debugging / code-review / brainstorming / a11y / mr-body-writer / perf-auditor
+- **12 enforcement & context-injection hooks** — banned-token-leak-guard / no-Claude-attribution / teamcity-always / anti-silent-deferral / visual-companion-default-on / brainstorm-T1-audit / sprint-state-context-injection / stale-branch-sweep / master-roadmap-drift-detector / pilot-2-contract-enforcer / vendor-source-preflight / lang-key-existence-preflight
+- **3 slash commands** — `/status`, `/audit-phase N`, `/retro`
+- **Full Pilot 2.0 contract** formalization with canonical reference doc + meta-orchestrator agent + continuous enforcer hook + plan-doc Tactic-marker convention
+- **Neutral marketplace** at `altraWeb/laravel-marketplace` (no longer bundled in plugin repo)
+
+### Phase rollup
+
+- **Phase A** (foundation): plugin renamed laravel-superpowers → laravel-livewire-superpowers, marketplace moved to neutral host repo, UPGRADING.md, 18 stale branches cleaned
+- **Phase B** (quickwin hooks, 3 hooks): SessionStart sprint-state + stale-branch + PostToolUse drift-detector
+- **Phase C** (specialist agents, 3 agents): echo-reverb-specialist + spatie-permission-auditor + package-evaluator
+- **Phase D** (skills, 3 skills): a11y-specialist + mr-body-writer + perf-auditor
+- **Phase E** (Pilot 2.0 meta-layer): orchestrator agent + enforcer hook + 2 slash commands + contract reference doc
+- **Phase F** (advanced blade hooks, 2 hooks): vendor-source-preflight + lang-key-existence-preflight
+
+### Migration
+
+V2 users follow `UPGRADING.md` (4-command flow: uninstall old, swap marketplace, install renamed plugin).
+
+### Self-audit
+
+Full audit: `docs/audits/2026-05-17-v3-megarelease-self-audit.md` (no blockers; 0 should-fix / 2 nice-to-have items addressed inline).
+
+### What's next
+
+- `laravel-vue-superpowers` sibling plugin — Vue 3 + Inertia v2 variant — planned, gets its own brainstorming session
+- Quality-of-life iterations on V3 components (operator-driven)
+
+---
+
 ## [3.0.0-alpha.6] — 2026-05-17 — V3 Megarelease — Phase F: Advanced Blade-Edit Hooks
 
 Phase F ships two PreToolUse hooks that fire on `Edit`/`Write` of `.blade.php` files, injecting context at edit-time rather than commit-time. Non-blocking — advisory only.
