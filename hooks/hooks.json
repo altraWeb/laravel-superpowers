@@ -36,6 +36,29 @@
                         "command": "${CLAUDE_PLUGIN_ROOT}/hooks/brainstorm-t1-audit.sh"
                     }
                 ]
+            },
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/master-roadmap-drift-detector.sh"
+                    }
+                ]
+            }
+        ],
+        "SessionStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/sprint-state-context-injection.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stale-branch-sweep.sh"
+                    }
+                ]
             }
         ]
     }

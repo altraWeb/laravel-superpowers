@@ -327,8 +327,65 @@ Run: `bash tests/test_brainstorm_t1_audit_hook.sh` from repo root.
 
 ---
 
-_**All V2-MVP hooks shipped.** See [ROADMAP.md](ROADMAP.md) for V2.1 forthcoming hooks (sprint-state context-injection, master-roadmap drift detector, stale-branch sweep) and the broader V2.2/V3 roadmap._
-- `brainstorm-t1-audit` ([#20](https://github.com/altraWeb/laravel-superpowers/issues/20)) — PostToolUse hook on `superpowers:brainstorming` activation that auto-dispatches the specialist agents (#1-#5)
-- `visual-companion-default-on` ([#21](https://github.com/altraWeb/laravel-superpowers/issues/21)) — PostToolUse hook setting the brainstorming visual-companion default per config
+---
 
-See [ROADMAP.md](ROADMAP.md) for the full V2 plan and the broader V2.1/V2.2/V3 roadmap.
+### `sprint-state-context-injection`
+
+**Event:** `SessionStart`.
+
+**What it does:** detects active sprint via current branch name + optional resume-anchor file + plan-doc, injects a compact sprint-state summary (branch, plan-doc path, current phase, last commit) into the session's system prompt context.
+
+**Why:** zero-touch sprint resume. Eliminates the 15-second manual paste of resume context at the start of every session.
+
+**Detection logic:**
+
+- Active sprint = current branch matches `feat/*`, `chore/*`, `spec/*`, `fix/*`, or `docs/*`
+- Resume anchor (optional): `docs/superpowers/<branch-suffix>-resume.md`
+- Plan doc (optional): `docs/plans/<branch-suffix>.md` or `docs/superpowers/plans/*<branch-suffix>*.md`
+
+**Skip cases:**
+
+- Branch is `main` / `master` / detached HEAD
+- `LARAVEL_SUPERPOWERS_SKIP_AUTO_RESUME` env var is set
+- `hook_enabled.sprint_state_context_injection: false` in config
+
+### `stale-branch-sweep`
+
+**Event:** `SessionStart`.
+
+**What it does:** runs `git fetch --prune` silently, then lists local branches whose upstream is `[gone]` (typically post-merge) with a cleanup suggestion. Does NOT auto-delete by default.
+
+**Why:** post-merge cleanup hygiene. Surfaces stale branches at the moment you're most likely to act on them (session start), without nagging or auto-deleting.
+
+**Auto-delete opt-in:**
+
+- Env var: `LARAVEL_SUPERPOWERS_AUTO_PRUNE=1`
+- Or config: `stale_branch_sweep.auto_prune: true` in `.laravel-superpowers.yaml` (filename preserved from V2 for config compatibility)
+
+**Skip cases:**
+
+- `hook_enabled.stale_branch_sweep: false` in config
+- Not inside a git working tree
+
+### `master-roadmap-drift-detector`
+
+**Event:** `PostToolUse` on `Bash` (filters internally to `git commit` invocations touching `docs/plans/*.md`).
+
+**What it does:** after a commit touches a plan-doc file, cross-references the plan-doc state (archived / shipped / merged) against the matching entry in `docs/plans/master-roadmap-<year>-q<quarter>.md`. Emits a warning to stdout when the master-roadmap entry is out of sync. Does NOT block the commit.
+
+**Why:** Block 1A canon-drift evidence — Bot Directory shipped via MR !123 but master-roadmap entry stayed in "ready for review on branch" state for weeks. This hook catches that exact pattern at commit time.
+
+**Drift cases flagged:**
+
+- Plan-doc is archived/shipped but master-roadmap entry still says pending / ready-for-review / on-branch
+- Plan-doc exists but has no entry in any master-roadmap file
+
+**Skip cases:**
+
+- `hook_enabled.master_roadmap_drift_detector: false` in config
+- No master-roadmap files exist (suggests creating one)
+- Commit doesn't touch any `docs/plans/*.md` outside the master-roadmap itself
+
+---
+
+_**V3 Phase B hooks shipped.** See [ROADMAP.md](ROADMAP.md) for the broader V3 roadmap (Phases C-G)._
