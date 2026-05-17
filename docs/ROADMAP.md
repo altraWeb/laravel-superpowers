@@ -59,56 +59,65 @@ V2 builds the agents + skills + hooks that catch these classes of bugs **by cons
 
 ---
 
-## V2.1 — Tier-2 (polish + automation)
+## ~~V2.1~~ — Absorbed into V3 Megarelease — ✅ COMPLETE (v3.0.0)
 
-**Goal**: round out the V2-MVP with the next-most-valuable additions. 3-day sprint after V2-MVP ships.
+**Goal (achieved):** round out V2-MVP with next-most-valuable additions. All 7 issues shipped in V3.
 
 ### Agents + skills
 
-- [ ] **[#6](https://github.com/altraWeb/laravel-livewire-superpowers/issues/6) `laravel-a11y-specialist` skill** — WCAG 2.2 + ARIA + reduced-motion patterns
-- [ ] **[#7](https://github.com/altraWeb/laravel-livewire-superpowers/issues/7) `laravel-echo-reverb-specialist` agent** — broadcasting + realtime decision support
-- [ ] **[#8](https://github.com/altraWeb/laravel-livewire-superpowers/issues/8) `laravel-mr-body-writer` skill** — canonical MR body from sprint state
+- [x] **[#6](https://github.com/altraWeb/laravel-livewire-superpowers/issues/6) `laravel-a11y-specialist` skill** — WCAG 2.2 + ARIA + reduced-motion patterns — PR #58
+- [x] **[#7](https://github.com/altraWeb/laravel-livewire-superpowers/issues/7) `laravel-echo-reverb-specialist` agent** — broadcasting + realtime decision support — PR #56
+- [x] **[#8](https://github.com/altraWeb/laravel-livewire-superpowers/issues/8) `laravel-mr-body-writer` skill** — canonical MR body from sprint state — PR #58
 
 ### Hooks + slash commands
 
-- [ ] **[#24](https://github.com/altraWeb/laravel-livewire-superpowers/issues/24) Sprint-state context-injection** — SessionStart auto-resume
-- [ ] **[#25](https://github.com/altraWeb/laravel-livewire-superpowers/issues/25) Master-roadmap drift detector** — PostToolUse on docs/plans commits
-- [ ] **[#26](https://github.com/altraWeb/laravel-livewire-superpowers/issues/26) Stale-branch sweep** — SessionStart cleanup
-- [ ] **[#27](https://github.com/altraWeb/laravel-livewire-superpowers/issues/27) Slash commands `/audit-phase N` + `/retro`** — expand command suite
+- [x] **[#24](https://github.com/altraWeb/laravel-livewire-superpowers/issues/24) Sprint-state context-injection** — SessionStart auto-resume — PR #54
+- [x] **[#25](https://github.com/altraWeb/laravel-livewire-superpowers/issues/25) Master-roadmap drift detector** — PostToolUse on docs/plans commits — PR #54
+- [x] **[#26](https://github.com/altraWeb/laravel-livewire-superpowers/issues/26) Stale-branch sweep** — SessionStart cleanup — PR #54
+- [x] **[#27](https://github.com/altraWeb/laravel-livewire-superpowers/issues/27) Slash commands `/audit-phase N` + `/retro`** — expand command suite — PR #60
 
-**V2.1 total**: 7 issues
+**V2.1 total**: 7 issues — all shipped
 
 ---
 
-## V2.2 — Tier-3 (future-sprint utility)
+## ~~V2.2~~ — Absorbed into V3 Megarelease — ✅ COMPLETE (v3.0.0)
 
-**Goal**: extensions that activate when the first project hits the relevant use case.
+**Goal (achieved):** extensions that activate when the first project hits the relevant use case. All 5 issues shipped in V3.
 
 ### Agents + skills
 
-- [ ] **[#9](https://github.com/altraWeb/laravel-livewire-superpowers/issues/9) `spatie-permission-auditor` agent** — gate coverage + dead-permission detection
-- [ ] **[#11](https://github.com/altraWeb/laravel-livewire-superpowers/issues/11) `laravel-perf-auditor` skill** — preventLazyLoading + query-count + cache patterns
-- [ ] **[#12](https://github.com/altraWeb/laravel-livewire-superpowers/issues/12) `laravel-package-evaluator` agent** — build-vs-buy decision support
+- [x] **[#9](https://github.com/altraWeb/laravel-livewire-superpowers/issues/9) `spatie-permission-auditor` agent** — gate coverage + dead-permission detection — PR #56
+- [x] **[#11](https://github.com/altraWeb/laravel-livewire-superpowers/issues/11) `laravel-perf-auditor` skill** — preventLazyLoading + query-count + cache patterns — PR #58
+- [x] **[#12](https://github.com/altraWeb/laravel-livewire-superpowers/issues/12) `laravel-package-evaluator` agent** — build-vs-buy decision support — PR #56
 
 ### Hooks
 
-- [ ] **[#28](https://github.com/altraWeb/laravel-livewire-superpowers/issues/28) Vendor-source pre-flight** — PreToolUse on Flux/Livewire blade edits
-- [ ] **[#29](https://github.com/altraWeb/laravel-livewire-superpowers/issues/29) Lang-key existence pre-flight** — PreToolUse on blade edits with `__()` calls
+- [x] **[#28](https://github.com/altraWeb/laravel-livewire-superpowers/issues/28) Vendor-source pre-flight** — PreToolUse on Flux/Livewire blade edits — PR #62
+- [x] **[#29](https://github.com/altraWeb/laravel-livewire-superpowers/issues/29) Lang-key existence pre-flight** — PreToolUse on blade edits with `__()` calls — PR #62
 
-**V2.2 total**: 5 issues
+**V2.2 total**: 5 issues — all shipped
 
 ---
 
-## V3 — Meta layer
+## V3 — V3 Megarelease — ✅ COMPLETE (v3.0.0 — 2026-05-17)
 
-**Goal**: workflow enforcement at the orchestrator level. Requires V2-MVP + V2.1 in production first to inform meta-orchestrator design.
+**Status:** All 14 V3 backlog issues shipped across 6 phased alpha releases (alpha.1 through alpha.6). Declared stable as v3.0.0 on 2026-05-17. Full self-audit at `docs/audits/2026-05-17-v3-megarelease-self-audit.md` — no blockers.
 
-### Meta agents + hooks
+**Goal (achieved):** workflow enforcement at the orchestrator level + 10 specialist agents + 7 skills + 12 hooks + 3 slash commands + full Pilot 2.0 contract formalization + neutral marketplace.
 
-- [ ] **[#10](https://github.com/altraWeb/laravel-livewire-superpowers/issues/10) `laravel-pilot-orchestrator` agent** — Pilot 2.0 contract enforcer (on-demand)
-- [ ] **[#30](https://github.com/altraWeb/laravel-livewire-superpowers/issues/30) Pilot 2.0 contract enforcer hook** — meta hook reading orchestrator transcript (continuous)
+### Meta agents + hooks (Phase E)
 
-**V3 total**: 2 issues
+- [x] **[#10](https://github.com/altraWeb/laravel-livewire-superpowers/issues/10) `laravel-pilot-orchestrator` agent** — Pilot 2.0 contract enforcer (on-demand) — PR #60
+- [x] **[#30](https://github.com/altraWeb/laravel-livewire-superpowers/issues/30) Pilot 2.0 contract enforcer hook** — meta hook reading plan-doc Tactic markers (continuous) — PR #60
+
+**V3 total**: 14 issues — all shipped
+
+---
+
+## What's next
+
+- **`laravel-vue-superpowers`** — sibling plugin for Vue 3 + Inertia v2 + Pest 4 stack. Gets its own brainstorming session before design begins. Issue tracking TBD.
+- Quality-of-life iterations on V3 components (operator-driven, filed as new issues).
 
 ---
 
@@ -140,4 +149,4 @@ Projects on older Laravel + Livewire versions can still benefit from the generic
 
 ---
 
-*Last updated: 2026-05-15 — V2-MVP shipped as v2.0.0 (16/16 issues). V2.1/V2.2/V3 milestones remain.*
+*Last updated: 2026-05-17 — V3 Megarelease shipped as v3.0.0 (14/14 V3 issues, 30/30 total V2+V3 issues). V3 COMPLETE. Next: laravel-vue-superpowers brainstorming.*
