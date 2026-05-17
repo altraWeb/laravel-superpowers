@@ -71,7 +71,7 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 
 See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
-## Hooks (13)
+## Hooks (9 shipped — 13 planned for full V3)
 
 - **banned-token-leak-guard** — PreToolUse hook on `git commit` that blocks commits with banned tokens (Phase/Sprint/Track/MR/dated refs) in staged code/comments.
 - **no-claude-attribution** — PreToolUse hook on `git commit`, `gh pr create`, `glab mr create` that blocks any Claude / AI attribution.
@@ -79,13 +79,13 @@ See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 - **anti-silent-deferral** — PreToolUse hook on `git push` that scans plan docs for uncaptured deferred items.
 - **visual-companion-default-on** — PostToolUse hook on brainstorming skill that injects a Visual Companion reminder.
 - **brainstorm-t1-audit** — PostToolUse hook on brainstorming skill that dispatches `laravel-best-practices` audit (Pilot 2.0 T1).
-- **sprint-state-context-injection** *(Phase B+)* — Injects sprint state context at session start
-- **master-roadmap-drift-detector** *(Phase B+)* — Detects roadmap drift
-- **stale-branch-sweep** *(Phase B+)* — Identifies and reports stale branches
-- **vendor-source-preflight** *(Phase B+)* — Vendor source verification preflight
-- **lang-key-existence-preflight** *(Phase B+)* — Lang key existence verification
-- **pilot-2-contract-enforcer** *(Phase B+)* — Full Pilot 2.0 contract enforcement (T1-T6)
-- *(13th hook planned for Phase B+)*
+- **sprint-state-context-injection** — SessionStart hook that injects active sprint state (branch, plan-doc, phase, last commit) into session context.
+- **stale-branch-sweep** — SessionStart hook that lists local branches whose upstream is gone (post-merge cleanup suggestion).
+- **master-roadmap-drift-detector** — PostToolUse hook on `git commit` touching plan-docs that warns when master-roadmap entry is out of sync.
+- **vendor-source-preflight** *(Phase C+)* — Vendor source verification preflight
+- **lang-key-existence-preflight** *(Phase C+)* — Lang key existence verification
+- **pilot-2-contract-enforcer** *(Phase C+)* — Full Pilot 2.0 contract enforcement (T1-T6)
+- *(13th hook planned for Phase C+)*
 
 See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
 
@@ -117,7 +117,8 @@ Run the superpowers skill first for generic structure; run the laravel-livewire-
 
 ## Versions
 
-- **v3.0.0-alpha.1 (2026-05-17) — V3 Megarelease Phase A** *(current)* — Plugin renamed to `laravel-livewire-superpowers`, marketplace moved to neutral host `altraWeb/laravel-marketplace`, all branding updated. Foundation phase that unblocks Phases B-G (10 agents + 7 skills + 13 hooks + 3 commands).
+- **v3.0.0-alpha.2 (2026-05-17) — V3 Megarelease Phase B** *(current)* — Three context-aware hooks that surface daily sprint state without operator action: `sprint-state-context-injection`, `stale-branch-sweep`, `master-roadmap-drift-detector`. Now 9 hooks shipped.
+- **v3.0.0-alpha.1 (2026-05-17) — V3 Megarelease Phase A** — Plugin renamed to `laravel-livewire-superpowers`, marketplace moved to neutral host `altraWeb/laravel-marketplace`, all branding updated. Foundation phase that unblocks Phases B-G.
 - **v2.0.2 (2026-05-17) — Deprecation notice** — No code changes. Deprecation notice announcing V3 + rename.
 - **v2.0.1 (2026-05-15) — V2-MVP self-audit hotfix** — Quote-bypass, date false-positives, composer-test, command-position filter.
 - **v2.0.0 (2026-05-15) — V2-MVP** — 6 specialist agents + 6 enforcement hooks + 3 stack-enhanced skills + plugin config foundation + status slash command.

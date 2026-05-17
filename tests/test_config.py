@@ -180,3 +180,17 @@ def test_warn_appends_to_errors_log(cli, user_config_dir):
     assert errors_log.exists()
     content = errors_log.read_text()
     assert "YAML parse error" in content
+
+
+def test_get_sprint_state_context_injection_default(cli):
+    """New B-phase hook flag defaults to true."""
+    result = cli("get", "hook_enabled.sprint_state_context_injection")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "true"
+
+
+def test_get_stale_branch_sweep_auto_prune_default(cli):
+    """Auto-prune opt-in defaults to false."""
+    result = cli("get", "stale_branch_sweep.auto_prune")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "false"

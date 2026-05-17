@@ -2,6 +2,33 @@
 
 All notable changes to `laravel-livewire-superpowers` (renamed from `laravel-superpowers` in V3) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0-alpha.2] — 2026-05-17 — V3 Megarelease — Phase B: Quickwin Hooks
+
+Phase B adds three context-aware hooks that surface daily sprint state without operator action. None block; all are config-controlled with sensible defaults.
+
+### Added
+
+- **[#24](https://github.com/altraWeb/laravel-livewire-superpowers/issues/24) `sprint-state-context-injection` hook (SessionStart).** Detects active sprint via current branch + optional resume-anchor file + plan-doc, injects compact sprint-state summary (branch, plan-doc path, current phase, last commit) into session system prompt. Skips on `main`/`master`. Disable via `LARAVEL_SUPERPOWERS_SKIP_AUTO_RESUME=1` env or `hook_enabled.sprint_state_context_injection: false` config.
+- **[#26](https://github.com/altraWeb/laravel-livewire-superpowers/issues/26) `stale-branch-sweep` hook (SessionStart).** Runs `git fetch --prune` silently, lists local branches whose upstream is `[gone]` with cleanup suggestion. Does NOT auto-delete by default. Auto-delete opt-in via `LARAVEL_SUPERPOWERS_AUTO_PRUNE=1` env or `stale_branch_sweep.auto_prune: true` config.
+- **[#25](https://github.com/altraWeb/laravel-livewire-superpowers/issues/25) `master-roadmap-drift-detector` hook (PostToolUse:Bash, filters to git commits touching `docs/plans/*.md`).** Cross-references plan-doc state vs master-roadmap entry, warns on drift (e.g., plan-doc archived but master-roadmap still says pending). Non-blocking. Disable via `hook_enabled.master_roadmap_drift_detector: false` config.
+
+### Changed
+
+- `.claude-plugin/plugin.json` version `3.0.0-alpha.1` → `3.0.0-alpha.2`. Description's current-state hook count bumped 6 → 9 (3 new context-injection hooks added).
+- `hooks/hooks.json` — new top-level `SessionStart` event registration + new `PostToolUse.Bash` matcher block for the drift detector.
+- `config.defaults.yaml` — 3 new `hook_enabled.*` flags (default true) + new top-level `stale_branch_sweep.auto_prune` flag (default false).
+- `config.schema.json` — extended for the new config keys.
+- `tests/test_config.py` — 2 new tests for the new defaults (30 total Python config tests now).
+- `docs/hooks.md` — 3 new hook reference sections.
+
+### Phase Status
+
+Phase B (this alpha) — shipped 2026-05-17 as v3.0.0-alpha.2.
+
+Phases C-G remain.
+
+---
+
 ## [3.0.0-alpha.1] — 2026-05-17 — V3 Megarelease — Phase A: Foundation, Deprecation, Rename
 
 First alpha of the V3 Megarelease. Phase A establishes the foundation: plugin renamed to `laravel-livewire-superpowers`, marketplace moved to neutral host repo `altraWeb/laravel-marketplace`, internal slash-command paths updated, README + docs rebranded as the Livewire variant, 18 stale branches cleaned up. **No new features yet** — Phases B-G ship the 14 backlog issues.

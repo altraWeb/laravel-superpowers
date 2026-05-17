@@ -41,6 +41,17 @@
       "type": "string",
       "enum": ["T1-only", "T1+T2", "all"]
     },
-    "teamcity_always": { "type": "boolean" }
+    "teamcity_always": { "type": "boolean" },
+    "stale_branch_sweep": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Stale-branch-sweep configuration.",
+      "properties": {
+        "auto_prune": {
+          "type": "boolean",
+          "description": "If true, automatically delete local branches whose upstream is gone at session start. Default false."
+        }
+      }
+    }
   }
 }

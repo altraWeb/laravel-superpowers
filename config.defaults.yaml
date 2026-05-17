@@ -22,6 +22,9 @@ hook_enabled:
   anti_silent_deferral: true
   brainstorm_t1_audit: true
   visual_companion_default_on: true
+  sprint_state_context_injection: true
+  stale_branch_sweep: true
+  master_roadmap_drift_detector: true
 
 # When does Tier-1 audit auto-dispatch fire?
 #   every-phase     — agent dispatches at every Pilot phase boundary (advisory)
@@ -66,3 +69,10 @@ tier_preference: "T1+T2"
 
 # Always pass --teamcity to `php artisan test` for parsable output.
 teamcity_always: true
+
+# Stale-branch-sweep configuration.
+stale_branch_sweep:
+  # If true, automatically delete local branches whose upstream is gone
+  # at session start. Default false — sweep emits cleanup suggestions only.
+  # Env-var equivalent: LARAVEL_SUPERPOWERS_AUTO_PRUNE=1 (env wins if set).
+  auto_prune: false
