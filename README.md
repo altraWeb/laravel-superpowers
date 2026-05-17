@@ -52,9 +52,9 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 - **laravel-tdd** — TDD workflow with Pest 4: factories, HTTP testing, facade faking, Feature vs Unit
 - **laravel-debugging** — Debugging with Laravel-specific tools: Telescope, query logging, queue introspection
 - **laravel-code-review** — Code review checklist: N+1, mass assignment, authorization, validation, security
-- **laravel-a11y** *(Phase B+)* — Accessibility audit for Livewire + Flux Pro components
-- **laravel-mr-body-writer** *(Phase B+)* — MR/PR description writer for Laravel projects
-- **laravel-perf-auditor** *(Phase B+)* — Performance audit: N+1, eager loading, cache strategies
+- **laravel-a11y-specialist** — WCAG 2.2 + ARIA + reduced-motion patterns for Livewire + Flux Pro v2 UIs (wire:loading.attr, aria-live, prefers-reduced-motion, 7 canonical patterns)
+- **laravel-mr-body-writer** — Canonical MR/PR body generator from sprint state (plan-doc + /status + git history → Summary / Pilot 2.0 / Test plan / Scope changes)
+- **laravel-perf-auditor** — Mechanical query-path safety sweep: preventLazyLoading status, N+1 patterns, cache strategy, query-count pinning, unbounded-query pagination
 
 ## Agents (9)
 

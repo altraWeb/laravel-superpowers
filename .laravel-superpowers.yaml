@@ -1,0 +1,12 @@
+# laravel-livewire-superpowers per-project config overlay.
+# Overrides config.defaults.yaml for this development repository.
+#
+# skills/** is added to exception_paths because skill files are documentation
+# that legitimately reference terms like "Pilot 2.0", phase names, etc.
+# Without this, the banned-token-leak-guard blocks commits to skill files.
+banned_tokens:
+  exception_paths:
+    - "docs/plans/**"
+    - "docs/superpowers/**"
+    - "skills/**"
+    - "CHANGELOG.md"

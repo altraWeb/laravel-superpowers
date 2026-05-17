@@ -2,6 +2,29 @@
 
 All notable changes to `laravel-livewire-superpowers` (renamed from `laravel-superpowers` in V3) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0-alpha.4] — 2026-05-17 — V3 Megarelease — Phase D: Skills
+
+Phase D adds three Laravel-specific skills (process guidance, not code execution). All three are read-only.
+
+### Added
+
+- **[#6](https://github.com/altraWeb/laravel-livewire-superpowers/issues/6) `laravel-a11y-specialist` skill.** WCAG 2.2 + ARIA + reduced-motion patterns surfaced systematically before implementation. Livewire-flavored (wire:loading.attr accessible patterns, aria-live for streaming content, prefers-reduced-motion + Page-Visibility). 7 canonical patterns + checklist.
+- **[#8](https://github.com/altraWeb/laravel-livewire-superpowers/issues/8) `laravel-mr-body-writer` skill.** Canonical MR / PR body generator from sprint state. Reads plan-doc + `/laravel-livewire-superpowers:status` output + git history + test files to assemble the standard MR shape (Summary / Decisions / Pilot 2.0 contract / Spec + Plan / Test plan with assertion counts / Scope changes / Deferred items / Follow-up issues / Screenshots).
+- **[#11](https://github.com/altraWeb/laravel-livewire-superpowers/issues/11) `laravel-perf-auditor` skill.** Mechanical query-path safety sweep. Checks preventLazyLoading status, N+1 patterns, cache strategy, query-count test coverage, unbounded-query pagination. Complements `laravel-architect` agent (agent does design decisions; this skill does spot-checks).
+
+### Changed
+
+- `.claude-plugin/plugin.json` version `3.0.0-alpha.3` → `3.0.0-alpha.4`. Description current-state skill count `4` → `7`.
+- README skills comparison table extended with 3 new entries (if not already present from Phase A.2 placeholders).
+
+### Phase Status
+
+Phase D (this alpha) — ✅ shipped 2026-05-17 as v3.0.0-alpha.4.
+
+Phases E-G remain.
+
+---
+
 ## [3.0.0-alpha.3] — 2026-05-17 — V3 Megarelease — Phase C: Specialist Agents
 
 Phase C adds three Laravel-codebase-aware specialist agents that fill canonical decision-support gaps. All three are read-only — they emit structured markdown reports, never mutate code.
