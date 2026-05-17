@@ -453,4 +453,83 @@ Run: `bash tests/test_pilot_2_contract_enforcer_hook.sh` from repo root.
 
 ---
 
-_**V3 Phase E hooks shipped.** See [ROADMAP.md](ROADMAP.md) for the broader V3 roadmap._
+### `vendor-source-preflight`
+
+**Event:** `PreToolUse` on `Edit` AND `Write`.
+
+**What it does:** when the target file ends in `.blade.php` and the new content contains `<flux:*>` or `wire:*` directives, emits `additionalContext` surfacing the canonical Flux Pro v2 stub paths and/or Livewire source paths for reference before the edit lands.
+
+**Why:** a common Block-1H bug class: writing Blade that uses a Flux component or Livewire directive with slightly wrong API (wrong attribute names, deprecated props, removed slots) because the agent composed from memory rather than reading the vendor stub first. Surfacing the stubs at edit-time costs zero tokens if the agent already knows them, and saves a round-trip + revert if it doesn't.
+
+**Flux stub paths surfaced:** `vendor/livewire/flux-pro/stubs/resources/views/flux/` — including `button/index.blade.php`, `field/`, `modal/`, `tooltip/`, `editor/`.
+
+**Livewire source paths surfaced:** `vendor/livewire/livewire/src/Component.php` + `vendor/livewire/livewire/src/Features/` — covering `wire:click`, `wire:model`, `wire:loading`, `wire:navigate`, `wire:ignore`, `wire:target`.
+
+**Skip cases:**
+
+- `hook_enabled.vendor_source_preflight: false` in config
+- File path does not end in `.blade.php`
+- Content has no `<flux:*>` or `wire:*` directives
+- Malformed JSON input — silent
+
+**Configuration:**
+
+```yaml
+hook_enabled:
+  vendor_source_preflight: true    # set to false to disable
+```
+
+**Failure mode:** non-blocking. Hook only injects context; it never blocks an edit. Malformed JSON or missing `jq` → silent exit 0.
+
+**Test evidence:** ships with `tests/test_vendor_source_preflight_hook.sh` — 5 scenarios:
+1. Edit `.blade.php` with `<flux:button>` — surfaces Flux stub paths ✅
+2. Write `.blade.php` with `wire:model` — surfaces Livewire source paths ✅
+3. Edit `.blade.php` without flux/wire directives — silent ✅
+4. Edit non-blade file with flux text — silent ✅
+5. Malformed JSON — silent ✅
+
+Run: `bash tests/test_vendor_source_preflight_hook.sh` from repo root.
+
+---
+
+### `lang-key-existence-preflight`
+
+**Event:** `PreToolUse` on `Edit` AND `Write`.
+
+**What it does:** when the target file ends in `.blade.php` and the new content contains `__()` or `@lang()` calls, extracts each key reference, resolves the project's `lang/` directory by walking up from the blade file's location, and warns about any key that is missing from `lang/<locale>/<file>.php`. Non-blocking — emits context only.
+
+**Why:** missing translation keys render as raw key strings at runtime (e.g. `messages.welcome` instead of "Welcome"). Catching them at edit-time (before the blade file is saved) is zero-cost feedback vs. a runtime round-trip or a QA catch.
+
+**Key extraction:** handles both single and double quotes, extracts from `__('file.key')` and `@lang('file.key')` patterns. Only dot-notation keys (with at least one `.`) are checked — bare string keys without a namespace are assumed intentional.
+
+**Lang-file resolution:** walks up from the blade file's directory looking for a `lang/` directory. Tries `lang/en/` first, falls back to the first available locale directory. If no `lang/` directory is found, exits silently (not a Laravel project, or a project that doesn't use file-based translations).
+
+**Skip cases:**
+
+- `hook_enabled.lang_key_existence_preflight: false` in config
+- File path does not end in `.blade.php`
+- No `__()` or `@lang()` calls in the content
+- No `lang/` directory found in the project tree
+- Malformed JSON input — silent
+
+**Configuration:**
+
+```yaml
+hook_enabled:
+  lang_key_existence_preflight: true    # set to false to disable
+```
+
+**Failure mode:** non-blocking. Never blocks an edit. Malformed JSON or missing `jq` → silent exit 0. Key check is heuristic (grep-based, not PHP-array-aware) — may miss nested array keys, but never false-blocks.
+
+**Test evidence:** ships with `tests/test_lang_key_existence_preflight_hook.sh` — 5 scenarios:
+1. Edit blade with `__('messages.greeting')` existing key — silent ✅
+2. Edit blade with `__('messages.missing')` unknown key — warns with key name ✅
+3. Edit blade without `__()` / `@lang()` — silent ✅
+4. Edit non-blade file with `__()` — silent ✅
+5. Malformed JSON — silent ✅
+
+Run: `bash tests/test_lang_key_existence_preflight_hook.sh` from repo root.
+
+---
+
+_**V3 Phase F hooks shipped.** See [ROADMAP.md](ROADMAP.md) for the broader V3 roadmap._

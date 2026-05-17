@@ -201,3 +201,15 @@ def test_get_pilot_2_contract_enforcer_default(cli):
     result = cli("get", "hook_enabled.pilot_2_contract_enforcer")
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == "true"
+
+
+def test_get_vendor_source_preflight_default(cli):
+    result = cli("get", "hook_enabled.vendor_source_preflight")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "true"
+
+
+def test_get_lang_key_existence_preflight_default(cli):
+    result = cli("get", "hook_enabled.lang_key_existence_preflight")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "true"

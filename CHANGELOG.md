@@ -2,6 +2,32 @@
 
 All notable changes to `laravel-livewire-superpowers` (renamed from `laravel-superpowers` in V3) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0-alpha.6] — 2026-05-17 — V3 Megarelease — Phase F: Advanced Blade-Edit Hooks
+
+Phase F ships two PreToolUse hooks that fire on `Edit`/`Write` of `.blade.php` files, injecting context at edit-time rather than commit-time. Non-blocking — advisory only.
+
+### Added
+
+- **[#28](https://github.com/altraWeb/laravel-livewire-superpowers/issues/28) `vendor-source-preflight` hook.** PreToolUse:Edit + PreToolUse:Write hook. When a `.blade.php` file is edited/written with `<flux:*>` or `wire:*` directives, surfaces relevant Flux Pro v2 stub paths (`vendor/livewire/flux-pro/stubs/resources/views/flux/`) and Livewire source paths (`vendor/livewire/livewire/src/Component.php` + `src/Features/`) as `additionalContext`. Catches the Block-1H bug class where an agent composes from memory and gets the API slightly wrong.
+- **[#29](https://github.com/altraWeb/laravel-livewire-superpowers/issues/29) `lang-key-existence-preflight` hook.** PreToolUse:Edit + PreToolUse:Write hook. When a `.blade.php` file is edited/written with `__()` or `@lang()` calls, extracts each key reference, resolves the project `lang/` directory by walking up from the blade file, and warns about missing keys. Prevents missing-translation-key bugs (raw key string rendered at runtime) from reaching save.
+
+### Changed
+
+- `hooks/hooks.json` — two new `PreToolUse` matcher blocks added: `Edit` and `Write`, each registering both new hooks. Now 3 PreToolUse matcher blocks (Bash + Edit + Write).
+- `config.defaults.yaml` — two new flags: `hook_enabled.vendor_source_preflight: true`, `hook_enabled.lang_key_existence_preflight: true`.
+- `tests/test_config.py` — 2 new tests: `test_get_vendor_source_preflight_default`, `test_get_lang_key_existence_preflight_default` (33 tests total, up from 31).
+- `docs/hooks.md` — two new reference sections: `vendor-source-preflight`, `lang-key-existence-preflight`. Phase status updated to Phase F.
+- `README.md` — hook count `10 → 12`, versions section updated with alpha.6 entry.
+- `.claude-plugin/plugin.json` version `3.0.0-alpha.5` → `3.0.0-alpha.6`. Hook count `10 → 12`.
+
+### Phase Status
+
+Phase F (this alpha) — shipped 2026-05-17 as v3.0.0-alpha.6.
+
+Phase G remains.
+
+---
+
 ## [3.0.0-alpha.5] — 2026-05-17 — V3 Megarelease — Phase E: Pilot 2.0 Meta-Layer
 
 Phase E formalizes the Pilot 2.0 contract from convention to automation. Ships the meta-orchestrator agent + continuous enforcer hook + two new slash commands + canonical contract reference doc.
