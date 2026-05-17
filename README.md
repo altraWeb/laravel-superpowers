@@ -10,20 +10,26 @@ Laravel + **Livewire 4** + **Flux Pro v2** + **Pest 4** specialist toolkit for [
 
 ## Install
 
-```bash
-claude /plugin marketplace add altraWeb/laravel-marketplace
-claude /plugin install laravel-livewire-superpowers@altraweb-laravel
+Inside a running Claude Code session (these are slash commands, not bash):
+
+```
+/plugin marketplace add altraWeb/laravel-marketplace
+/plugin install laravel-livewire-superpowers@altraweb-laravel
 ```
 
-The marketplace is hosted at [`altraWeb/laravel-marketplace`](https://github.com/altraWeb/laravel-marketplace) — a neutral host repo that will also list the future `laravel-vue-superpowers` sibling.
+> **Note:** Do NOT prefix with `claude` from bash — the `/plugin` commands only work inside an active Claude Code session.
+
+The marketplace is hosted at [`altraWeb/laravel-marketplace`](https://github.com/altraWeb/laravel-marketplace) — a neutral host repo that also lists the [`laravel-vue-superpowers`](https://github.com/altraWeb/laravel-vue-superpowers) sibling.
 
 ## Migrating from v2 (laravel-superpowers)
 
-```bash
-claude /plugin uninstall laravel-superpowers
-claude /plugin marketplace remove altraweb-laravel
-claude /plugin marketplace add altraWeb/laravel-marketplace
-claude /plugin install laravel-livewire-superpowers@altraweb-laravel
+Inside a running Claude Code session:
+
+```
+/plugin uninstall laravel-superpowers
+/plugin marketplace remove altraweb-laravel
+/plugin marketplace add altraWeb/laravel-marketplace
+/plugin install laravel-livewire-superpowers@altraweb-laravel
 ```
 
 See [`UPGRADING.md`](UPGRADING.md) for the full migration guide.
