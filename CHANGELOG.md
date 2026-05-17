@@ -2,6 +2,30 @@
 
 All notable changes to `laravel-livewire-superpowers` (renamed from `laravel-superpowers` in V3) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0-alpha.3] — 2026-05-17 — V3 Megarelease — Phase C: Specialist Agents
+
+Phase C adds three Laravel-codebase-aware specialist agents that fill canonical decision-support gaps. All three are read-only — they emit structured markdown reports, never mutate code.
+
+### Added
+
+- **[#7](https://github.com/altraWeb/laravel-livewire-superpowers/issues/7) `laravel-echo-reverb-specialist` agent.** Broadcasting / realtime decision support. Scans `routes/channels.php`, `app/Notifications/`, `app/Events/`, and Echo callbacks in `resources/js/` to identify reuse-vs-new-channel opportunities. Catches the canonical "the user-private channel already broadcasts both X and Y — no new channel needed" pattern from Block 1E brainstorm-time audits.
+- **[#9](https://github.com/altraWeb/laravel-livewire-superpowers/issues/9) `spatie-permission-auditor` agent.** Gate-coverage + dead-permission audit. Cross-references seeded permissions in `RolePermissionSeeder.php` against actual `@can()` / `$user->can()` / `middleware('can:...')` / Policy usage. Catches dead permissions, unprotected routes, typo'd Blade refs, per-role drift.
+- **[#12](https://github.com/altraWeb/laravel-livewire-superpowers/issues/12) `laravel-package-evaluator` agent.** Build-vs-buy decision support. Searches Packagist + GitHub for 2-5 candidate packages, builds trade-off matrix (license, stars, last-commit, Laravel compat, maintenance, docs, test coverage), compares against build-yourself baseline.
+
+### Changed
+
+- `.claude-plugin/plugin.json` version `3.0.0-alpha.2` → `3.0.0-alpha.3`. Description's current-state agent count `6` → `9`.
+- `docs/agents.md` — 3 new agent reference sections.
+- `README.md` — agent count bumped `6 → 9`.
+
+### Phase Status
+
+Phase C (this alpha) — shipped 2026-05-17 as v3.0.0-alpha.3.
+
+Phases D-G remain.
+
+---
+
 ## [3.0.0-alpha.2] — 2026-05-17 — V3 Megarelease — Phase B: Quickwin Hooks
 
 Phase B adds three context-aware hooks that surface daily sprint state without operator action. None block; all are config-controlled with sensible defaults.

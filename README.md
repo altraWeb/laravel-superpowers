@@ -56,7 +56,7 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 - **laravel-mr-body-writer** *(Phase B+)* — MR/PR description writer for Laravel projects
 - **laravel-perf-auditor** *(Phase B+)* — Performance audit: N+1, eager loading, cache strategies
 
-## Agents (10)
+## Agents (9)
 
 - **laravel-best-practices** — Web research agent for current Laravel best practices (Spatie, Laracasts, Laravel News). Use when asking *"how should I implement X?"* or *"is my current approach still best practice?"*.
 - **laravel-livewire-specialist** — Audits Livewire-touching code/plans for fabricated APIs, `wire:ignore` zones, Form-Object patterns, Echo/broadcasting race conditions, and lifecycle-hook misuse. Verifies via PHP reflection against the actual Livewire vendor source — ground truth, not docs. Use before any Livewire-touching implementation phase.
@@ -64,10 +64,10 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 - **laravel-flux-pro-specialist** — Audits Flux Pro v2 Blade components for double-tooltip wrapping, position/align convention drift, `<flux:editor.spacer/>` misplacement, `wire:ignore`-zone reactive-descendant issues, and slot-vs-string-prop trade-offs. Reads the Flux Pro vendor stubs as ground truth, cites file:line in findings. Use before any `<flux:*>` write/edit.
 - **laravel-architect** — Audits Eloquent + architecture decisions: N+1 detection, sibling-canon-aware pattern recommendations, migration safety, performance smells, API design. Use before any plan-phase touching models/migrations/queries.
 - **laravel-reviewer** — Evidence-based code review wrapping the `laravel-code-review` skill with tool access (grep/find/`php artisan`). Runs banned-token sweep, sibling-canon verification, and recommends specialist agents when stack-specific code is in scope.
-- **laravel-echo-reverb-specialist** *(Phase B+)* — Echo + Reverb real-time specialist
-- **laravel-spatie-permission-auditor** *(Phase B+)* — Spatie Permission package auditor
-- **laravel-pilot-orchestrator** *(Phase B+)* — Pilot 2.0 contract orchestrator agent
-- **laravel-package-evaluator** *(Phase B+)* — Package evaluation agent
+- **laravel-echo-reverb-specialist** — Broadcasting / realtime decision support. Scans channels, notifications, Echo callbacks to surface reuse-vs-new-channel decisions. Closes [#7](https://github.com/altraWeb/laravel-livewire-superpowers/issues/7).
+- **spatie-permission-auditor** — Gate-coverage + dead-permission audit. Cross-references seeded permissions vs actual `@can()` / `can()` / Policy usage. Closes [#9](https://github.com/altraWeb/laravel-livewire-superpowers/issues/9).
+- **laravel-package-evaluator** — Build-vs-buy decision support. Searches Packagist + GitHub for 2-5 candidates, builds trade-off matrix. Closes [#12](https://github.com/altraWeb/laravel-livewire-superpowers/issues/12).
+- **laravel-pilot-orchestrator** *(Phase D+)* — Pilot 2.0 contract orchestrator agent
 
 See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
@@ -121,7 +121,7 @@ Run the superpowers skill first for generic structure; run the laravel-livewire-
 - **v3.0.0-alpha.1 (2026-05-17) — V3 Megarelease Phase A** — Plugin renamed to `laravel-livewire-superpowers`, marketplace moved to neutral host `altraWeb/laravel-marketplace`, all branding updated. Foundation phase that unblocks Phases B-G.
 - **v2.0.2 (2026-05-17) — Deprecation notice** — No code changes. Deprecation notice announcing V3 + rename.
 - **v2.0.1 (2026-05-15) — V2-MVP self-audit hotfix** — Quote-bypass, date false-positives, composer-test, command-position filter.
-- **v2.0.0 (2026-05-15) — V2-MVP** — 6 specialist agents + 6 enforcement hooks + 3 stack-enhanced skills + plugin config foundation + status slash command.
+- **v2.0.0 (2026-05-15) — V2-MVP** — 6 specialist agents + 6 enforcement hooks + 3 stack-enhanced skills + plugin config foundation + status slash command. (V3 Phase C adds 3 more: echo-reverb / spatie-permission / package-evaluator → 9 total)
 - **v1.0.0 (2026-05-13) — Initial** — 1 agent + 4 skills.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full release history and [ROADMAP.md](docs/ROADMAP.md) for upcoming V3 milestones.
