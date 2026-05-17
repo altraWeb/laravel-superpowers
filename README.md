@@ -71,7 +71,7 @@ pip3 install --user --break-system-packages pyyaml jsonschema
 
 See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 
-## Hooks (10 shipped — 13 planned for full V3)
+## Hooks (12 shipped — 13 planned for full V3)
 
 - **banned-token-leak-guard** — PreToolUse hook on `git commit` that blocks commits with banned tokens (Phase/Sprint/Track/MR/dated refs) in staged code/comments.
 - **no-claude-attribution** — PreToolUse hook on `git commit`, `gh pr create`, `glab mr create` that blocks any Claude / AI attribution.
@@ -83,8 +83,8 @@ See [`docs/agents.md`](docs/agents.md) for the full agent reference.
 - **stale-branch-sweep** — SessionStart hook that lists local branches whose upstream is gone (post-merge cleanup suggestion).
 - **master-roadmap-drift-detector** — PostToolUse hook on `git commit` touching plan-docs that warns when master-roadmap entry is out of sync.
 - **pilot-2-contract-enforcer** — PostToolUse hook on `git commit`/`git push` that warns on open T3/T4 Pilot 2.0 Tactic Tracking markers in the active plan-doc. Closes [#30](https://github.com/altraWeb/laravel-livewire-superpowers/issues/30).
-- **vendor-source-preflight** *(Phase C+)* — Vendor source verification preflight
-- **lang-key-existence-preflight** *(Phase C+)* — Lang key existence verification
+- **vendor-source-preflight** — PreToolUse hook on `Edit`/`Write` of `.blade.php` with `<flux:*>` or `wire:*` that surfaces canonical Flux Pro v2 stub paths + Livewire source for reference. Closes [#28](https://github.com/altraWeb/laravel-livewire-superpowers/issues/28).
+- **lang-key-existence-preflight** — PreToolUse hook on `Edit`/`Write` of `.blade.php` with `__()` or `@lang()` that verifies each key exists in `lang/` and warns on missing ones. Closes [#29](https://github.com/altraWeb/laravel-livewire-superpowers/issues/29).
 - *(13th hook planned for Phase C+)*
 
 See [`docs/hooks.md`](docs/hooks.md) for the full hook reference.
@@ -117,7 +117,8 @@ Run the superpowers skill first for generic structure; run the laravel-livewire-
 
 ## Versions
 
-- **v3.0.0-alpha.5 (2026-05-17) — V3 Megarelease Phase E** *(current)* — Pilot 2.0 Meta-Layer: `laravel-pilot-orchestrator` agent + `pilot-2-contract-enforcer` hook + `/audit-phase` + `/retro` slash commands + canonical `docs/pilot-2-0-contract.md`. Now 10 agents / 7 skills / 10 hooks / 3 slash commands.
+- **v3.0.0-alpha.6 (2026-05-17) — V3 Megarelease Phase F** *(current)* — Advanced Blade-Edit Hooks: `vendor-source-preflight` + `lang-key-existence-preflight` PreToolUse hooks on Edit/Write of `.blade.php`. Now 10 agents / 7 skills / 12 hooks / 3 slash commands.
+- **v3.0.0-alpha.5 (2026-05-17) — V3 Megarelease Phase E** — Pilot 2.0 Meta-Layer: `laravel-pilot-orchestrator` agent + `pilot-2-contract-enforcer` hook + `/audit-phase` + `/retro` slash commands + canonical `docs/pilot-2-0-contract.md`. Now 10 agents / 7 skills / 10 hooks / 3 slash commands.
 - **v3.0.0-alpha.4 (2026-05-17) — V3 Megarelease Phase D** — Three Laravel-specific skills: `laravel-a11y-specialist`, `laravel-mr-body-writer`, `laravel-perf-auditor`. Now 7 skills shipped.
 - **v3.0.0-alpha.3 (2026-05-17) — V3 Megarelease Phase C** — Three specialist agents: `laravel-echo-reverb-specialist`, `spatie-permission-auditor`, `laravel-package-evaluator`. Now 9 agents shipped.
 - **v3.0.0-alpha.2 (2026-05-17) — V3 Megarelease Phase B** — Three context-aware hooks that surface daily sprint state without operator action: `sprint-state-context-injection`, `stale-branch-sweep`, `master-roadmap-drift-detector`. Now 9 hooks shipped.

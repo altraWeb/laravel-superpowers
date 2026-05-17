@@ -21,6 +21,32 @@
                         "command": "${CLAUDE_PLUGIN_ROOT}/hooks/anti-silent-deferral.sh"
                     }
                 ]
+            },
+            {
+                "matcher": "Edit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/vendor-source-preflight.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/lang-key-existence-preflight.sh"
+                    }
+                ]
+            },
+            {
+                "matcher": "Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/vendor-source-preflight.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/lang-key-existence-preflight.sh"
+                    }
+                ]
             }
         ],
         "PostToolUse": [
